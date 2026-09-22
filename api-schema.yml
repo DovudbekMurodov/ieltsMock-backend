@@ -333,6 +333,30 @@ paths:
               schema:
                 $ref: '#/components/schemas/TokenValidity'
           description: ''
+  /api/v1/events/:
+    post:
+      operationId: recordEvent
+      summary: Record a client-side event
+      tags:
+      - events
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '202':
+          description: No response body
   /api/v1/speaking/:
     get:
       operationId: listSpeakingTopics
@@ -685,6 +709,25 @@ components:
           type: string
       required:
       - detail
+    EventRequest:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/NameEnum'
+        objectType:
+          type: string
+          maxLength: 32
+        objectId:
+          type: integer
+          nullable: true
+        skill:
+          type: string
+          maxLength: 16
+        props:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
     ImportRequest:
       type: object
       description: The raw localStorage blob, keyed by "<sectionSlug>::<headword>".
@@ -710,6 +753,20 @@ components:
       required:
       - email
       - password
+    NameEnum:
+      enum:
+      - page.viewed
+      - speaking.session_started
+      - vocab.section_viewed
+      - writing.model_revealed
+      - writing.started
+      type: string
+      description: |-
+        * `page.viewed` - page.viewed
+        * `speaking.session_started` - speaking.session_started
+        * `vocab.section_viewed` - vocab.section_viewed
+        * `writing.model_revealed` - writing.model_revealed
+        * `writing.started` - writing.started
     PatchedSaveAnswersRequest:
       type: object
       properties:

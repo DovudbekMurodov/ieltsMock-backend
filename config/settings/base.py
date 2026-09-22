@@ -51,6 +51,7 @@ LOCAL_APPS = [
     "apps.writing",
     "apps.speaking",
     "apps.attempts",
+    "apps.analytics",
     "apps.dashboard",
 ]
 

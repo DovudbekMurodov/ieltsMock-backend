@@ -1,0 +1,100 @@
+{% extends "dashboard/base.html" %}
+{% load charts %}
+{% block title %}Analytics{% endblock %}
+{% block heading %}Analytics{% endblock %}
+{% block subheading %}<p class="text-gray-500">Who is using the platform, and what they do with it.</p>{% endblock %}
+
+{% block actions %}
+  <a href="?days=7" class="pill {% if days == 7 %}pill--active{% endif %}">7d</a>
+  <a href="?days=30" class="pill {% if days == 30 %}pill--active{% endif %}">30d</a>
+  <a href="?days=90" class="pill {% if days == 90 %}pill--active{% endif %}">90d</a>
+{% endblock %}
+
+{% block content %}
+{% if not has_rollups %}
+  <div class="card p-4 mb-6 border-amber-200 bg-amber-50 text-xs text-amber-800">
+    No rollups yet. Historical charts stay empty until
+    <code class="font-mono">manage.py rollup_metrics --since=YYYY-MM-DD</code> has run —
+    it is idempotent, so backfilling is safe.
+  </div>
+{% endif %}
+
+<div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+  {% include "dashboard/partials/stat.html" with label="Events today" value=today.events sub="live, not rolled up" %}
+  {% include "dashboard/partials/stat.html" with label="Tests started" value=today.starts sub="today" %}
+  {% include "dashboard/partials/stat.html" with label="Submitted" value=today.submissions sub="today" %}
+  {% include "dashboard/partials/stat.html" with label="Sign-ups" value=today.signups sub="today" %}
+  {% include "dashboard/partials/stat.html" with label="People" value=today.people sub="active today" %}
+</div>
+
+<div class="grid lg:grid-cols-2 gap-4 mb-6">
+  <div class="card p-6">
+    <p class="label">Attempts submitted</p>
+    {% bar_chart submissions height=130 label="Attempts submitted per day" %}
+  </div>
+  <div class="card p-6">
+    <p class="label">Active learners</p>
+    {% bar_chart active_users height=130 label="Active learners per day" %}
+  </div>
+  <div class="card p-6">
+    <p class="label">Reading</p>
+    {% bar_chart reading height=100 label="Reading attempts" %}
+  </div>
+  <div class="card p-6">
+    <p class="label">Listening</p>
+    {% bar_chart listening height=100 label="Listening attempts" %}
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-4">
+  <div class="card p-6">
+    <p class="label">Most used tests</p>
+    <div class="divide-y divide-gray-100">
+      {% for row in top_tests %}
+        <a href="{% url 'dashboard:test-analytics' row.test__slug %}"
+           class="flex items-center justify-between py-2.5 text-sm hover:text-coral-600">
+          <span class="truncate">{{ row.test__title }}</span>
+          <span class="font-semibold text-gray-600 shrink-0">{{ row.total }}</span>
+        </a>
+      {% empty %}
+        <p class="text-sm text-gray-400 py-3">No completions in this window.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card p-6">
+    <p class="label">Event mix</p>
+    <div class="space-y-2">
+      {% for name, total in event_mix %}
+        <div>
+          <div class="flex items-center justify-between text-xs mb-1">
+            <span class="font-mono text-gray-600">{{ name }}</span>
+            <span class="font-semibold text-gray-500">{{ total }}</span>
+          </div>
+          {% hbar total event_mix.0.1 %}
+        </div>
+      {% empty %}
+        <p class="text-sm text-gray-400">Nothing recorded yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="card p-6">
+    <p class="label">Highest bands</p>
+    <div class="divide-y divide-gray-100">
+      {% for row in leaders %}
+        <a href="{% url 'dashboard:user-detail' row.user.pk %}"
+           class="flex items-center justify-between py-2.5 text-sm hover:text-coral-600">
+          <span class="truncate">{{ row.user.email }}</span>
+          <span class="shrink-0">
+            <span class="font-bold text-gray-700">{{ row.best_band }}</span>
+            <span class="text-xs text-gray-400">{{ row.skill }}</span>
+          </span>
+        </a>
+      {% empty %}
+        <p class="text-sm text-gray-400 py-3">No bands recorded yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

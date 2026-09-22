@@ -5,6 +5,8 @@ from datetime import timedelta
 from django.db import transaction
 from django.utils import timezone
 
+from apps.analytics import events
+from apps.analytics.tracking import record
 from apps.content.models import Option, Question
 from apps.grading import bands
 from apps.grading.scoring import score_attempt
@@ -43,7 +45,7 @@ def start_attempt(test, *, user=None, guest_id=None) -> TestAttempt:
         return open_attempt
 
     now = timezone.now()
-    return TestAttempt.objects.create(
+    attempt = TestAttempt.objects.create(
         user=user if signed_in else None,
         guest_id=None if signed_in else guest_id,
         test=test,
@@ -53,6 +55,15 @@ def start_attempt(test, *, user=None, guest_id=None) -> TestAttempt:
         expires_at=now + timedelta(minutes=test.time_limit_minutes, seconds=GRACE_SECONDS),
         last_activity_at=now,
     )
+    record(
+        events.TEST_STARTED,
+        user=user,
+        anon_id=guest_id,
+        obj=test,
+        object_type="test",
+        skill=test.skill,
+    )
+    return attempt
 
 
 @transaction.atomic
@@ -128,6 +139,22 @@ def submit_attempt(attempt) -> TestAttempt:
     attempt.band_high = estimate.band_high
     attempt.band_confidence = estimate.confidence
     attempt.save()
+
+    record(
+        events.TEST_EXPIRED if late else events.TEST_SUBMITTED,
+        user=attempt.user,
+        anon_id=attempt.guest_id,
+        obj=attempt.test,
+        object_type="test",
+        skill=attempt.test.skill,
+        props={
+            "attemptId": attempt.id,
+            "rawScore": result.raw_score,
+            "rawTotal": result.raw_total,
+            "band": str(attempt.band) if attempt.band is not None else None,
+            "durationSeconds": attempt.duration_seconds,
+        },
+    )
     return attempt
 
 

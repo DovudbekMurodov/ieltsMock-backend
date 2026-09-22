@@ -1,5 +1,6 @@
 from django.urls import path
 
+from . import analytics_views as an
 from . import audio_views as av
 from . import content_editors as ce
 from . import editor, views
@@ -42,6 +43,10 @@ urlpatterns = [
     path("students/<int:pk>/", views.user_detail, name="user-detail"),
     path("attempts/", views.attempt_list, name="attempt-list"),
     path("attempts/<int:pk>/", views.attempt_detail, name="attempt-detail"),
+
+    path("analytics/", an.analytics_overview, name="analytics"),
+    path("analytics/questions/", an.question_analysis, name="question-analysis"),
+    path("analytics/tests/<slug:slug>/", an.test_analytics, name="test-analytics"),
 
     path("band-scales/", views.band_scale_list, name="band-scale-list"),
     path("band-scales/<int:pk>/rows/", views.band_scale_row_update, name="band-scale-rows"),

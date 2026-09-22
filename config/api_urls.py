@@ -2,6 +2,7 @@
 
 from django.urls import include, path
 
+from apps.analytics import views as analytics_views
 from apps.content import views as content_views
 from apps.speaking import views as speaking_views
 from apps.vocabulary import review_views as srs_views
@@ -13,6 +14,7 @@ app_name = "api"
 urlpatterns = [
     path("auth/", include("config.auth_urls")),
     path("attempts/", include("config.attempt_urls")),
+    path("events/", analytics_views.record_event, name="event-record"),
     path("tests/", content_views.test_list, name="test-list"),
     path("tests/<slug:slug>/", content_views.test_detail, name="test-detail"),
     path("writing/", writing_views.task_list, name="writing-list"),

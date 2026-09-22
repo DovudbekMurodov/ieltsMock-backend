@@ -1,0 +1,41 @@
+{% extends "dashboard/base.html" %}
+{% load charts %}
+{% block title %}Question quality{% endblock %}
+{% block heading %}Question quality{% endblock %}
+{% block subheading %}
+  <p class="text-gray-500 max-w-2xl">
+    A hard question is fine. What is worth checking is an item almost nobody gets right —
+    usually a wrong key or an ambiguous prompt — or one nobody gets wrong, which is a giveaway.
+    Based on {{ counted }} question{{ counted|pluralize }} answered at least {{ minimum }} times.
+  </p>
+{% endblock %}
+
+{% block content %}
+<div class="grid lg:grid-cols-2 gap-4 mb-6">
+  <div class="card p-6">
+    <p class="label">Almost always wrong <span class="text-gray-300">· under 25%</span></p>
+    {% include "dashboard/partials/question_rows.html" with rows=too_hard empty="Nothing looks broken." %}
+  </div>
+  <div class="card p-6">
+    <p class="label">Almost always right <span class="text-gray-300">· over 95%</span></p>
+    {% include "dashboard/partials/question_rows.html" with rows=too_easy empty="Nothing looks like a giveaway." %}
+  </div>
+</div>
+
+<div class="card p-6">
+  <p class="label">Accuracy by question type</p>
+  <div class="space-y-3 mt-3">
+    {% for row in by_type %}
+      <div>
+        <div class="flex items-center justify-between text-xs mb-1">
+          <span class="font-semibold text-gray-700">{{ row.type }}</span>
+          <span class="text-gray-500">{{ row.correct }}/{{ row.seen }}</span>
+        </div>
+        {% hbar row.correct row.seen %}
+      </div>
+    {% empty %}
+      <p class="text-sm text-gray-400">No rollups yet.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

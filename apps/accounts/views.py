@@ -8,6 +8,9 @@ from rest_framework.throttling import AnonRateThrottle
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
+from apps.analytics import events
+from apps.analytics.tracking import record
+
 from .serializers import (
     AuthSessionSerializer,
     DetailSerializer,
@@ -60,6 +63,7 @@ def register(request):
     serializer = RegisterSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     user = serializer.save()
+    record(events.AUTH_SIGNUP, user=user, request=request)
     return _access_response(user, issue(user), status.HTTP_201_CREATED)
 
 
@@ -76,6 +80,7 @@ def login(request):
     serializer = LoginSerializer(data=request.data, context={"request": request})
     serializer.is_valid(raise_exception=True)
     user = serializer.validated_data["user"]
+    record(events.AUTH_LOGIN, user=user, request=request)
     return _access_response(user, issue(user))
 
 

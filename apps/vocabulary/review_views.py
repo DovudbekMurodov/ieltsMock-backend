@@ -11,6 +11,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from apps.analytics import events
+from apps.analytics.tracking import record
 from apps.common.models import PublishStatus
 
 from .models import VocabularyReviewEvent, VocabularyReviewState, VocabularyWord
@@ -99,6 +101,14 @@ def rate(request):
         interval_after=after,
     )
 
+    record(
+        events.VOCAB_RATED,
+        user=request.user,
+        obj=word,
+        object_type="word",
+        props={"rating": rating, "intervalBefore": before, "intervalAfter": after},
+        request=request,
+    )
     return Response({"wordId": word.id, "intervalDays": after, "dueAt": state.due_at})
 
 

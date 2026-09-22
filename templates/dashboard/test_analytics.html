@@ -1,0 +1,38 @@
+{% extends "dashboard/base.html" %}
+{% load charts %}
+{% block title %}{{ test.title }} · analytics{% endblock %}
+{% block eyebrow %}
+  <a href="{% url 'dashboard:test-edit' test.pk %}" class="text-sm text-gray-400 hover:text-coral-600">← Editor</a>
+{% endblock %}
+{% block heading %}{{ test.title }}{% endblock %}
+{% block subheading %}<p class="text-gray-500">{{ attempts }} submitted attempt{{ attempts|pluralize }}.</p>{% endblock %}
+
+{% block content %}
+<div class="grid sm:grid-cols-3 gap-4 mb-6">
+  {% include "dashboard/partials/stat.html" with label="Attempts" value=attempts sub="submitted" %}
+  {% include "dashboard/partials/stat.html" with label="Average score" value=avg_percent|floatformat:1 sub="percent" %}
+  {% include "dashboard/partials/stat.html" with label="Questions" value=questions|length sub="in this test" %}
+</div>
+
+<div class="card p-6">
+  <p class="label">Per-question accuracy</p>
+  <p class="text-xs text-gray-400 mb-4">Ordered as the student sees them.</p>
+  <div class="space-y-3">
+    {% for q in questions %}
+      <div>
+        <div class="flex items-start justify-between gap-3 mb-1">
+          <span class="text-sm text-gray-700 line-clamp-1">
+            <span class="font-bold text-gray-400">{{ q.number }}.</span>
+            {{ q.prompt|truncatechars:70 }}
+            <span class="badge bg-gray-100 text-gray-400 ml-1">{{ q.group.type }}</span>
+          </span>
+          <span class="text-xs font-semibold text-gray-500 shrink-0">
+            {% if q.seen %}{{ q.correct }}/{{ q.seen }}{% else %}not seen{% endif %}
+          </span>
+        </div>
+        {% hbar q.correct q.seen %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
