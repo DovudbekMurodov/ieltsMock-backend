@@ -221,3 +221,24 @@ def test_authenticated_responses_are_not_shared_cacheable(client, user):
 
     assert "no-store" in response["Cache-Control"]
     assert "Authorization" in response["Vary"]
+
+
+# --- rate limiting -------------------------------------------------------------
+
+
+def test_repeated_sign_in_attempts_are_throttled(client, user):
+    """Guessing a password has to be slow enough not to be worth trying."""
+    statuses = [
+        login(client, password=f"wrong-{attempt}").status_code for attempt in range(14)
+    ]
+
+    assert 429 in statuses, "the auth scope should stop a burst of attempts"
+    assert statuses.index(429) >= 10, "a person mistyping twice must not be locked out"
+
+
+def test_throttling_does_not_leak_between_endpoints(client, user):
+    for attempt in range(12):
+        login(client, password=f"wrong-{attempt}")
+
+    # A different scope entirely, so reading content still works.
+    assert client.get(reverse("api:test-list")).status_code == 200

@@ -1,0 +1,10 @@
+# /etc/systemd/system/ieltsmock-backup.service
+[Unit]
+Description=Back up the database and uploaded media
+
+[Service]
+Type=oneshot
+User=ieltsmock
+WorkingDirectory=/srv/ieltsmock
+EnvironmentFile=/srv/ieltsmock/.env
+ExecStart=/srv/ieltsmock/deploy/backup.sh

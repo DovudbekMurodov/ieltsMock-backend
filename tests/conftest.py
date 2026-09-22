@@ -1,6 +1,19 @@
 import pytest
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.core.management import call_command
+
+
+@pytest.fixture(autouse=True)
+def clear_cache():
+    """Throttle counters and the content version live in the cache.
+
+    Without this a test that signs in a few times leaks its rate-limit state
+    into the next one, and failures depend on test ordering.
+    """
+    cache.clear()
+    yield
+    cache.clear()
 
 
 @pytest.fixture

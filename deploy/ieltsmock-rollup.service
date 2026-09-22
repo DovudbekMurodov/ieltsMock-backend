@@ -1,0 +1,13 @@
+# /etc/systemd/system/ieltsmock-rollup.service
+[Unit]
+Description=Roll up yesterday's attempts into the analytics tables
+
+[Service]
+Type=oneshot
+User=ieltsmock
+WorkingDirectory=/srv/ieltsmock
+EnvironmentFile=/srv/ieltsmock/.env
+Environment=DJANGO_SETTINGS_MODULE=config.settings.prod
+ExecStart=/srv/ieltsmock/.venv/bin/python manage.py expire_attempts
+ExecStart=/srv/ieltsmock/.venv/bin/python manage.py rollup_metrics
+ExecStart=/srv/ieltsmock/.venv/bin/python manage.py prune_events --days=180

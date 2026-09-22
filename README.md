@@ -96,6 +96,11 @@ deploy fails at boot instead of on the first request that happens to need them.
 
 All three run in CI on every push and pull request.
 
+## Deploying
+
+`deploy/DEPLOY.md` covers the droplet end to end: nginx, gunicorn under
+systemd, the nightly rollup and backup timers, and what `.env` must contain.
+
 ## Deployment note — read before wiring up auth
 
 The SPA is served over HTTPS from `*.vercel.app`, so a plain `http://<droplet-ip>/api`
@@ -111,3 +116,11 @@ real domain. Moving to a real domain later is a DNS change, not a rewrite.
 Related: `vercel.app` is itself on the Public Suffix List, so no cookie can ever be shared
 between the SPA origin and this API. That is why the SPA authenticates with JWT while the
 same-origin staff dashboard uses ordinary Django sessions.
+
+## What the frontend still needs
+
+The React app in `../ieltsMock` continues to read its five bundled data files; nothing in
+it calls this API yet. Wiring it up means an API client, TanStack Query, auth screens,
+merging the two results pages, and — the largest and least visible part — a loading and
+error state for roughly a dozen components that currently have neither, because `import`
+is synchronous.

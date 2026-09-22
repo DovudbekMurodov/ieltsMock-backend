@@ -1,0 +1,12 @@
+# /etc/systemd/system/ieltsmock-rollup.timer
+[Unit]
+Description=Nightly analytics rollup
+
+[Timer]
+OnCalendar=*-*-* 02:30:00
+# The rollups are idempotent and backfillable, so a missed night is caught up
+# on the next run rather than lost.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

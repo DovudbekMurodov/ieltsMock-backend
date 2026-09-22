@@ -1,12 +1,13 @@
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from apps.accounts.guest import ensure_guest_id, read_guest_id, set_guest_cookie
 from apps.common.models import PublishStatus
+from apps.common.throttles import AnonWriteThrottle, WriteThrottle
 from apps.content.models import Question, Test
 from apps.grading import bands
 
@@ -57,6 +58,7 @@ def _get_owned_attempt(request, pk) -> TestAttempt:
 )
 @api_view(["POST"])
 @permission_classes([AllowAny])
+@throttle_classes([AnonWriteThrottle, WriteThrottle])
 def start(request):
     serializer = StartAttemptSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -84,6 +86,7 @@ def start(request):
 )
 @api_view(["PATCH"])
 @permission_classes([AllowAny])
+@throttle_classes([AnonWriteThrottle, WriteThrottle])
 def save(request, pk):
     attempt = _get_owned_attempt(request, pk)
     serializer = SaveAnswersSerializer(data=request.data)
@@ -105,6 +108,7 @@ def save(request, pk):
 )
 @api_view(["POST"])
 @permission_classes([AllowAny])
+@throttle_classes([AnonWriteThrottle, WriteThrottle])
 def submit(request, pk):
     attempt = submit_attempt(_get_owned_attempt(request, pk))
 

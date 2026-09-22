@@ -1,0 +1,33 @@
+# /etc/systemd/system/ieltsmock.service
+[Unit]
+Description=ieltsMock API (gunicorn)
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=notify
+User=ieltsmock
+Group=www-data
+WorkingDirectory=/srv/ieltsmock
+EnvironmentFile=/srv/ieltsmock/.env
+Environment=DJANGO_SETTINGS_MODULE=config.settings.prod
+ExecStart=/srv/ieltsmock/.venv/bin/gunicorn config.wsgi:application \
+    --bind unix:/run/ieltsmock/gunicorn.sock \
+    --workers 3 \
+    --timeout 60 \
+    --access-logfile - \
+    --error-logfile -
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=on-failure
+RestartSec=5
+RuntimeDirectory=ieltsmock
+
+# The process only ever needs to write to media and the runtime socket.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/ieltsmock/media
+
+[Install]
+WantedBy=multi-user.target

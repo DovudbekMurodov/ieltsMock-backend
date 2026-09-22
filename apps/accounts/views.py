@@ -4,12 +4,12 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.throttling import AnonRateThrottle
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from apps.analytics import events
 from apps.analytics.tracking import record
+from apps.common.throttles import AuthThrottle
 
 from .serializers import (
     AuthSessionSerializer,
@@ -58,7 +58,7 @@ def _access_response(user, refresh: RefreshToken, http_status=status.HTTP_200_OK
 )
 @api_view(["POST"])
 @permission_classes([AllowAny])
-@throttle_classes([AnonRateThrottle])
+@throttle_classes([AuthThrottle])
 def register(request):
     serializer = RegisterSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -75,7 +75,7 @@ def register(request):
 )
 @api_view(["POST"])
 @permission_classes([AllowAny])
-@throttle_classes([AnonRateThrottle])
+@throttle_classes([AuthThrottle])
 def login(request):
     serializer = LoginSerializer(data=request.data, context={"request": request})
     serializer.is_valid(raise_exception=True)

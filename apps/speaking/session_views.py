@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers, status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
@@ -18,6 +18,7 @@ from apps.accounts.guest import ensure_guest_id, read_guest_id, set_guest_cookie
 from apps.analytics import events
 from apps.analytics.tracking import record
 from apps.common.models import PublishStatus
+from apps.common.throttles import AnonWriteThrottle, WriteThrottle
 
 from .models import SpeakingSession, SpeakingTopic
 
@@ -69,6 +70,7 @@ def _owned(request, pk) -> SpeakingSession:
 )
 @api_view(["POST"])
 @permission_classes([AllowAny])
+@throttle_classes([AnonWriteThrottle, WriteThrottle])
 def start(request):
     serializer = StartSessionSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -95,6 +97,7 @@ def start(request):
 )
 @api_view(["PATCH"])
 @permission_classes([AllowAny])
+@throttle_classes([AnonWriteThrottle, WriteThrottle])
 def update(request, pk):
     session = _owned(request, pk)
     serializer = UpdateSessionSerializer(data=request.data)
