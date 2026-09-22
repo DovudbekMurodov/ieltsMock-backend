@@ -3,13 +3,13 @@
 {% block heading %}Writing tasks{% endblock %}
 {% block subheading %}<p class="text-gray-500">Prompts with worked model answers.</p>{% endblock %}
 {% block actions %}
-  <a href="/admin/writing/writingtask/add/" class="btn-primary btn-md">New task</a>
+  <a href="{% url 'dashboard:writing-create' %}" class="btn-primary btn-md">New task</a>
 {% endblock %}
 
 {% block content %}
 <div class="grid sm:grid-cols-2 gap-4">
   {% for task in tasks %}
-    <a href="/admin/writing/writingtask/{{ task.pk }}/change/" class="card card-hover p-5 block">
+    <a href="{% url 'dashboard:writing-edit' task.slug %}" class="card card-hover p-5 block">
       <div class="flex items-start justify-between gap-2 mb-2">
         <p class="text-xs font-bold uppercase tracking-wide text-coral-500">{{ task.get_type_display }}</p>
         <span class="badge-{{ task.status }} shrink-0">{{ task.get_status_display }}</span>

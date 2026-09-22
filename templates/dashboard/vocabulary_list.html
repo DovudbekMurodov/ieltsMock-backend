@@ -6,7 +6,7 @@
 {% block content %}
 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
   {% for section in sections %}
-    <a href="{% url 'dashboard:vocabulary-detail' section.slug %}" class="card card-hover p-5 block">
+    <a href="{% url 'dashboard:vocabulary-edit' section.slug %}" class="card card-hover p-5 block">
       <div class="flex items-start justify-between gap-2 mb-2">
         <p class="font-bold text-gray-900">{{ section.title }}</p>
         <span class="badge-{{ section.status }} shrink-0">{{ section.get_status_display }}</span>

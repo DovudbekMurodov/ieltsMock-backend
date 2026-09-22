@@ -1,0 +1,29 @@
+<div id="slot-{{ slot.part }}-{{ slot.kind|slugify }}" class="card p-5">
+  <div class="flex items-center justify-between mb-3">
+    <p class="label mb-0">{{ slot.label }}</p>
+    <span class="text-xs text-gray-400">{{ slot.items|length }}</span>
+  </div>
+
+  <div class="space-y-2">
+    {% for item in slot.items %}
+      <div class="flex items-center gap-2">
+        <span class="text-xs font-bold text-gray-300 w-4 shrink-0">{{ forloop.counter }}</span>
+        <form class="flex-1"
+              hx-post="{% url 'dashboard:hx-speaking-item' item.pk %}"
+              hx-trigger="change, keyup changed delay:700ms">
+          <input class="input !py-1.5 text-sm" name="text" value="{{ item.text }}"
+                 placeholder="{{ slot.label|slice:':-1' }}" aria-label="{{ slot.label }} {{ forloop.counter }}">
+        </form>
+        <button type="button" class="text-gray-300 hover:text-red-500 text-xs px-1 shrink-0" aria-label="Delete"
+                hx-delete="{% url 'dashboard:hx-speaking-item' item.pk %}"
+                hx-target="#slot-{{ slot.part }}-{{ slot.kind|slugify }}" hx-swap="outerHTML">✕</button>
+      </div>
+    {% empty %}
+      <p class="text-sm text-gray-400 py-2">Nothing here yet.</p>
+    {% endfor %}
+  </div>
+
+  <button type="button" class="btn-secondary btn-sm mt-3 w-full"
+          hx-post="{% url 'dashboard:hx-speaking-item-create' topic.slug slot.part slot.kind %}"
+          hx-target="#slot-{{ slot.part }}-{{ slot.kind|slugify }}" hx-swap="outerHTML">+ Add</button>
+</div>

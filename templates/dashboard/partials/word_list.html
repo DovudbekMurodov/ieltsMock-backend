@@ -1,0 +1,44 @@
+<div id="words" class="space-y-2">
+  {% if rejected %}
+    <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800">
+      <p class="font-semibold mb-1">{{ rejected|length }} line{{ rejected|length|pluralize }} skipped:</p>
+      <ul class="space-y-0.5 font-mono">
+        {% for line in rejected %}<li>{{ line|truncatechars:110 }}</li>{% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  {% for word in words %}
+    <div data-id="{{ word.pk }}" class="card p-3">
+      <form hx-post="{% url 'dashboard:hx-word' word.pk %}"
+            hx-trigger="change, keyup changed delay:700ms"
+            class="grid sm:grid-cols-[150px_120px_1fr] gap-2 items-start">
+        <input class="input !py-1.5 text-sm font-semibold" name="headword" value="{{ word.headword }}" aria-label="Word">
+        <select class="input !py-1.5 text-xs" name="pos" aria-label="Part of speech">
+          {% for value, label in pos_choices %}
+            <option value="{{ value }}" {% if word.pos == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+        <div class="space-y-2">
+          <input class="input !py-1.5 text-sm" name="definition" value="{{ word.definition }}"
+                 placeholder="Definition" aria-label="Definition">
+          <input class="input !py-1.5 text-xs" name="example" value="{{ word.example }}"
+                 placeholder="Use **bold** around the word" aria-label="Example">
+        </div>
+      </form>
+      <div class="flex items-center justify-between mt-2">
+        <p class="text-[10px] text-gray-400">
+          {% for part in word.example_parts %}{% if part.bold %}<strong class="text-coral-600">{{ part.text }}</strong>{% else %}{{ part.text }}{% endif %}{% endfor %}
+        </p>
+        <button type="button" class="text-gray-300 hover:text-red-500 text-xs px-1 shrink-0" aria-label="Delete word"
+                hx-delete="{% url 'dashboard:hx-word' word.pk %}"
+                hx-confirm="Delete {{ word.headword }}?"
+                hx-target="#words" hx-swap="outerHTML">✕</button>
+      </div>
+    </div>
+  {% empty %}
+    <div class="card p-10 text-center text-sm text-gray-400">
+      No words yet — paste a list or add one.
+    </div>
+  {% endfor %}
+</div>

@@ -1,0 +1,22 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ heading }}{% endblock %}
+{% block heading %}{{ heading }}{% endblock %}
+{% block subheading %}<p class="text-gray-500">Saved as a draft until you publish it.</p>{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data" class="card p-6 max-w-2xl space-y-4">
+  {% csrf_token %}
+  {% for field in form %}
+    <div>
+      <label class="label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}<p class="text-xs text-gray-400 mt-1">{{ field.help_text }}</p>{% endif %}
+      {% for e in field.errors %}<p class="text-xs text-red-600 mt-1">{{ e }}</p>{% endfor %}
+    </div>
+  {% endfor %}
+  <div class="flex gap-2 pt-2">
+    <button type="submit" class="btn-primary btn-md">Create</button>
+    <a href="{% url cancel_url %}" class="btn-secondary btn-md">Cancel</a>
+  </div>
+</form>
+{% endblock %}

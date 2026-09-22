@@ -1,6 +1,9 @@
 from django import forms
 
 from apps.content.models import AnswerKey, Block, Option, Question, QuestionGroup, Section, Test
+from apps.speaking.models import SpeakingCueCard, SpeakingItem, SpeakingTopic
+from apps.vocabulary.models import VocabularySection, VocabularyWord
+from apps.writing.models import WritingModelAnswer, WritingTask
 
 TEXT_INPUT = {"class": "input"}
 TEXTAREA = {"class": "input", "rows": 3}
@@ -127,3 +130,142 @@ def parse_blocks(text: str, *, as_transcript: bool) -> list[tuple[str, str]]:
         (chr(ord("A") + index) if index < 26 else str(index + 1), paragraph)
         for index, paragraph in enumerate(paragraphs)
     ]
+
+
+class VocabularySectionForm(forms.ModelForm):
+    class Meta:
+        model = VocabularySection
+        fields = ("title", "slug", "order", "status")
+        widgets = {
+            "title": forms.TextInput(attrs=TEXT_INPUT),
+            "slug": forms.TextInput(attrs=TEXT_INPUT),
+            "order": forms.NumberInput(attrs=TEXT_INPUT),
+            "status": forms.Select(attrs=TEXT_INPUT),
+        }
+
+
+class VocabularyWordForm(forms.ModelForm):
+    class Meta:
+        model = VocabularyWord
+        fields = ("headword", "pos", "definition", "example")
+        widgets = {
+            "headword": forms.TextInput(attrs=TEXT_INPUT),
+            "pos": forms.Select(attrs=TEXT_INPUT),
+            "definition": forms.TextInput(attrs=TEXT_INPUT),
+            "example": forms.TextInput(
+                attrs={**TEXT_INPUT, "placeholder": "Use **bold** around the word in context"}
+            ),
+        }
+
+
+class BulkWordForm(forms.Form):
+    """Paste a whole word list at once, one per line.
+
+    Typing a hundred words through four boxes each is the slowest job in the
+    dashboard, so the importer takes the same tab-separated shape people
+    already keep these lists in.
+    """
+
+    text = forms.CharField(
+        widget=forms.Textarea(
+            attrs={
+                "class": "input font-mono text-xs",
+                "rows": 10,
+                "placeholder": (
+                    "One word per line, tab or | separated:\n"
+                    "Substantial | adjective | Fairly large in amount. | "
+                    "The policy led to a **substantial** drop.\n"
+                ),
+            }
+        )
+    )
+    replace = forms.BooleanField(required=False)
+
+
+def parse_words(text: str) -> tuple[list[dict], list[str]]:
+    """Return (parsed rows, rejected lines). Never silently drops input."""
+    rows, rejected = [], []
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        # maxsplit=3 so a separator inside the example survives: rejoining the
+        # tail would silently rewrite the sentence.
+        separator = "\t" if "\t" in line else "|"
+        parts = [p.strip() for p in line.split(separator, 3)]
+        if len(parts) < 4 or not parts[0]:
+            rejected.append(line)
+            continue
+        headword, pos, definition, example = parts
+        if example.count("**") != 2:
+            rejected.append(f"{line}   (needs exactly one **bold** span)")
+            continue
+        rows.append(
+            {
+                "headword": headword,
+                "pos": pos.lower(),
+                "definition": definition,
+                "example": example.strip(),
+            }
+        )
+    return rows, rejected
+
+
+class WritingTaskForm(forms.ModelForm):
+    class Meta:
+        model = WritingTask
+        fields = (
+            "slug", "task_number", "type", "prompt", "image",
+            "suggested_time_minutes", "target_words", "status", "reveal_policy",
+        )
+        widgets = {
+            "slug": forms.TextInput(attrs=TEXT_INPUT),
+            "task_number": forms.NumberInput(attrs=TEXT_INPUT),
+            "type": forms.Select(attrs=TEXT_INPUT),
+            "prompt": forms.Textarea(attrs={**TEXTAREA, "rows": 4}),
+            "suggested_time_minutes": forms.NumberInput(attrs=TEXT_INPUT),
+            "target_words": forms.NumberInput(attrs=TEXT_INPUT),
+            "status": forms.Select(attrs=TEXT_INPUT),
+            "reveal_policy": forms.Select(attrs=TEXT_INPUT),
+        }
+
+
+class WritingModelAnswerForm(forms.ModelForm):
+    class Meta:
+        model = WritingModelAnswer
+        fields = ("band", "body")
+        widgets = {
+            "band": forms.TextInput(attrs={**TEXT_INPUT, "placeholder": "7.5"}),
+            # No strip: blank lines between paragraphs are load-bearing.
+            "body": forms.Textarea(attrs={"class": "input font-mono text-xs", "rows": 16}),
+        }
+
+
+class SpeakingTopicForm(forms.ModelForm):
+    class Meta:
+        model = SpeakingTopic
+        fields = ("title", "slug", "order", "status")
+        widgets = {
+            "title": forms.TextInput(attrs=TEXT_INPUT),
+            "slug": forms.TextInput(attrs=TEXT_INPUT),
+            "order": forms.NumberInput(attrs=TEXT_INPUT),
+            "status": forms.Select(attrs=TEXT_INPUT),
+        }
+
+
+class SpeakingCueCardForm(forms.ModelForm):
+    class Meta:
+        model = SpeakingCueCard
+        fields = ("title", "prep_seconds", "speak_seconds")
+        widgets = {
+            "title": forms.TextInput(attrs=TEXT_INPUT),
+            "prep_seconds": forms.NumberInput(attrs=TEXT_INPUT),
+            "speak_seconds": forms.NumberInput(attrs=TEXT_INPUT),
+        }
+
+
+class SpeakingItemForm(forms.ModelForm):
+    class Meta:
+        model = SpeakingItem
+        fields = ("text",)
+        widgets = {"text": forms.TextInput(attrs=TEXT_INPUT)}

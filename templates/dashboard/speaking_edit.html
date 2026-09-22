@@ -1,0 +1,51 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ topic.title }}{% endblock %}
+{% block eyebrow %}
+  <a href="{% url 'dashboard:speaking-list' %}" class="text-sm text-gray-400 hover:text-coral-600">← Speaking</a>
+{% endblock %}
+{% block heading %}{{ topic.title }}{% endblock %}
+{% block subheading %}
+  <p class="text-gray-500 flex items-center gap-2">
+    <span class="badge-{{ topic.status }}">{{ topic.get_status_display }}</span>
+    <span class="font-mono text-xs">{{ topic.slug }}</span>
+  </p>
+{% endblock %}
+
+{% block content %}
+<div class="grid lg:grid-cols-[320px_1fr] gap-6 items-start">
+  <div class="space-y-4">
+    <div class="card p-5">
+      <p class="label">Topic</p>
+      <form hx-post="{% url 'dashboard:hx-speaking-meta' topic.slug %}"
+            hx-trigger="change, keyup changed delay:600ms" class="space-y-3">
+        {% for field in form %}
+          <div>
+            <label class="label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+          </div>
+        {% endfor %}
+      </form>
+    </div>
+
+    <div class="card p-5">
+      <p class="label">Part 2 cue card</p>
+      <form hx-post="{% url 'dashboard:hx-speaking-cue' topic.slug %}"
+            hx-trigger="change, keyup changed delay:600ms" class="space-y-3">
+        {% for field in cue_form %}
+          <div>
+            <label class="label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+          </div>
+        {% endfor %}
+      </form>
+      <p class="text-xs text-gray-400 mt-3">Real IELTS gives 1 minute to prepare and 2 to speak.</p>
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    {% for slot in slots %}
+      {% include "dashboard/partials/speaking_slot.html" with topic=topic slot=slot %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

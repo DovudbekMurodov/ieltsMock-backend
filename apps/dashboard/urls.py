@@ -1,5 +1,6 @@
 from django.urls import path
 
+from . import content_editors as ce
 from . import editor, views
 
 app_name = "dashboard"
@@ -18,9 +19,19 @@ urlpatterns = [
     path("tests/<int:pk>/unpublish/", editor.test_unpublish, name="test-unpublish"),
 
     path("writing/", views.writing_list, name="writing-list"),
+    path("writing/new/", ce.writing_create, name="writing-create"),
+    path("writing/<slug:slug>/", ce.writing_edit, name="writing-edit"),
+
     path("speaking/", views.speaking_list, name="speaking-list"),
+    path("speaking/new/", ce.speaking_create, name="speaking-create"),
+    path("speaking/<slug:slug>/", ce.speaking_edit, name="speaking-edit"),
+
     path("vocabulary/", views.vocabulary_list, name="vocabulary-list"),
-    path("vocabulary/<slug:slug>/", views.vocabulary_detail, name="vocabulary-detail"),
+    path("vocabulary/new/", ce.vocabulary_create, name="vocabulary-create"),
+    path("vocabulary/<slug:slug>/", ce.vocabulary_edit, name="vocabulary-edit"),
+    path(
+        "vocabulary/<slug:slug>/publish/", ce.vocabulary_publish, name="vocabulary-publish"
+    ),
 
     path("students/", views.user_list, name="user-list"),
     path("students/<int:pk>/", views.user_detail, name="user-detail"),
@@ -46,4 +57,26 @@ urlpatterns = [
     path("hx/options/<int:pk>/", editor.option_save, name="hx-option"),
     path("hx/options/<int:pk>/delete/", editor.pool_option_delete, name="hx-pool-option-delete"),
     path("hx/reorder/<str:model>/<int:pk>/", editor.reorder, name="hx-reorder"),
+
+    path("hx/vocabulary/<slug:slug>/meta/", ce.vocabulary_meta_save, name="hx-vocab-meta"),
+    path("hx/vocabulary/<slug:slug>/words/", ce.word_create, name="hx-word-create"),
+    path("hx/vocabulary/<slug:slug>/import/", ce.word_bulk_import, name="hx-word-import"),
+    path("hx/words/<int:pk>/", ce.word_detail, name="hx-word"),
+
+    path("hx/writing/<slug:slug>/meta/", ce.writing_save, name="hx-writing-meta"),
+    path(
+        "hx/writing/<slug:slug>/answers/",
+        ce.writing_answer_create,
+        name="hx-writing-answer-create",
+    ),
+    path("hx/writing-answers/<int:pk>/", ce.writing_answer_detail, name="hx-writing-answer"),
+
+    path("hx/speaking/<slug:slug>/meta/", ce.speaking_save, name="hx-speaking-meta"),
+    path("hx/speaking/<slug:slug>/cue/", ce.speaking_cue_save, name="hx-speaking-cue"),
+    path(
+        "hx/speaking/<slug:slug>/items/<int:part>/<str:kind>/",
+        ce.speaking_item_create,
+        name="hx-speaking-item-create",
+    ),
+    path("hx/speaking-items/<int:pk>/", ce.speaking_item_detail, name="hx-speaking-item"),
 ]

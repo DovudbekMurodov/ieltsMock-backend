@@ -3,13 +3,13 @@
 {% block heading %}Speaking topics{% endblock %}
 {% block subheading %}<p class="text-gray-500">Part 1, cue card and Part 3 question sets.</p>{% endblock %}
 {% block actions %}
-  <a href="/admin/speaking/speakingtopic/add/" class="btn-primary btn-md">New topic</a>
+  <a href="{% url 'dashboard:speaking-create' %}" class="btn-primary btn-md">New topic</a>
 {% endblock %}
 
 {% block content %}
 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
   {% for topic in topics %}
-    <a href="/admin/speaking/speakingtopic/{{ topic.pk }}/change/" class="card card-hover p-5 block">
+    <a href="{% url 'dashboard:speaking-edit' topic.slug %}" class="card card-hover p-5 block">
       <div class="flex items-start justify-between gap-2 mb-2">
         <p class="font-bold text-gray-900">{{ topic.title }}</p>
         <span class="badge-{{ topic.status }} shrink-0">{{ topic.get_status_display }}</span>

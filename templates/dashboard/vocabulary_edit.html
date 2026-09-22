@@ -1,0 +1,62 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ section.title }}{% endblock %}
+{% block eyebrow %}
+  <a href="{% url 'dashboard:vocabulary-list' %}" class="text-sm text-gray-400 hover:text-coral-600">← Vocabulary</a>
+{% endblock %}
+{% block heading %}{{ section.title }}{% endblock %}
+{% block subheading %}
+  <p class="text-gray-500 flex items-center gap-2">
+    <span class="badge-{{ section.status }}">{{ section.get_status_display }}</span>
+    <span class="font-mono text-xs">{{ section.slug }}</span>
+    <span class="text-xs">· {{ words|length }} word{{ words|length|pluralize }}</span>
+  </p>
+{% endblock %}
+{% block actions %}
+  <form method="post" action="{% url 'dashboard:vocabulary-publish' section.slug %}">
+    {% csrf_token %}<button class="btn-primary btn-md">Publish</button>
+  </form>
+{% endblock %}
+
+{% block content %}
+<div class="grid lg:grid-cols-[300px_1fr] gap-6 items-start">
+  <div class="space-y-4">
+    <div class="card p-5">
+      <p class="label">Section</p>
+      <form hx-post="{% url 'dashboard:hx-vocab-meta' section.slug %}"
+            hx-trigger="change, keyup changed delay:600ms" class="space-y-3">
+        {% for field in form %}
+          <div>
+            <label class="label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+          </div>
+        {% endfor %}
+      </form>
+    </div>
+
+    <div class="card p-5" x-data="{ open: false }">
+      <p class="label">Bulk import</p>
+      <button type="button" @click="open = !open" class="btn-secondary btn-sm w-full"
+              x-text="open ? 'Close' : 'Paste a word list'"></button>
+      <form x-show="open" x-cloak class="mt-3 space-y-2"
+            hx-post="{% url 'dashboard:hx-word-import' section.slug %}"
+            hx-target="#words" hx-swap="outerHTML"
+            @htmx:after-request="open = false">
+        {{ bulk_form.text }}
+        <label class="flex items-center gap-2 text-xs text-gray-500">
+          <input type="checkbox" name="replace" class="accent-coral-500"> Replace existing words
+        </label>
+        <button type="submit" class="btn-primary btn-sm w-full">Import</button>
+      </form>
+    </div>
+  </div>
+
+  <div>
+    {% include "dashboard/partials/word_list.html" with section=section words=words rejected=None %}
+    <button type="button" class="btn-secondary btn-sm mt-3 w-full"
+            hx-post="{% url 'dashboard:hx-word-create' section.slug %}"
+            hx-target="#words" hx-swap="outerHTML">+ Word</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}<style>[x-cloak]{display:none !important}</style>{% endblock %}

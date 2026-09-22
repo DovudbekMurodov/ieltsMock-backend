@@ -189,16 +189,6 @@ def vocabulary_list(request):
     )
 
 
-@staff_required
-def vocabulary_detail(request, slug):
-    section = get_object_or_404(
-        VocabularySection.objects.prefetch_related("words"), slug=slug
-    )
-    return render(
-        request, "dashboard/vocabulary_detail.html", page_context(request, section=section)
-    )
-
-
 # --- people --------------------------------------------------------------------
 
 
