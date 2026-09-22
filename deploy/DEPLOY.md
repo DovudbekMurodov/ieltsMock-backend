@@ -2,6 +2,13 @@
 
 Assumes Ubuntu with PostgreSQL 17, nginx and Python 3.12 available.
 
+## Two ways to run this
+
+The full setup below assumes a hostname and a certificate. A droplet with
+neither can still run the API over plain HTTP on its IP — see
+[Running on a bare IP](#running-on-a-bare-ip) for what changes, and read the
+mixed-content warning there before pointing a deployed SPA at it.
+
 ## Before anything else: a hostname
 
 The SPA is served over HTTPS, so a call to `http://<droplet-ip>/api` is
@@ -17,6 +24,72 @@ still, and moving to one later is a DNS change plus two env vars.
 ```bash
 sudo certbot --nginx -d api.example.duckdns.org
 ```
+
+## Running on a bare IP
+
+No hostname yet. The API answers on `http://<droplet-ip>/` and nothing is
+encrypted, so treat it as a staging step, not a destination.
+
+**What this cannot do.** A browser refuses a plain-`http` call made from an
+`https` page, so a Vercel-hosted SPA cannot reach this API — the request is
+blocked as mixed content before it leaves the browser and no CORS header can
+unblock it. Until a certificate exists, exercise the API from a frontend served
+over `http` (`npm run dev` on `http://localhost:5173`), from `curl`, or from the
+dashboard directly. Credentials also cross the network in clear text, so use
+throwaway passwords and do not load real student data yet.
+
+Follow [One-time setup](#one-time-setup) unchanged, then differ in three places.
+
+**`.env`** — the host is the IP, both origins are `http`, and TLS is off:
+
+```
+DJANGO_SECRET_KEY=<50+ random characters>
+DJANGO_DEBUG=False
+DJANGO_SECURE_SSL=False
+DJANGO_ALLOWED_HOSTS=<droplet-ip>
+DATABASE_URL=postgres://ieltsmock:<password>@localhost/ieltsmock
+CORS_ALLOWED_ORIGINS=http://localhost:5173
+CSRF_TRUSTED_ORIGINS=http://<droplet-ip>
+```
+
+`DJANGO_SECURE_SSL=False` is what makes this work at all: it drops the https
+redirect, HSTS, and the `Secure` flag on the session and CSRF cookies. Left at
+its default the redirect loops forever, and the dashboard cannot log in because
+the browser discards a `Secure` cookie arriving over `http`.
+
+**nginx** — use the plain-HTTP config and skip certbot:
+
+```bash
+sudo cp deploy/nginx-ip.conf /etc/nginx/sites-available/ieltsmock
+sudo ln -sf /etc/nginx/sites-available/ieltsmock /etc/nginx/sites-enabled/
+sudo rm -f /etc/nginx/sites-enabled/default   # it also claims default_server
+sudo nginx -t && sudo systemctl reload nginx
+```
+
+Services, releases and timers are identical to the sections below.
+
+**Checks.** `check --deploy` reports the security settings this mode turns off —
+`SECURE_SSL_REDIRECT`, `SECURE_HSTS_SECONDS`, `SESSION_COOKIE_SECURE`,
+`CSRF_COOKIE_SECURE`. Those four are expected here; any other warning is not.
+
+```bash
+curl -sS http://<droplet-ip>/healthz
+```
+
+**Moving to a hostname.** Point the DNS record at the droplet, then:
+
+```bash
+sudo cp deploy/nginx.conf /etc/nginx/sites-available/ieltsmock
+sudo editor /etc/nginx/sites-available/ieltsmock   # server_name
+sudo certbot --nginx -d api.example.duckdns.org
+sudo -u ieltsmock editor /srv/ieltsmock/.env       # drop DJANGO_SECURE_SSL,
+                                                   # host + origins to https
+sudo systemctl restart ieltsmock && sudo systemctl reload nginx
+```
+
+HSTS only starts counting once a browser sees it over https, so switching in
+this direction is safe. Switching back is not: a browser that has seen the HSTS
+header refuses plain http for a year.
 
 ## One-time setup
 
