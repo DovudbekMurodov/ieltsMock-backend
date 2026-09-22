@@ -1,4 +1,8 @@
+import uuid
+
+from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 from apps.common.models import PublishStatus, TimeStampedModel
 
@@ -64,3 +68,112 @@ class WritingModelAnswer(models.Model):
     @property
     def paragraphs(self) -> list[str]:
         return self.body.split("\n\n")
+
+
+class SubmissionStatus(models.TextChoices):
+    DRAFT = "draft", "Draft"
+    SUBMITTED = "submitted", "Awaiting feedback"
+    GRADED = "graded", "Graded"
+
+
+class WritingSubmission(TimeStampedModel):
+    """What a student actually wrote.
+
+    Guests may write too, keyed on the same opaque id as their test attempts,
+    so the work is not lost if they sign up afterwards.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="writing_submissions",
+    )
+    guest_id = models.UUIDField(null=True, blank=True, db_index=True)
+    token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+
+    task = models.ForeignKey(WritingTask, on_delete=models.PROTECT, related_name="submissions")
+    body = models.TextField(blank=True)
+    word_count = models.PositiveIntegerField(default=0)
+    time_spent_seconds = models.PositiveIntegerField(default=0)
+    status = models.CharField(
+        max_length=16, choices=SubmissionStatus.choices, default=SubmissionStatus.DRAFT,
+        db_index=True,
+    )
+    submitted_at = models.DateTimeField(null=True, blank=True)
+    self_assessed_band = models.DecimalField(
+        max_digits=2, decimal_places=1, null=True, blank=True
+    )
+    model_answer_revealed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ("-submitted_at", "-created_at")
+        indexes = [
+            models.Index(fields=["status", "-submitted_at"]),
+            models.Index(fields=["user", "-submitted_at"]),
+        ]
+
+    def __str__(self):
+        return f"{self.task.slug} / {self.user or 'guest'}"
+
+    def owned_by(self, *, user=None, guest_id=None) -> bool:
+        if self.user_id and user is not None and getattr(user, "id", None) == self.user_id:
+            return True
+        return self.user_id is None and guest_id is not None and self.guest_id == guest_id
+
+    @property
+    def meets_target(self) -> bool:
+        return self.word_count >= self.task.target_words
+
+
+class WritingFeedback(TimeStampedModel):
+    """A grader's marks against the four official criteria.
+
+    The overall band is derived rather than typed, so it can never disagree
+    with the four parts it is meant to summarise.
+    """
+
+    submission = models.OneToOneField(
+        WritingSubmission, on_delete=models.CASCADE, related_name="feedback"
+    )
+    grader = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL, related_name="graded"
+    )
+    task_achievement = models.DecimalField(max_digits=2, decimal_places=1)
+    coherence_cohesion = models.DecimalField(max_digits=2, decimal_places=1)
+    lexical_resource = models.DecimalField(max_digits=2, decimal_places=1)
+    grammatical_range = models.DecimalField(max_digits=2, decimal_places=1)
+    overall = models.DecimalField(max_digits=2, decimal_places=1)
+    comment = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.submission} -> {self.overall}"
+
+    def save(self, *args, **kwargs):
+        from apps.grading.bands import round_to_half_band
+
+        criteria = [
+            self.task_achievement,
+            self.coherence_cohesion,
+            self.lexical_resource,
+            self.grammatical_range,
+        ]
+        self.overall = round_to_half_band(sum(criteria) / len(criteria))
+        super().save(*args, **kwargs)
+
+        if self.submission.status != SubmissionStatus.GRADED:
+            self.submission.status = SubmissionStatus.GRADED
+            self.submission.save(update_fields=["status", "updated_at"])
+
+
+def count_words(text: str) -> int:
+    """Whitespace-separated tokens, which is how IELTS counts."""
+    return len(text.split()) if text and text.strip() else 0
+
+
+def mark_submitted(submission) -> None:
+    submission.word_count = count_words(submission.body)
+    submission.status = SubmissionStatus.SUBMITTED
+    submission.submitted_at = submission.submitted_at or timezone.now()
+    submission.save()

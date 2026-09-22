@@ -4,7 +4,7 @@ from apps.content.enums import Skill
 from apps.content.models import AudioAsset, Test
 from apps.speaking.models import SpeakingTopic
 from apps.vocabulary.models import VocabularySection
-from apps.writing.models import WritingTask
+from apps.writing.models import WritingSubmission, WritingTask
 
 
 def build_nav(request):
@@ -46,6 +46,14 @@ def build_nav(request):
             "◈",
             VocabularySection.objects.count(),
         ),
+        {"divider": "Marking"},
+        item(
+            "Grading queue",
+            "dashboard:grading-queue",
+            "\u270d",
+            WritingSubmission.objects.filter(status="submitted").count(),
+        ),
+        item("Speaking sessions", "dashboard:speaking-sessions", "\u25d4"),
         {"divider": "Insight"},
         item("Analytics", "dashboard:analytics", "\u25f3"),
         item("Question quality", "dashboard:question-analysis", "\u25ce"),

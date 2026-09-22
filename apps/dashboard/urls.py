@@ -4,6 +4,7 @@ from . import analytics_views as an
 from . import audio_views as av
 from . import content_editors as ce
 from . import editor, views
+from . import grading_views as gv
 
 app_name = "dashboard"
 
@@ -38,6 +39,11 @@ urlpatterns = [
     path(
         "vocabulary/<slug:slug>/publish/", ce.vocabulary_publish, name="vocabulary-publish"
     ),
+
+    path("grading/", gv.grading_queue, name="grading-queue"),
+    path("grading/<int:pk>/", gv.grade_submission, name="grade-submission"),
+    path("grading/<int:pk>/return/", gv.return_to_draft, name="grading-return"),
+    path("speaking-sessions/", gv.speaking_sessions, name="speaking-sessions"),
 
     path("students/", views.user_list, name="user-list"),
     path("students/<int:pk>/", views.user_detail, name="user-detail"),

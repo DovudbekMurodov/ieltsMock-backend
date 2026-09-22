@@ -1,0 +1,65 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Grading{% endblock %}
+{% block heading %}Grading queue{% endblock %}
+{% block subheading %}
+  <p class="text-gray-500">Writing is the one skill that cannot be marked automatically.</p>
+{% endblock %}
+
+{% block actions %}
+  <a href="?show=pending" class="pill {% if show == 'pending' %}pill--active{% endif %}">
+    Waiting <span class="badge bg-gray-100 text-gray-500">{{ counts.pending }}</span>
+  </a>
+  <a href="?show=graded" class="pill {% if show == 'graded' %}pill--active{% endif %}">
+    Graded <span class="badge bg-gray-100 text-gray-500">{{ counts.graded }}</span>
+  </a>
+  <a href="?show=all" class="pill {% if show == 'all' %}pill--active{% endif %}">All</a>
+{% endblock %}
+
+{% block content %}
+{% if submissions %}
+  <div class="card overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-50 text-left">
+        <tr class="text-xs font-semibold text-gray-400 uppercase">
+          <th class="px-4 py-3">Task</th>
+          <th class="px-4 py-3">Student</th>
+          <th class="px-4 py-3">Words</th>
+          <th class="px-4 py-3">Submitted</th>
+          <th class="px-4 py-3">Band</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {% for s in submissions %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3">
+              <a href="{% url 'dashboard:grade-submission' s.pk %}" class="font-semibold text-gray-900 hover:text-coral-600">
+                {{ s.task.get_type_display }}
+              </a>
+              <p class="text-xs text-gray-400 font-mono">{{ s.task.slug }}</p>
+            </td>
+            <td class="px-4 py-3 text-gray-600">{{ s.user.email|default:"guest" }}</td>
+            <td class="px-4 py-3">
+              <span class="{% if s.meets_target %}text-green-600{% else %}text-amber-600{% endif %} font-semibold">
+                {{ s.word_count }}
+              </span>
+              <span class="text-gray-400 text-xs">/ {{ s.task.target_words }}</span>
+            </td>
+            <td class="px-4 py-3 text-gray-400">{{ s.submitted_at|date:"j M, H:i" }}</td>
+            <td class="px-4 py-3">
+              {% if s.feedback %}
+                <span class="font-bold text-coral-600">{{ s.feedback.overall }}</span>
+              {% else %}
+                <span class="badge-draft">waiting</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="card p-12 text-center text-gray-500">
+    Nothing here. Submissions appear once a student sends one for feedback.
+  </div>
+{% endif %}
+{% endblock %}

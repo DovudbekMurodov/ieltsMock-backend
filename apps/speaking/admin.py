@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import SpeakingCueCard, SpeakingItem, SpeakingTopic
+from .models import SpeakingCueCard, SpeakingItem, SpeakingSession, SpeakingTopic
 
 
 class SpeakingCueCardInline(admin.StackedInline):
@@ -20,3 +20,16 @@ class SpeakingTopicAdmin(admin.ModelAdmin):
     list_filter = ("status",)
     prepopulated_fields = {"slug": ("title",)}
     inlines = [SpeakingCueCardInline, SpeakingItemInline]
+
+
+@admin.register(SpeakingSession)
+class SpeakingSessionAdmin(admin.ModelAdmin):
+    list_display = ("topic", "who", "parts_completed", "speak_used_seconds", "completed_at")
+    list_filter = ("topic",)
+    search_fields = ("user__email", "topic__slug")
+    date_hierarchy = "created_at"
+    readonly_fields = ("token",)
+
+    @admin.display(description="Who")
+    def who(self, obj):
+        return obj.user.email if obj.user else f"guest {str(obj.guest_id)[:8]}"

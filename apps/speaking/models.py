@@ -1,3 +1,6 @@
+import uuid
+
+from django.conf import settings
 from django.db import models
 
 from apps.common.models import PublishStatus, TimeStampedModel
@@ -65,3 +68,47 @@ class SpeakingItem(models.Model):
 
     def __str__(self):
         return self.text[:60]
+
+
+class SpeakingSession(TimeStampedModel):
+    """A practice run through one topic.
+
+    There is no automatic marking here -- speaking cannot be scored from
+    timings. What this records is whether the student actually did the parts
+    and how long they used, which is what tells staff a topic is too hard or a
+    cue card is unclear.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE,
+        related_name="speaking_sessions",
+    )
+    guest_id = models.UUIDField(null=True, blank=True, db_index=True)
+    token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+
+    topic = models.ForeignKey(SpeakingTopic, on_delete=models.PROTECT, related_name="sessions")
+    parts_completed = models.JSONField(default=list, blank=True)
+    prep_used_seconds = models.PositiveIntegerField(default=0)
+    speak_used_seconds = models.PositiveIntegerField(default=0)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    self_rating = models.PositiveSmallIntegerField(null=True, blank=True)
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        ordering = ("-created_at",)
+        indexes = [models.Index(fields=["user", "-created_at"])]
+
+    def __str__(self):
+        return f"{self.topic.slug} / {self.user or 'guest'}"
+
+    def owned_by(self, *, user=None, guest_id=None) -> bool:
+        if self.user_id and user is not None and getattr(user, "id", None) == self.user_id:
+            return True
+        return self.user_id is None and guest_id is not None and self.guest_id == guest_id
+
+    @property
+    def is_complete(self) -> bool:
+        return sorted(self.parts_completed) == [1, 2, 3]

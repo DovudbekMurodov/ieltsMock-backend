@@ -1,0 +1,53 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Speaking sessions{% endblock %}
+{% block heading %}Speaking sessions{% endblock %}
+{% block subheading %}
+  <p class="text-gray-500 max-w-2xl">
+    {{ completed }} of {{ total }} completed. Nothing here is scored — speaking cannot be
+    marked from timings. What this shows is whether students get through the parts, which
+    is what flags an unclear cue card.
+  </p>
+{% endblock %}
+
+{% block content %}
+{% if sessions %}
+  <div class="card overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-50 text-left">
+        <tr class="text-xs font-semibold text-gray-400 uppercase">
+          <th class="px-4 py-3">Topic</th>
+          <th class="px-4 py-3">Student</th>
+          <th class="px-4 py-3">Parts</th>
+          <th class="px-4 py-3">Prep / speak</th>
+          <th class="px-4 py-3">Self rating</th>
+          <th class="px-4 py-3">Started</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {% for s in sessions %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-4 py-3">
+              <a href="{% url 'dashboard:speaking-edit' s.topic.slug %}" class="font-semibold text-gray-900 hover:text-coral-600">
+                {{ s.topic.title }}
+              </a>
+            </td>
+            <td class="px-4 py-3 text-gray-600">{{ s.user.email|default:"guest" }}</td>
+            <td class="px-4 py-3">
+              {% if s.is_complete %}
+                <span class="badge-published">all three</span>
+              {% else %}
+                <span class="text-gray-500">{{ s.parts_completed|length }}/3</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-gray-400">{{ s.prep_used_seconds }}s / {{ s.speak_used_seconds }}s</td>
+            <td class="px-4 py-3 text-gray-600">{{ s.self_rating|default:"—" }}</td>
+            <td class="px-4 py-3 text-gray-400">{{ s.created_at|date:"j M, H:i" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="card p-12 text-center text-gray-500">No speaking sessions yet.</div>
+{% endif %}
+{% endblock %}

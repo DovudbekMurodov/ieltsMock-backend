@@ -1,0 +1,87 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Grade{% endblock %}
+{% block eyebrow %}
+  <a href="{% url 'dashboard:grading-queue' %}" class="text-sm text-gray-400 hover:text-coral-600">← Grading queue</a>
+{% endblock %}
+{% block heading %}{{ submission.task.get_type_display }}{% endblock %}
+{% block subheading %}
+  <p class="text-gray-500">
+    {{ submission.user.email|default:"guest" }} ·
+    {{ submission.word_count }}/{{ submission.task.target_words }} words ·
+    {{ submission.time_spent_seconds }}s
+    {% if submission.self_assessed_band %} · self-assessed {{ submission.self_assessed_band }}{% endif %}
+  </p>
+{% endblock %}
+
+{% block actions %}
+<form method="post" action="{% url 'dashboard:grading-return' submission.pk %}">
+  {% csrf_token %}
+  <button class="btn-secondary btn-md">Return as draft</button>
+</form>
+{% endblock %}
+
+{% block content %}
+<div class="grid lg:grid-cols-2 gap-6 items-start">
+  <div class="space-y-4">
+    <div class="card p-6">
+      <p class="label">Prompt</p>
+      <p class="text-sm text-gray-700 leading-relaxed">{{ submission.task.prompt }}</p>
+    </div>
+
+    <div class="card p-6">
+      <div class="flex items-center justify-between mb-3">
+        <p class="label mb-0">What they wrote</p>
+        {% if not submission.meets_target %}
+          <span class="badge-draft">under target</span>
+        {% endif %}
+      </div>
+      <div class="space-y-3 text-sm leading-relaxed text-gray-700">
+        {{ submission.body|linebreaks }}
+      </div>
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    <form method="post" class="card p-6 space-y-4">
+      {% csrf_token %}
+      <p class="label">Marks</p>
+      <p class="text-xs text-gray-400 -mt-2">
+        The overall band is the mean of these four, rounded to the nearest half — it is
+        derived rather than typed, so it cannot disagree with them.
+      </p>
+      <div class="grid sm:grid-cols-2 gap-3">
+        {% for field in form %}
+          {% if field.name != "comment" %}
+            <div>
+              <label class="label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% for e in field.errors %}<p class="text-xs text-red-600 mt-1">{{ e }}</p>{% endfor %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div>
+        <label class="label" for="{{ form.comment.id_for_label }}">Comment</label>
+        {{ form.comment }}
+      </div>
+      <button class="btn-primary btn-md w-full">
+        {% if feedback %}Update feedback{% else %}Save feedback{% endif %}
+      </button>
+    </form>
+
+    {% if submission.task.model_answers.exists %}
+      <div class="card p-6" x-data="{ open: false }">
+        <button type="button" @click="open = !open" class="btn-secondary btn-sm w-full"
+                x-text="open ? 'Hide model answer' : 'Show model answer'"></button>
+        <div x-show="open" x-cloak class="mt-4 space-y-3 text-sm leading-relaxed text-gray-700">
+          {% for paragraph in submission.task.model_answers.first.paragraphs %}
+            <p>{{ paragraph }}</p>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}<style>[x-cloak]{display:none !important}</style>{% endblock %}

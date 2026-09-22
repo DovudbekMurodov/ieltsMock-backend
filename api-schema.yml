@@ -397,6 +397,85 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
+  /api/v1/speaking/sessions/:
+    post:
+      operationId: startSpeakingSession
+      summary: Start a speaking practice session
+      tags:
+      - speaking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartSessionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StartSessionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StartSessionRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/speaking/sessions/{id}/:
+    patch:
+      operationId: updateSpeakingSession
+      summary: Record progress through a session
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - speaking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateSessionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateSessionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUpdateSessionRequest'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/speaking/sessions/mine/:
+    get:
+      operationId: listMySpeakingSessions
+      summary: This user's speaking history
+      tags:
+      - speaking
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /api/v1/tests/:
     get:
       operationId: listTests
@@ -602,6 +681,134 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
+  /api/v1/writing/submissions/:
+    post:
+      operationId: startWritingSubmission
+      summary: Start or resume a writing submission
+      tags:
+      - writing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartSubmissionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StartSubmissionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StartSubmissionRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/writing/submissions/{id}/:
+    patch:
+      operationId: saveWritingSubmission
+      summary: Autosave a draft
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - writing
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSaveSubmissionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSaveSubmissionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSaveSubmissionRequest'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/writing/submissions/{id}/model-answer/:
+    get:
+      operationId: getWritingModelAnswer
+      description: A task set to reveal after submission returns 409 until the student
+        has submitted their own attempt. The check is server-side so it cannot be
+        skipped by the client.
+      summary: Reveal the model answer
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - writing
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/writing/submissions/{id}/submit/:
+    post:
+      operationId: submitWriting
+      summary: Send a submission for feedback
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - writing
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/writing/submissions/mine/:
+    get:
+      operationId: listMyWritingSubmissions
+      summary: This user's writing history
+      tags:
+      - writing
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
 components:
   schemas:
     AnswerEntryRequest:
@@ -774,6 +981,44 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AnswerEntryRequest'
+    PatchedSaveSubmissionRequest:
+      type: object
+      properties:
+        body:
+          type: string
+          maxLength: 40000
+        timeSpentSeconds:
+          type: integer
+          minimum: 0
+        selfAssessedBand:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,1})?$
+          nullable: true
+    PatchedUpdateSessionRequest:
+      type: object
+      properties:
+        partsCompleted:
+          type: array
+          items:
+            type: integer
+            maximum: 3
+            minimum: 1
+        prepUsedSeconds:
+          type: integer
+          minimum: 0
+        speakUsedSeconds:
+          type: integer
+          minimum: 0
+        selfRating:
+          type: integer
+          maximum: 5
+          minimum: 1
+        notes:
+          type: string
+          maxLength: 4000
+        complete:
+          type: boolean
     PatchedUserRequest:
       type: object
       properties:
@@ -868,6 +1113,24 @@ components:
           pattern: ^[-a-zA-Z0-9_]+$
       required:
       - testId
+    StartSessionRequest:
+      type: object
+      properties:
+        topicId:
+          type: string
+          minLength: 1
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - topicId
+    StartSubmissionRequest:
+      type: object
+      properties:
+        taskId:
+          type: string
+          minLength: 1
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - taskId
     TokenValidity:
       type: object
       properties:
