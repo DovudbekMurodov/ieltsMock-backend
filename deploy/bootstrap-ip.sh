@@ -181,10 +181,6 @@ fi
 certbot "${CERTBOT_ARGS[@]}"
 
 [ -f "/etc/letsencrypt/live/$IP/fullchain.pem" ] || die "certbot reported success but no certificate is on disk"
-[ -f /etc/letsencrypt/options-ssl-nginx.conf ] || \
-    curl -fsSL -o /etc/letsencrypt/options-ssl-nginx.conf \
-        https://raw.githubusercontent.com/certbot/certbot/main/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
-[ -f /etc/letsencrypt/ssl-dhparams.pem ] || openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048
 
 # ------------------------------------------------------------- nginx with TLS
 log "Switching nginx to TLS"
