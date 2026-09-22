@@ -45,5 +45,12 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: config.settings.test
 
+      - name: Check the committed API schema is current
+        run: |
+          python manage.py spectacular --file /tmp/api-schema.yml
+          diff -u api-schema.yml /tmp/api-schema.yml
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.test
+
       - name: Test
         run: pytest

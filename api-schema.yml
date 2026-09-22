@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: IELTS Mock API
+  version: 1.0.0
+  description: Content, attempts and progress API for the PrepPath IELTS SPA.
+paths:
+  /api/v1/speaking/:
+    get:
+      operationId: listSpeakingTopics
+      summary: List published speaking topics
+      tags:
+      - speaking
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/speaking/{slug}/:
+    get:
+      operationId: getSpeakingTopic
+      summary: Fetch one speaking topic
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - speaking
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/tests/:
+    get:
+      operationId: listTests
+      summary: List published tests
+      parameters:
+      - in: query
+        name: skill
+        schema:
+          type: string
+        description: 'Filter by skill: reading or listening.'
+      tags:
+      - tests
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/tests/{slug}/:
+    get:
+      operationId: getTest
+      description: Returns the materialised public payload. Correct answers are never
+        included; scoring happens server-side on submission.
+      summary: Fetch one published test
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - tests
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/vocabulary/:
+    get:
+      operationId: listVocabularySections
+      summary: List published vocabulary sections
+      tags:
+      - vocabulary
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/vocabulary/{slug}/:
+    get:
+      operationId: getVocabularySection
+      summary: Fetch one vocabulary section with its words
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - vocabulary
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/writing/:
+    get:
+      operationId: listWritingTasks
+      summary: List published writing tasks
+      tags:
+      - writing
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/writing/{slug}/:
+    get:
+      operationId: getWritingTask
+      description: Model answers are included only when the task's reveal policy allows
+        it before submission.
+      summary: Fetch one writing task
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - writing
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+components:
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,6 +1,9 @@
 from django.contrib import admin
 
+from apps.common.caching import bump_content_version
+
 from .models import AnswerKey, AudioAsset, Block, Option, Question, QuestionGroup, Section, Test
+from .publishing import publish_test
 
 
 class BlockInline(admin.TabularInline):
@@ -49,6 +52,15 @@ class TestAdmin(admin.ModelAdmin):
     search_fields = ("title", "slug")
     prepopulated_fields = {"slug": ("title",)}
     inlines = [SectionInline]
+    actions = ["publish"]
+    readonly_fields = ("payload_etag", "published_at")
+
+    @admin.action(description="Publish — rebuild the public payload")
+    def publish(self, request, queryset):
+        for test in queryset:
+            publish_test(test)
+        bump_content_version()
+        self.message_user(request, f"Published {queryset.count()} test(s).")
 
 
 @admin.register(Section)
