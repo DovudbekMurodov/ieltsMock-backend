@@ -42,6 +42,24 @@ esac
 ADMIN_EMAIL="${2:-}"
 log "Provisioning for $IP"
 
+# ---------------------------------------------------------------------- swap
+# The smallest droplets ship with 1 GB and no swap, which is enough to run this
+# but not enough to survive a pip resolve and a migration at the same time. The
+# OOM killer picks postgres surprisingly often, and a half-applied migration is
+# a worse problem than a slow one.
+if [ -z "$(swapon --show)" ] && [ ! -f /swapfile ]; then
+    log "Adding 2G swap"
+    fallocate -l 2G /swapfile || dd if=/dev/zero of=/swapfile bs=1M count=2048 status=none
+    chmod 600 /swapfile
+    mkswap -q /swapfile
+    swapon /swapfile
+    grep -q '^/swapfile' /etc/fstab || echo '/swapfile none swap sw 0 0' >> /etc/fstab
+    # Default 60 is tuned for desktops; on a small server it evicts working set
+    # that is about to be used again.
+    sysctl -qw vm.swappiness=10
+    grep -q '^vm.swappiness' /etc/sysctl.conf || echo 'vm.swappiness=10' >> /etc/sysctl.conf
+fi
+
 # ------------------------------------------------------------------ packages
 log "Installing packages"
 export DEBIAN_FRONTEND=noninteractive
@@ -203,6 +221,30 @@ chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh
 # ------------------------------------------------------------------- services
 log "Installing services"
 install -m 644 "$APP_DIR/deploy/gunicorn.service" /etc/systemd/system/ieltsmock.service
+
+# The committed unit asks for 3 workers, which is right for the 2 GB box it was
+# written against and roughly 150 MB too many for a 1 GB one once postgres has
+# taken its share. Size it from the RAM actually present rather than editing a
+# file that is correct elsewhere.
+MEM_MB=$(awk '/MemTotal/ {print int($2/1024)}' /proc/meminfo)
+WORKERS=$(( MEM_MB / 350 ))
+[ "$WORKERS" -lt 2 ] && WORKERS=2
+MAX_WORKERS=$(( $(nproc) * 2 + 1 ))
+[ "$WORKERS" -gt "$MAX_WORKERS" ] && WORKERS=$MAX_WORKERS
+log "Sizing gunicorn to $WORKERS workers (${MEM_MB}MB RAM, $(nproc) vCPU)"
+mkdir -p /etc/systemd/system/ieltsmock.service.d
+cat > /etc/systemd/system/ieltsmock.service.d/workers.conf <<UNIT
+[Service]
+ExecStart=
+ExecStart=$APP_DIR/.venv/bin/gunicorn config.wsgi:application \\
+    --bind unix:/run/ieltsmock/gunicorn.sock \\
+    --workers $WORKERS \\
+    --timeout 60 \\
+    --max-requests 1000 \\
+    --max-requests-jitter 100 \\
+    --access-logfile - \\
+    --error-logfile -
+UNIT
 install -m 644 "$APP_DIR/deploy/ieltsmock-rollup.service" /etc/systemd/system/
 install -m 644 "$APP_DIR/deploy/ieltsmock-rollup.timer"   /etc/systemd/system/
 install -m 644 "$APP_DIR/deploy/ieltsmock-backup.service" /etc/systemd/system/
