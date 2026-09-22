@@ -80,6 +80,13 @@
 
         {% include "dashboard/partials/block_list.html" with section=section blocks=section.blocks.all %}
       </div>
+
+      {% if is_listening %}
+        <div class="card p-5">
+          <p class="label">Audio</p>
+          {% include "dashboard/partials/section_audio.html" with section=section assets=audio_assets visibility_choices=visibility_choices %}
+        </div>
+      {% endif %}
     {% endfor %}
   </div>
 

@@ -19,8 +19,23 @@ from django.views.decorators.http import require_http_methods, require_POST
 
 from apps.common.caching import bump_content_version
 from apps.common.models import PublishStatus
-from apps.content.enums import MatchMode, OptionsScope, QuestionType, Skill
-from apps.content.models import AnswerKey, Block, Option, Question, QuestionGroup, Section, Test
+from apps.content.enums import (
+    MatchMode,
+    OptionsScope,
+    QuestionType,
+    Skill,
+    TranscriptVisibility,
+)
+from apps.content.models import (
+    AnswerKey,
+    AudioAsset,
+    Block,
+    Option,
+    Question,
+    QuestionGroup,
+    Section,
+    Test,
+)
 from apps.content.publishing import publish_test
 
 from .access import staff_required
@@ -132,6 +147,8 @@ def test_edit(request, pk):
             bulk_form=BulkBlockForm(),
             question_types=QuestionType.choices,
             is_listening=test.skill == Skill.LISTENING,
+            audio_assets=AudioAsset.objects.order_by("-created_at"),
+            visibility_choices=TranscriptVisibility.choices,
         ),
     )
 

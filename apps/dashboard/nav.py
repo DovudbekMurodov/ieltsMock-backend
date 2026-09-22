@@ -1,7 +1,7 @@
 from django.urls import reverse
 
 from apps.content.enums import Skill
-from apps.content.models import Test
+from apps.content.models import AudioAsset, Test
 from apps.speaking.models import SpeakingTopic
 from apps.vocabulary.models import VocabularySection
 from apps.writing.models import WritingTask
@@ -39,6 +39,7 @@ def build_nav(request):
         ),
         item("Writing", "dashboard:writing-list", "✎", WritingTask.objects.count()),
         item("Speaking", "dashboard:speaking-list", "◌", SpeakingTopic.objects.count()),
+        item("Audio", "dashboard:audio-library", "\u266a", AudioAsset.objects.count()),
         item(
             "Vocabulary",
             "dashboard:vocabulary-list",

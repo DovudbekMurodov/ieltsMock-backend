@@ -1,0 +1,72 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Audio{% endblock %}
+{% block heading %}Audio library{% endblock %}
+{% block subheading %}
+  <p class="text-gray-500 max-w-2xl">
+    Files are stored by their own checksum, so uploading the same recording twice reuses
+    the first copy and the URL never changes.
+  </p>
+{% endblock %}
+
+{% block actions %}
+<form method="post" action="{% url 'dashboard:audio-upload' %}" enctype="multipart/form-data"
+      class="flex items-center gap-2">
+  {% csrf_token %}
+  <input type="file" name="file" accept=".mp3,.m4a,.ogg,audio/*" required
+         class="text-xs file:btn-secondary file:btn-sm file:mr-2 file:border-0" aria-label="Audio file">
+  <button class="btn-primary btn-md">Upload</button>
+</form>
+{% endblock %}
+
+{% block content %}
+<div class="card p-4 mb-6 text-xs text-gray-500">
+  MP3, M4A or OGG, up to 25 MB. The file is identified by its own bytes and decoded before it
+  is accepted — the browser's stated type is ignored.
+</div>
+
+{% if assets %}
+  <div class="card overflow-hidden">
+    <table class="w-full text-sm">
+      <thead class="bg-gray-50 text-left">
+        <tr class="text-xs font-semibold text-gray-400 uppercase">
+          <th class="px-4 py-3">File</th>
+          <th class="px-4 py-3">Length</th>
+          <th class="px-4 py-3">Size</th>
+          <th class="px-4 py-3">Used by</th>
+          <th class="px-4 py-3">Uploaded</th>
+          <th class="px-4 py-3"></th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-100">
+        {% for asset in assets %}
+          <tr>
+            <td class="px-4 py-3">
+              <p class="font-semibold text-gray-900">{{ asset.original_filename }}</p>
+              <audio controls preload="none" src="{{ asset.file.url }}" class="mt-1 h-8 max-w-xs"></audio>
+            </td>
+            <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ asset.duration_seconds }}s</td>
+            <td class="px-4 py-3 text-gray-400 whitespace-nowrap">{{ asset.size_bytes|filesizeformat }}</td>
+            <td class="px-4 py-3 text-gray-600">{{ asset.uses }} section{{ asset.uses|pluralize }}</td>
+            <td class="px-4 py-3 text-gray-400 whitespace-nowrap">{{ asset.created_at|date:"j M Y" }}</td>
+            <td class="px-4 py-3">
+              {% if not asset.uses %}
+                <form method="post" action="{% url 'dashboard:audio-delete' asset.pk %}">
+                  {% csrf_token %}
+                  <button class="text-gray-300 hover:text-red-500 text-xs" aria-label="Delete file"
+                          onclick="return confirm('Remove {{ asset.original_filename|escapejs }}?')">✕</button>
+                </form>
+              {% else %}
+                <span class="text-[10px] text-gray-300">in use</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="card p-12 text-center text-gray-500">
+    Nothing uploaded yet. Listening tests fall back to their transcript until a file is attached.
+  </div>
+{% endif %}
+{% endblock %}

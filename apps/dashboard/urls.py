@@ -1,5 +1,6 @@
 from django.urls import path
 
+from . import audio_views as av
 from . import content_editors as ce
 from . import editor, views
 
@@ -17,6 +18,10 @@ urlpatterns = [
     path("tests/<int:pk>/preview/", editor.test_preview, name="test-preview"),
     path("tests/<int:pk>/publish/", editor.test_publish, name="test-publish"),
     path("tests/<int:pk>/unpublish/", editor.test_unpublish, name="test-unpublish"),
+
+    path("audio/", av.audio_library, name="audio-library"),
+    path("audio/upload/", av.audio_upload, name="audio-upload"),
+    path("audio/<int:pk>/delete/", av.audio_delete, name="audio-delete"),
 
     path("writing/", views.writing_list, name="writing-list"),
     path("writing/new/", ce.writing_create, name="writing-create"),
@@ -57,6 +62,12 @@ urlpatterns = [
     path("hx/options/<int:pk>/", editor.option_save, name="hx-option"),
     path("hx/options/<int:pk>/delete/", editor.pool_option_delete, name="hx-pool-option-delete"),
     path("hx/reorder/<str:model>/<int:pk>/", editor.reorder, name="hx-reorder"),
+    path("hx/sections/<int:pk>/audio/", av.section_audio_attach, name="hx-section-audio"),
+    path(
+        "hx/sections/<int:pk>/transcript/",
+        av.section_transcript_visibility,
+        name="hx-section-transcript",
+    ),
 
     path("hx/vocabulary/<slug:slug>/meta/", ce.vocabulary_meta_save, name="hx-vocab-meta"),
     path("hx/vocabulary/<slug:slug>/words/", ce.word_create, name="hx-word-create"),

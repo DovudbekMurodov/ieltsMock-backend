@@ -1,0 +1,39 @@
+<div id="section-audio-{{ section.pk }}" class="space-y-3">
+  {% if section.audio %}
+    <div class="rounded-xl border border-green-200 bg-green-50 p-3">
+      <p class="text-xs font-semibold text-green-800 mb-1">{{ section.audio.original_filename }}</p>
+      <audio controls preload="none" src="{{ section.audio.file.url }}" class="w-full h-8"></audio>
+      <p class="text-[10px] text-green-700 mt-1">{{ section.audio.duration_seconds }}s</p>
+    </div>
+  {% endif %}
+
+  <form hx-post="{% url 'dashboard:hx-section-audio' section.pk %}"
+        hx-target="#section-audio-{{ section.pk }}" hx-swap="outerHTML"
+        class="space-y-2">
+    <label class="label" for="asset-{{ section.pk }}">Attached audio</label>
+    <select id="asset-{{ section.pk }}" name="assetId" class="input text-xs" hx-trigger="change">
+      <option value="">— none, transcript only —</option>
+      {% for asset in assets %}
+        <option value="{{ asset.pk }}" {% if section.audio_id == asset.pk %}selected{% endif %}>
+          {{ asset.original_filename }} ({{ asset.duration_seconds }}s)
+        </option>
+      {% endfor %}
+    </select>
+  </form>
+
+  <form hx-post="{% url 'dashboard:hx-section-transcript' section.pk %}"
+        hx-trigger="change">
+    <label class="label" for="vis-{{ section.pk }}">Transcript</label>
+    <select id="vis-{{ section.pk }}" name="transcript_visibility" class="input text-xs">
+      {% for value, label in visibility_choices %}
+        <option value="{{ value }}" {% if section.transcript_visibility == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    {% if section.audio_id and section.transcript_visibility == "during_test" %}
+      <p class="mt-2 rounded-lg border border-amber-200 bg-amber-50 px-2 py-1.5 text-[10px] text-amber-800">
+        With audio attached and the transcript on screen, this is a reading test with a
+        soundtrack. The API withholds the transcript for the other two settings.
+      </p>
+    {% endif %}
+  </form>
+</div>
