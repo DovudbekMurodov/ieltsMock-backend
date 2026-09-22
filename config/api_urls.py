@@ -1,6 +1,6 @@
 """Public v1 API routes."""
 
-from django.urls import path
+from django.urls import include, path
 
 from apps.content import views as content_views
 from apps.speaking import views as speaking_views
@@ -10,6 +10,7 @@ from apps.writing import views as writing_views
 app_name = "api"
 
 urlpatterns = [
+    path("auth/", include("config.auth_urls")),
     path("tests/", content_views.test_list, name="test-list"),
     path("tests/<slug:slug>/", content_views.test_detail, name="test-detail"),
     path("writing/", writing_views.task_list, name="writing-list"),

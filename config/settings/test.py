@@ -17,3 +17,6 @@ STORAGES = {
 # WhiteNoise warns about a missing staticfiles/ dir on every request; tests never
 # serve static assets, so drop it rather than collectstatic before each run.
 MIDDLEWARE = [m for m in MIDDLEWARE if "whitenoise" not in m]
+
+REFRESH_COOKIE_SAMESITE = "Lax"
+REFRESH_COOKIE_SECURE = False

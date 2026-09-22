@@ -21,3 +21,8 @@ CORS_ALLOWED_ORIGINS = env.list(
 CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+# Both ends are localhost in development, so the refresh cookie can stay
+# same-site and does not need the Secure flag over plain http.
+REFRESH_COOKIE_SAMESITE = "Lax"
+REFRESH_COOKIE_SECURE = False

@@ -4,6 +4,7 @@ Environment-specific modules (dev, prod, test) import * from here and override.
 Nothing in this file may assume a particular environment is active.
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -13,7 +14,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 env = environ.Env()
 environ.Env.read_env(BASE_DIR / ".env")
 
-SECRET_KEY = env("DJANGO_SECRET_KEY", default="insecure-development-key-do-not-use-in-prod")
+SECRET_KEY = env(
+    "DJANGO_SECRET_KEY",
+    # Long enough to sign JWTs properly; prod supplies a real key and
+    # check --deploy fails on a short one.
+    default="insecure-development-key-do-not-use-in-production-0123456789abcdef",
+)
 DEBUG = env.bool("DJANGO_DEBUG", default=False)
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
 
@@ -29,6 +35,7 @@ DJANGO_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "drf_spectacular",
     "django_filters",
@@ -140,6 +147,34 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
     "COMPONENT_SPLIT_REQUEST": True,
 }
+
+# --- JWT ---------------------------------------------------------------------
+# The SPA lives on *.vercel.app, which is on the Public Suffix List, so it can
+# never share a cookie with this host. Hence tokens rather than sessions for the
+# API. The refresh token still rides in an httpOnly cookie scoped to the refresh
+# endpoint; only the short-lived access token is handled by JavaScript, and it
+# is held in memory rather than localStorage.
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=env.int("JWT_ACCESS_MINUTES", default=15)),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=env.int("JWT_REFRESH_DAYS", default=30)),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "UPDATE_LAST_LOGIN": True,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+}
+
+REFRESH_COOKIE_NAME = "preppath_refresh"
+REFRESH_COOKIE_PATH = "/api/v1/auth/"
+# Cross-site by default because the SPA is on another registrable domain;
+# dev overrides this to Lax, where both ends are localhost.
+REFRESH_COOKIE_SAMESITE = env("REFRESH_COOKIE_SAMESITE", default="None")
+REFRESH_COOKIE_SECURE = env.bool("REFRESH_COOKIE_SECURE", default=True)
+
+# Identifies an anonymous visitor so guest attempts survive a page reload and
+# can be claimed on signup.
+GUEST_COOKIE_NAME = "preppath_guest"
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = env.list("CORS_ALLOWED_ORIGINS", default=[])
