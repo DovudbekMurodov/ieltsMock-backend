@@ -1,0 +1,34 @@
+<aside class="glass hidden md:flex md:flex-col fixed left-0 top-0 h-screen w-64 border-r border-gray-200/60 px-4 py-6 z-20">
+  <div class="px-2 mb-8">
+    <div class="font-display text-2xl font-extrabold tracking-tight text-gray-900">
+      Prep<span class="text-coral-500">Path</span>
+    </div>
+    <div class="text-xs font-medium text-gray-400 mt-1 tracking-wide uppercase">Content Studio</div>
+  </div>
+
+  <nav class="flex-1 space-y-1 overflow-y-auto">
+    {% for item in nav_items %}
+      {% if item.divider %}
+        <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-wider text-gray-300">{{ item.divider }}</div>
+      {% else %}
+        <a href="{{ item.url }}" class="nav-link {% if item.active %}nav-link--active{% endif %}">
+          <span aria-hidden="true">{{ item.icon }}</span>
+          {{ item.label }}
+          {% if item.count is not None %}
+            <span class="ml-auto text-[10px] font-bold bg-gray-100 text-gray-400 px-1.5 py-0.5 rounded-full">{{ item.count }}</span>
+          {% endif %}
+        </a>
+      {% endif %}
+    {% endfor %}
+  </nav>
+
+  <div class="mt-auto pt-4 border-t border-gray-100">
+    <div class="px-3 py-2 text-sm">
+      <p class="font-semibold text-gray-700 truncate">{{ request.user.email }}</p>
+      <form method="post" action="{% url 'dashboard:logout' %}" class="mt-2">
+        {% csrf_token %}
+        <button type="submit" class="text-xs font-semibold text-gray-400 hover:text-coral-600">Sign out</button>
+      </form>
+    </div>
+  </div>
+</aside>

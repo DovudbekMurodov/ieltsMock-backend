@@ -38,10 +38,44 @@ curl http://127.0.0.1:8000/healthz
 
 | URL | What |
 |---|---|
+| `/dashboard/` | Staff content studio (Tailwind + HTMX) |
 | `/healthz` | Liveness + a real database round-trip |
 | `/admin/` | Django admin |
 | `/api/v1/docs/` | Swagger UI |
 | `/api/v1/schema/` | OpenAPI schema |
+
+## Content
+
+Load the seed data (idempotent), then build the public payloads:
+
+```bash
+node seed/export_from_frontend.mjs --src=../ieltsMock/src/data   # only when the source data changes
+.venv/bin/python manage.py seed_content
+.venv/bin/python manage.py publish_content
+.venv/bin/python manage.py bootstrap_groups     # staff roles
+.venv/bin/python manage.py seed_demo_data       # optional demo accounts
+```
+
+Nothing is served over the API until it is published. The dashboard's Publish
+button rebuilds a test's payload; `publish_content` does the same in bulk.
+
+## Dashboard
+
+Django templates + Tailwind + HTMX + Alpine, styled after the student app.
+Staff-only; non-staff get a 404 rather than a 403.
+
+The CSS is built with the Tailwind CLI and **committed**, so a deploy needs no
+Node:
+
+```bash
+npm install
+npm run tw:dev     # watch while editing templates
+npm run tw:build   # minified, commit the result
+```
+
+`tailwind.config.cjs` mirrors the frontend's, pinned to Tailwind 3.4. Tailwind 4
+changed the config format, and using it here would guarantee the two design
+systems drift apart.
 
 ## Settings
 
@@ -57,6 +91,7 @@ deploy fails at boot instead of on the first request that happens to need them.
 .venv/bin/ruff check .
 .venv/bin/python -m pytest
 .venv/bin/python manage.py makemigrations --check --dry-run
+.venv/bin/python manage.py spectacular --file api-schema.yml   # committed; CI fails on drift
 ```
 
 All three run in CI on every push and pull request.

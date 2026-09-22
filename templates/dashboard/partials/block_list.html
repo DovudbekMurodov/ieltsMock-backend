@@ -1,0 +1,31 @@
+<div id="blocks-{{ section.pk }}" class="space-y-2"
+     data-reorder-url="{% url 'dashboard:hx-reorder' 'section-blocks' section.pk %}">
+  {% for block in blocks %}
+    <div data-id="{{ block.pk }}" class="rounded-xl border border-gray-200 bg-white p-3">
+      <div class="flex items-center gap-2 mb-2">
+        <button type="button" data-drag-handle class="cursor-grab text-gray-300 hover:text-gray-500 px-1" aria-hidden="true">⠿</button>
+        <input class="input !py-1 !w-20 text-xs font-bold" name="label" value="{{ block.label }}"
+               hx-post="{% url 'dashboard:hx-block' block.pk %}"
+               hx-trigger="change, keyup changed delay:600ms"
+               hx-include="closest [data-id]"
+               aria-label="Label">
+        <div class="ml-auto flex items-center gap-1">
+          <button type="button" data-move="up" class="text-gray-300 hover:text-gray-600 px-1 text-xs" aria-label="Move up">↑</button>
+          <button type="button" data-move="down" class="text-gray-300 hover:text-gray-600 px-1 text-xs" aria-label="Move down">↓</button>
+          <button type="button" class="text-gray-300 hover:text-red-500 px-1 text-xs" aria-label="Delete"
+                  hx-delete="{% url 'dashboard:hx-block' block.pk %}"
+                  hx-confirm="Delete this block?"
+                  hx-target="closest [data-id]"
+                  hx-swap="outerHTML">✕</button>
+        </div>
+      </div>
+      <textarea class="input text-xs" rows="3" name="text"
+                hx-post="{% url 'dashboard:hx-block' block.pk %}"
+                hx-trigger="change, keyup changed delay:600ms"
+                hx-include="closest [data-id]"
+                aria-label="Text">{{ block.text }}</textarea>
+    </div>
+  {% empty %}
+    <p class="text-sm text-gray-400 py-4 text-center">Nothing here yet — paste the text above.</p>
+  {% endfor %}
+</div>

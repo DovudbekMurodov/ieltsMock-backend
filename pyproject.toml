@@ -15,6 +15,10 @@ ignore = [
 # RUF001: normalisation tests feed in curly quotes and dashes on purpose.
 "tests/*" = ["S105", "S106", "S107", "RUF001"]
 
+# Chart tags build SVG by hand. Every interpolated value is either a number
+# computed in this module or passed through django.utils.html.escape().
+"apps/dashboard/templatetags/charts.py" = ["S308"]
+
 [tool.ruff.lint.isort]
 known-first-party = ["apps", "config"]
 

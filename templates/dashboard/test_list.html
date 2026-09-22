@@ -1,0 +1,33 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block heading %}{{ page_title }}{% endblock %}
+{% block subheading %}<p class="text-gray-500">Only published tests reach the app.</p>{% endblock %}
+{% block actions %}
+  <a href="{% url 'dashboard:test-create' %}?skill={{ skill }}" class="btn-primary btn-md">New test</a>
+{% endblock %}
+
+{% block content %}
+{% if tests %}
+  <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+    {% for test in tests %}
+      <a href="{% url 'dashboard:test-edit' test.pk %}" class="card card-hover p-5 block">
+        <div class="flex items-start justify-between gap-2 mb-2">
+          <p class="font-bold text-gray-900 leading-snug">{{ test.title }}</p>
+          <span class="badge-{{ test.status }} shrink-0">{{ test.get_status_display }}</span>
+        </div>
+        <p class="text-xs text-gray-400 mb-4 font-mono">{{ test.slug }}</p>
+        <div class="flex items-center gap-4 text-xs text-gray-400 font-medium">
+          <span>{{ test.time_limit_minutes }} min</span>
+          <span>{{ test.question_total }} question{{ test.question_total|pluralize }}</span>
+          {% if test.published_at %}<span>published {{ test.published_at|timesince }} ago</span>{% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="card p-12 text-center">
+    <p class="text-gray-500 mb-4">No tests here yet.</p>
+    <a href="{% url 'dashboard:test-create' %}?skill={{ skill }}" class="btn-primary btn-md">Create the first one</a>
+  </div>
+{% endif %}
+{% endblock %}

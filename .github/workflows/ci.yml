@@ -52,5 +52,15 @@ jobs:
         env:
           DJANGO_SETTINGS_MODULE: config.settings.test
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Check the committed dashboard CSS is current
+        run: |
+          npm ci
+          npm run tw:build
+          git diff --exit-code static/dashboard/dashboard.css
+
       - name: Test
         run: pytest

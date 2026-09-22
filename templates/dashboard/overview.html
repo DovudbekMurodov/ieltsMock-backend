@@ -1,0 +1,108 @@
+{% extends "dashboard/base.html" %}
+{% load charts %}
+
+{% block title %}Overview{% endblock %}
+{% block eyebrow %}<p class="text-coral-500 text-xs font-bold uppercase tracking-wide mb-1">Content Studio</p>{% endblock %}
+{% block heading %}Overview{% endblock %}
+{% block subheading %}<p class="text-gray-500">What is published, and how it is being used.</p>{% endblock %}
+
+{% block actions %}
+  <a href="{% url 'dashboard:test-create' %}" class="btn-primary btn-md">New test</a>
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+  {% include "dashboard/partials/stat.html" with label="Published tests" value=totals.published sub=totals.drafts|stringformat:"s"|add:" draft" %}
+  {% include "dashboard/partials/stat.html" with label="Questions" value=totals.questions sub="across all tests" %}
+  {% include "dashboard/partials/stat.html" with label="Attempts" value=totals.attempts sub=totals.attempts_recent|stringformat:"s"|add:" in 14 days" %}
+  {% include "dashboard/partials/stat.html" with label="Learners" value=totals.learners sub=totals.in_progress|stringformat:"s"|add:" sitting now" %}
+</div>
+
+<div class="grid lg:grid-cols-3 gap-4 mb-6">
+  <div class="card p-6 lg:col-span-2">
+    <p class="label">Attempts submitted · last 14 days</p>
+    {% bar_chart by_day height=140 label="Attempts per day" %}
+  </div>
+
+  <div class="card p-6 flex flex-col items-center justify-center">
+    <p class="label self-start">Average score</p>
+    {% if totals.avg_percent %}
+      {% donut totals.avg_percent 100 112 "Average score" %}
+      <p class="text-xs text-gray-400 mt-3">across {{ totals.attempts }} submitted attempts</p>
+    {% else %}
+      <p class="text-sm text-gray-400 py-8">No attempts yet.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-4 mb-6">
+  <div class="card p-6">
+    <p class="label">Band distribution</p>
+    {% histogram band_buckets %}
+  </div>
+  <div class="card p-6">
+    <p class="label">Attempts by skill</p>
+    {% bar_chart per_skill height=120 label="Attempts by skill" %}
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-4">
+  <div class="card p-6">
+    <div class="flex items-baseline justify-between mb-1">
+      <p class="label mb-0">Questions worth a second look</p>
+      <a href="{% url 'dashboard:attempt-list' %}" class="text-xs font-semibold text-coral-600">All attempts</a>
+    </div>
+    <p class="text-xs text-gray-400 mb-4">
+      An item almost nobody gets right is usually broken rather than hard — an ambiguous
+      prompt, a wrong key, or a giveaway.
+    </p>
+    {% if flagged %}
+      <div class="space-y-3">
+        {% for q in flagged %}
+          <div>
+            <div class="flex items-start justify-between gap-3 mb-1">
+              <a href="{% url 'dashboard:test-edit' q.test_id %}" class="text-sm text-gray-700 hover:text-coral-600 line-clamp-1">
+                Q{{ q.number }} · {{ q.prompt|truncatechars:60 }}
+              </a>
+              <span class="text-xs font-semibold text-gray-500 shrink-0">{{ q.correct }}/{{ q.seen }}</span>
+            </div>
+            {% hbar q.correct q.seen %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-sm text-gray-400">Not enough attempts yet to judge any question.</p>
+    {% endif %}
+  </div>
+
+  <div class="card p-6">
+    <p class="label">Recent attempts</p>
+    {% if recent_attempts %}
+      <div class="divide-y divide-gray-100">
+        {% for a in recent_attempts %}
+          <a href="{% url 'dashboard:attempt-detail' a.pk %}" class="flex items-center justify-between py-2.5 hover:text-coral-600">
+            <div class="min-w-0">
+              <p class="text-sm font-semibold text-gray-900 truncate">{{ a.test.title }}</p>
+              <p class="text-xs text-gray-400">{{ a.user.email|default:"guest" }} · {{ a.submitted_at|timesince }} ago</p>
+            </div>
+            <span class="text-sm font-bold text-gray-700 shrink-0">{{ a.raw_score }}/{{ a.raw_total }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-sm text-gray-400">Nothing submitted yet.</p>
+    {% endif %}
+
+    {% if unpublished %}
+      <p class="label mt-6">Not published</p>
+      <div class="space-y-1">
+        {% for t in unpublished %}
+          <a href="{% url 'dashboard:test-edit' t.pk %}" class="flex items-center justify-between py-1.5 text-sm text-gray-700 hover:text-coral-600">
+            {{ t.title }} <span class="badge-draft">{{ t.get_status_display }}</span>
+          </a>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

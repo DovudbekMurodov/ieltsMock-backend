@@ -1,0 +1,59 @@
+{% extends "dashboard/base.html" %}
+{% load charts %}
+{% block title %}{{ student.email }}{% endblock %}
+{% block eyebrow %}
+  <a href="{% url 'dashboard:user-list' %}" class="text-sm text-gray-400 hover:text-coral-600">← Students</a>
+{% endblock %}
+{% block heading %}{{ student.email }}{% endblock %}
+{% block subheading %}
+  <p class="text-gray-500">
+    {% if student.first_name %}{{ student.first_name }} {{ student.last_name }} · {% endif %}
+    joined {{ student.date_joined|date:"j M Y" }}
+    {% if student.target_band %} · target band {{ student.target_band }}{% endif %}
+  </p>
+{% endblock %}
+
+{% block content %}
+{% if trend %}
+  <div class="card p-6 mb-4">
+    <p class="label">Score trend · most recent {{ trend|length }} attempts</p>
+    {% bar_chart trend height=120 label="Score trend" %}
+  </div>
+{% endif %}
+
+<div class="card overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-gray-50 text-left">
+      <tr class="text-xs font-semibold text-gray-400 uppercase">
+        <th class="px-4 py-3">Test</th>
+        <th class="px-4 py-3">Score</th>
+        <th class="px-4 py-3">Band</th>
+        <th class="px-4 py-3">Duration</th>
+        <th class="px-4 py-3">Submitted</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      {% for attempt in attempts %}
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-3">
+            <a href="{% url 'dashboard:attempt-detail' attempt.pk %}" class="font-semibold text-gray-900 hover:text-coral-600">
+              {{ attempt.test.title }}
+            </a>
+            {% if attempt.status == "expired" %}<span class="badge-draft ml-1">late</span>{% endif %}
+          </td>
+          <td class="px-4 py-3 text-gray-600">{{ attempt.raw_score }}/{{ attempt.raw_total }}</td>
+          <td class="px-4 py-3 text-gray-600">
+            {% if attempt.band_confidence == "low" %}
+              <span title="Too few questions for a precise band">{{ attempt.band_low }}–{{ attempt.band_high }}</span>
+            {% else %}{{ attempt.band }}{% endif %}
+          </td>
+          <td class="px-4 py-3 text-gray-400">{{ attempt.duration_seconds }}s</td>
+          <td class="px-4 py-3 text-gray-400">{{ attempt.submitted_at|date:"j M, H:i" }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" class="px-4 py-12 text-center text-gray-400">No attempts yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

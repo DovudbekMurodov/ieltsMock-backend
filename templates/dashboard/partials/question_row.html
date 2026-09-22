@@ -1,0 +1,92 @@
+<div data-id="{{ question.pk }}" class="rounded-xl border border-gray-200 p-3">
+  <div class="flex items-center gap-2 mb-2">
+    <button type="button" data-drag-handle class="cursor-grab text-gray-300 hover:text-gray-500 text-xs" aria-hidden="true">⠿</button>
+    <span class="text-xs font-bold text-gray-500 bg-gray-100 rounded-full h-5 min-w-5 px-1.5 flex items-center justify-center">
+      {{ question.number }}
+    </span>
+    <div class="ml-auto flex items-center gap-1">
+      <button type="button" data-move="up" class="text-gray-300 hover:text-gray-600 px-1 text-xs" aria-label="Move question up">↑</button>
+      <button type="button" data-move="down" class="text-gray-300 hover:text-gray-600 px-1 text-xs" aria-label="Move question down">↓</button>
+      <button type="button" class="text-gray-300 hover:text-red-500 px-1 text-xs" aria-label="Delete question"
+              hx-delete="{% url 'dashboard:hx-question' question.pk %}"
+              hx-confirm="Delete question {{ question.number }}?"
+              hx-target="#group-{{ group.pk }}" hx-swap="outerHTML">✕</button>
+    </div>
+  </div>
+
+  <form hx-post="{% url 'dashboard:hx-question' question.pk %}"
+        hx-trigger="change, keyup changed delay:600ms">
+    <textarea name="prompt" rows="2" class="input text-sm mb-2"
+              placeholder="Question prompt" aria-label="Prompt">{{ question.prompt }}</textarea>
+    <input type="hidden" name="explanation" value="{{ question.explanation }}">
+  </form>
+
+  {% if group.type == "tfng" %}
+    <div class="flex gap-2">
+      <select class="input text-xs !py-1.5" aria-label="Correct answer"
+              hx-post="{% url 'dashboard:hx-answer-set' question.pk %}"
+              hx-trigger="change" name="value">
+        <option value="TRUE" {% if question.answer_keys.first.value == "TRUE" %}selected{% endif %}>TRUE</option>
+        <option value="FALSE" {% if question.answer_keys.first.value == "FALSE" %}selected{% endif %}>FALSE</option>
+        <option value="NOT GIVEN" {% if question.answer_keys.first.value == "NOT GIVEN" %}selected{% endif %}>NOT GIVEN</option>
+      </select>
+    </div>
+
+  {% elif group.type == "mcq" %}
+    <div class="space-y-1.5">
+      {% for option in question.options.all %}
+        <div class="flex items-center gap-2">
+          <input type="radio" name="optionId-{{ question.pk }}" value="{{ option.pk }}" class="accent-coral-500 shrink-0"
+                 {% if option.pk == question.answer_keys.first.option_id %}checked{% endif %}
+                 hx-post="{% url 'dashboard:hx-answer-set' question.pk %}"
+                 hx-vals='{"optionId": "{{ option.pk }}"}'
+                 hx-trigger="change"
+                 aria-label="Mark option {{ option.label }} correct">
+          <span class="text-xs font-bold text-gray-400 w-4 shrink-0">{{ option.label }}</span>
+          <input class="input !py-1 text-xs" name="text" value="{{ option.text }}"
+                 placeholder="Option text"
+                 hx-post="{% url 'dashboard:hx-option' option.pk %}"
+                 hx-trigger="change, keyup changed delay:800ms"
+                 aria-label="Option {{ option.label }} text">
+        </div>
+      {% endfor %}
+      <p class="text-[10px] text-gray-400 pl-6">The selected radio is the correct answer.</p>
+    </div>
+
+  {% elif group.type == "matching" %}
+    <select class="input text-xs !py-1.5" aria-label="Correct heading"
+            hx-post="{% url 'dashboard:hx-answer-set' question.pk %}"
+            hx-trigger="change" name="optionId">
+      <option value="">— pick from the pool —</option>
+      {% for option in group.options.all %}
+        {% if not option.question_id %}
+          <option value="{{ option.pk }}" {% if option.pk == question.answer_keys.first.option_id %}selected{% endif %}>
+            {{ option.label }}. {{ option.text|truncatechars:60 }}
+          </option>
+        {% endif %}
+      {% endfor %}
+    </select>
+
+  {% else %}
+    <div class="space-y-1.5">
+      <p class="label mb-1">Accepted answers</p>
+      {% for key in question.answer_keys.all %}
+        <div class="flex items-center gap-2">
+          <input class="input !py-1 text-xs" value="{{ key.value }}" readonly aria-label="Accepted answer">
+          <button type="button" class="text-gray-300 hover:text-red-500 text-xs px-1" aria-label="Remove answer"
+                  hx-delete="{% url 'dashboard:hx-key-delete' key.pk %}"
+                  hx-target="#group-{{ group.pk }}" hx-swap="outerHTML">✕</button>
+        </div>
+      {% endfor %}
+      <form class="flex items-center gap-2"
+            hx-post="{% url 'dashboard:hx-key-add' question.pk %}"
+            hx-target="#group-{{ group.pk }}" hx-swap="outerHTML">
+        <input class="input !py-1 text-xs" name="value" placeholder="Add an accepted spelling" aria-label="New accepted answer">
+        <button type="submit" class="btn-secondary btn-sm shrink-0">Add</button>
+      </form>
+      <p class="text-[10px] text-gray-400">
+        Add each spelling you will accept. Matching folds case, spacing and punctuation.
+      </p>
+    </div>
+  {% endif %}
+</div>

@@ -1,0 +1,39 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · PrepPath</title>
+  <link rel="stylesheet" href="{% static 'dashboard/dashboard.css' %}">
+</head>
+<body class="min-h-screen bg-[#FAFAFA] flex items-center justify-center px-4">
+  <div class="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+    <div class="absolute -top-32 -right-24 h-[420px] w-[420px] rounded-full bg-coral-400/20 blur-[100px]"></div>
+    <div class="absolute bottom-[-10%] left-[5%] h-[320px] w-[320px] rounded-full bg-coral-300/20 blur-[100px]"></div>
+  </div>
+
+  <div class="glass relative z-10 w-full max-w-sm rounded-2xl border border-gray-200/60 p-8">
+    <div class="font-display text-2xl font-extrabold tracking-tight text-gray-900 mb-1">
+      Prep<span class="text-coral-500">Path</span>
+    </div>
+    <p class="text-xs font-medium text-gray-400 uppercase tracking-wide mb-6">Content Studio</p>
+
+    {% if error %}
+      <p class="mb-4 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" class="space-y-4">
+      {% csrf_token %}
+      <div>
+        <label class="label" for="email">Email</label>
+        <input class="input" id="email" name="email" type="email" autocomplete="email" required autofocus>
+      </div>
+      <div>
+        <label class="label" for="password">Password</label>
+        <input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn-primary btn-md w-full">Sign in</button>
+    </form>
+  </div>
+</body>
+</html>

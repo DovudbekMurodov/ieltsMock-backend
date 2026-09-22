@@ -1,0 +1,19 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Vocabulary{% endblock %}
+{% block heading %}Vocabulary{% endblock %}
+{% block subheading %}<p class="text-gray-500">Themed sections of words for spaced-repetition review.</p>{% endblock %}
+
+{% block content %}
+<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+  {% for section in sections %}
+    <a href="{% url 'dashboard:vocabulary-detail' section.slug %}" class="card card-hover p-5 block">
+      <div class="flex items-start justify-between gap-2 mb-2">
+        <p class="font-bold text-gray-900">{{ section.title }}</p>
+        <span class="badge-{{ section.status }} shrink-0">{{ section.get_status_display }}</span>
+      </div>
+      <p class="font-display text-3xl font-extrabold tracking-tight text-gray-900">{{ section.word_total }}</p>
+      <p class="text-xs text-gray-400">words</p>
+    </a>
+  {% endfor %}
+</div>
+{% endblock %}

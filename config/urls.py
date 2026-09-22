@@ -8,6 +8,7 @@ from apps.common.views import health
 
 urlpatterns = [
     path("healthz", health, name="health"),
+    path("dashboard/", include("apps.dashboard.urls")),
     path("admin/", admin.site.urls),
     path("api/v1/", include("config.api_urls")),
     path("api/v1/schema/", SpectacularAPIView.as_view(), name="schema"),

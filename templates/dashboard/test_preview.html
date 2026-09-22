@@ -1,0 +1,67 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Preview · {{ test.title }}{% endblock %}
+{% block eyebrow %}
+  <a href="{% url 'dashboard:test-edit' test.pk %}" class="text-sm text-gray-400 hover:text-coral-600">← Back to editor</a>
+{% endblock %}
+{% block heading %}{{ test.title }}{% endblock %}
+{% block subheading %}
+  <p class="text-gray-500">Staff preview — correct answers are shown here and never in the app.</p>
+{% endblock %}
+
+{% block content %}
+<div class="grid lg:grid-cols-2 gap-6 items-start">
+  {% for section in payload.sections %}
+    <div class="card p-6">
+      <h2 class="font-display font-bold text-lg text-gray-900 mb-4">{{ section.title }}</h2>
+      <div class="space-y-3 text-sm leading-relaxed text-gray-700">
+        {% for block in section.blocks %}
+          <p><span class="font-bold text-gray-900">{% firstof block.label block.speaker %}{% if block.speaker %}:{% else %}.{% endif %}</span> {{ block.text }}</p>
+        {% empty %}
+          <p class="text-gray-400 italic">Transcript withheld until submission.</p>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card p-6 space-y-6">
+      {% for group in section.groups %}
+        <div>
+          <p class="label">{{ group.type }}</p>
+          {% if group.instructions %}<p class="text-xs text-gray-500 mb-3">{{ group.instructions }}</p>{% endif %}
+          {% if group.options %}
+            <ul class="text-xs text-gray-600 mb-3 space-y-0.5">
+              {% for o in group.options %}<li><strong>{{ o.label }}.</strong> {{ o.text }}</li>{% endfor %}
+            </ul>
+          {% endif %}
+          <div class="space-y-3">
+            {% for q in group.questions %}
+              <div class="border-b border-gray-100 pb-3 last:border-0">
+                <p class="text-sm font-semibold text-gray-900">{{ q.number }}. {{ q.prompt }}</p>
+                {% if q.options %}
+                  <ul class="text-xs text-gray-500 mt-1 space-y-0.5">
+                    {% for o in q.options %}<li>{{ o.label }}. {{ o.text }}</li>{% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
+
+<div class="card p-6 mt-6">
+  <p class="label">Answer key</p>
+  <p class="text-xs text-gray-400 mb-4">Visible to staff only. The delivery payload above carries none of this.</p>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-2">
+    {% for question in test.questions.all %}
+      <div class="rounded-lg border border-gray-200 px-3 py-2 text-xs">
+        <span class="font-bold text-gray-500">{{ question.number }}.</span>
+        <span class="text-gray-900">
+          {% for key in question.answer_keys.all %}{{ key.value }}{% if not forloop.last %} / {% endif %}{% endfor %}
+        </span>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

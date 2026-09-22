@@ -1,0 +1,75 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Attempt {{ attempt.pk }}{% endblock %}
+{% block eyebrow %}
+  <a href="{% url 'dashboard:attempt-list' %}" class="text-sm text-gray-400 hover:text-coral-600">← Attempts</a>
+{% endblock %}
+{% block heading %}{{ attempt.test.title }}{% endblock %}
+{% block subheading %}
+  <p class="text-gray-500">
+    {% if attempt.user %}{{ attempt.user.email }}{% else %}guest{% endif %} ·
+    {{ attempt.submitted_at|date:"j M Y, H:i" }} · {{ attempt.duration_seconds }}s
+    {% if attempt.status == "expired" %}<span class="badge-draft ml-1">submitted late</span>{% endif %}
+  </p>
+{% endblock %}
+
+{% block content %}
+<div class="grid sm:grid-cols-3 gap-4 mb-6">
+  <div class="card p-5">
+    <p class="label">Raw score</p>
+    <p class="font-display text-3xl font-extrabold text-gray-900">{{ attempt.raw_score }}<span class="text-lg text-gray-300">/{{ attempt.raw_total }}</span></p>
+    <p class="text-xs text-gray-400 mt-1">{{ attempt.percent }}%</p>
+  </div>
+  <div class="card p-5">
+    <p class="label">Band</p>
+    {% if attempt.band_confidence == "low" %}
+      <p class="font-display text-3xl font-extrabold text-coral-500">{{ attempt.band_low }}–{{ attempt.band_high }}</p>
+      <p class="text-xs text-gray-400 mt-1">
+        Indicative only — {{ attempt.raw_total }} questions is too few for a precise band.
+      </p>
+    {% else %}
+      <p class="font-display text-3xl font-extrabold text-coral-500">{{ attempt.band }}</p>
+      <p class="text-xs text-gray-400 mt-1">{{ attempt.band_scale.name }}</p>
+    {% endif %}
+  </div>
+  <div class="card p-5">
+    <p class="label">Answered</p>
+    <p class="font-display text-3xl font-extrabold text-gray-900">{{ answers|length }}<span class="text-lg text-gray-300">/{{ attempt.raw_total }}</span></p>
+    <p class="text-xs text-gray-400 mt-1">unanswered counts as wrong</p>
+  </div>
+</div>
+
+<div class="card overflow-hidden">
+  <table class="w-full text-sm">
+    <thead class="bg-gray-50 text-left">
+      <tr class="text-xs font-semibold text-gray-400 uppercase">
+        <th class="px-4 py-3 w-12">#</th>
+        <th class="px-4 py-3">Prompt</th>
+        <th class="px-4 py-3">Their answer</th>
+        <th class="px-4 py-3">Correct</th>
+        <th class="px-4 py-3 w-16"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-100">
+      {% for answer in answers %}
+        <tr class="{% if answer.is_correct %}bg-green-50/40{% else %}bg-coral-50/30{% endif %}">
+          <td class="px-4 py-3 font-bold text-gray-400">{{ answer.question_number }}</td>
+          <td class="px-4 py-3 text-gray-700">{{ answer.question.prompt|truncatechars:80 }}</td>
+          <td class="px-4 py-3 font-medium text-gray-900">{{ answer.raw_value|default:"—" }}</td>
+          <td class="px-4 py-3 text-gray-600">
+            {% for key in answer.question.answer_keys.all %}{{ key.value }}{% if not forloop.last %} / {% endif %}{% endfor %}
+          </td>
+          <td class="px-4 py-3">
+            {% if answer.is_correct %}
+              <span class="text-green-600 font-bold">✓</span>
+            {% else %}
+              <span class="text-coral-600 font-bold">✕</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="5" class="px-4 py-12 text-center text-gray-400">Nothing was answered.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
