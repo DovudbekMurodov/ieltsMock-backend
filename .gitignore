@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Django
+*.sqlite3
+/staticfiles/
+/media/
+.env
+
+# Test / lint
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Node (dashboard Tailwind build)
+node_modules/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

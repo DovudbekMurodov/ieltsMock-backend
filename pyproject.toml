@@ -1,0 +1,24 @@
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = [".venv", "migrations", "staticfiles"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "DJ", "S", "RUF"]
+ignore = [
+    "S101",  # pytest uses bare assert
+    "RUF012",  # Django class attrs are conventionally plain mutables
+]
+
+[tool.ruff.lint.per-file-ignores]
+"config/settings/*.py" = ["F403", "F405"]
+"tests/*" = ["S105", "S106"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["apps", "config"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["test_*.py", "*_test.py"]
+testpaths = ["tests", "apps"]
+addopts = "--reuse-db --strict-markers -q"
