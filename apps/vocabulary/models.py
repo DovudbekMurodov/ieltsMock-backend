@@ -1,7 +1,9 @@
 import re
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils import timezone
 
 from apps.common.models import PublishStatus, TimeStampedModel
 
@@ -85,3 +87,49 @@ class VocabularyWord(models.Model):
     @property
     def example_parts(self) -> list[dict]:
         return split_bold(self.example)
+
+
+class VocabularyReviewState(models.Model):
+    """Where one user stands on one word."""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="vocabulary_states"
+    )
+    word = models.ForeignKey(
+        VocabularyWord, on_delete=models.CASCADE, related_name="review_states"
+    )
+    interval_days = models.PositiveSmallIntegerField(default=1)
+    due_at = models.DateTimeField(default=timezone.now, db_index=True)
+    reps = models.PositiveIntegerField(default=0)
+    lapses = models.PositiveIntegerField(default=0)
+    last_rating = models.CharField(max_length=8, blank=True)
+    last_reviewed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ("due_at",)
+        constraints = [
+            models.UniqueConstraint(fields=["user", "word"], name="unique_review_state_per_word")
+        ]
+        indexes = [models.Index(fields=["user", "due_at"])]
+
+    def __str__(self):
+        return f"{self.user} / {self.word}"
+
+
+class VocabularyReviewEvent(models.Model):
+    """One rating. Kept so the schedule can be audited or replayed."""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="vocabulary_reviews"
+    )
+    word = models.ForeignKey(VocabularyWord, on_delete=models.CASCADE)
+    rating = models.CharField(max_length=8)
+    interval_before = models.PositiveSmallIntegerField()
+    interval_after = models.PositiveSmallIntegerField()
+    reviewed_at = models.DateTimeField(default=timezone.now, db_index=True)
+
+    class Meta:
+        ordering = ("-reviewed_at",)
+
+    def __str__(self):
+        return f"{self.word} rated {self.rating}"

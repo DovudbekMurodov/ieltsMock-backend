@@ -12,7 +12,8 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "config/settings/*.py" = ["F403", "F405"]
-"tests/*" = ["S105", "S106", "S107"]
+# RUF001: normalisation tests feed in curly quotes and dashes on purpose.
+"tests/*" = ["S105", "S106", "S107", "RUF001"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["apps", "config"]

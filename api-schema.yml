@@ -4,6 +4,144 @@ info:
   version: 1.0.0
   description: Content, attempts and progress API for the PrepPath IELTS SPA.
 paths:
+  /api/v1/attempts/:
+    post:
+      operationId: startAttempt
+      summary: Start (or resume) an attempt
+      tags:
+      - attempts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartAttemptRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StartAttemptRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StartAttemptRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attempt'
+          description: ''
+  /api/v1/attempts/{id}/answers/:
+    patch:
+      operationId: saveAttemptAnswers
+      summary: Autosave answers
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - attempts
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSaveAnswersRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSaveAnswersRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSaveAnswersRequest'
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/attempts/{id}/review/:
+    get:
+      operationId: reviewAttempt
+      summary: Per-question breakdown with correct answers
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - attempts
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/attempts/{id}/submit/:
+    post:
+      operationId: submitAttempt
+      summary: Submit and score an attempt
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - attempts
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttemptResult'
+          description: ''
+  /api/v1/attempts/claim/:
+    post:
+      operationId: claimGuestAttempts
+      summary: Attach guest attempts to the signed-in account
+      tags:
+      - attempts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Claim'
+          description: ''
+  /api/v1/attempts/mine/:
+    get:
+      operationId: listMyAttempts
+      summary: This user's attempt history
+      tags:
+      - attempts
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /api/v1/auth/login/:
     post:
       operationId: login
@@ -323,6 +461,81 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
+  /api/v1/vocabulary/srs/due/:
+    get:
+      operationId: listDueWords
+      summary: Words due for review
+      tags:
+      - vocabulary
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/vocabulary/srs/import/:
+    post:
+      operationId: importSrsState
+      description: 'Accepts the frontend''s localStorage blob so an existing user''s
+        schedule survives the move to server-side storage. Idempotent: re-importing
+        keeps whichever due date is later.'
+      summary: Import spaced-repetition state from the browser
+      tags:
+      - vocabulary
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImportRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ImportRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImportRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/vocabulary/srs/rate/:
+    post:
+      operationId: rateWord
+      summary: Record a review and reschedule the word
+      tags:
+      - vocabulary
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RateRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /api/v1/writing/:
     get:
       operationId: listWritingTasks
@@ -367,6 +580,79 @@ paths:
           description: ''
 components:
   schemas:
+    AnswerEntryRequest:
+      type: object
+      properties:
+        questionId:
+          type: integer
+        value:
+          type: string
+          maxLength: 2000
+        optionId:
+          type: integer
+          nullable: true
+        timeSpentMs:
+          type: integer
+          minimum: 0
+          nullable: true
+      required:
+      - questionId
+    Attempt:
+      type: object
+      properties:
+        id:
+          type: integer
+        token:
+          type: string
+          format: uuid
+        testId:
+          type: string
+          pattern: ^[-a-zA-Z0-9_]+$
+        skill:
+          type: string
+        status:
+          type: string
+        startedAt:
+          type: string
+          format: date-time
+        expiresAt:
+          type: string
+          format: date-time
+        secondsRemaining:
+          type: integer
+      required:
+      - expiresAt
+      - id
+      - secondsRemaining
+      - skill
+      - startedAt
+      - status
+      - testId
+      - token
+    AttemptResult:
+      type: object
+      properties:
+        id:
+          type: integer
+        status:
+          type: string
+        rawScore:
+          type: integer
+        rawTotal:
+          type: integer
+        percent:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        durationSeconds:
+          type: integer
+      required:
+      - durationSeconds
+      - id
+      - percent
+      - rawScore
+      - rawTotal
+      - status
     AuthSession:
       type: object
       description: |-
@@ -385,6 +671,13 @@ components:
       - access
       - expiresIn
       - user
+    Claim:
+      type: object
+      properties:
+        claimed:
+          type: integer
+      required:
+      - claimed
     Detail:
       type: object
       properties:
@@ -392,6 +685,17 @@ components:
           type: string
       required:
       - detail
+    ImportRequest:
+      type: object
+      description: The raw localStorage blob, keyed by "<sectionSlug>::<headword>".
+      properties:
+        states:
+          type: object
+          additionalProperties:
+            type: object
+            additionalProperties: {}
+      required:
+      - states
     LoginRequest:
       type: object
       properties:
@@ -406,6 +710,13 @@ components:
       required:
       - email
       - password
+    PatchedSaveAnswersRequest:
+      type: object
+      properties:
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnswerEntryRequest'
     PatchedUserRequest:
       type: object
       properties:
@@ -435,6 +746,28 @@ components:
           type: string
           minLength: 1
           maxLength: 10
+    RateRequest:
+      type: object
+      properties:
+        wordId:
+          type: integer
+        rating:
+          $ref: '#/components/schemas/RatingEnum'
+      required:
+      - rating
+      - wordId
+    RatingEnum:
+      enum:
+      - again
+      - hard
+      - good
+      - easy
+      type: string
+      description: |-
+        * `again` - again
+        * `hard` - hard
+        * `good` - good
+        * `easy` - easy
     RegisterRequest:
       type: object
       properties:
@@ -469,6 +802,15 @@ components:
           type: integer
       required:
       - revoked
+    StartAttemptRequest:
+      type: object
+      properties:
+        testId:
+          type: string
+          minLength: 1
+          pattern: ^[-a-zA-Z0-9_]+$
+      required:
+      - testId
     TokenValidity:
       type: object
       properties:
