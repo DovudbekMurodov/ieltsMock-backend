@@ -1,0 +1,212 @@
+[
+  {
+    "id": "hometown",
+    "topic": "Hometown",
+    "part1": [
+      "Where is your hometown?",
+      "Do you still live there, or have you moved away?",
+      "What do you like most about your hometown?",
+      "Has your hometown changed much in recent years?",
+      "Would you recommend it as a place to visit?"
+    ],
+    "part2": {
+      "title": "Describe a place you consider your hometown.",
+      "bullets": [
+        "Where it is",
+        "What it is known for",
+        "What you like or dislike about it",
+        "And explain how you feel about it today"
+      ],
+      "prepSeconds": 60,
+      "speakSeconds": 120
+    },
+    "part3": [
+      "Do you think people should stay in their hometown for their whole life, or move elsewhere?",
+      "How do small towns differ from big cities in your country?",
+      "What role does a hometown play in shaping someone's identity?",
+      "Do governments do enough to support smaller towns compared with big cities?"
+    ],
+    "phrases": [
+      "a close-knit community",
+      "it holds a special place in my heart",
+      "it's changed beyond recognition",
+      "off the beaten track",
+      "a far cry from how it used to be"
+    ]
+  },
+  {
+    "id": "hobbies",
+    "topic": "Hobbies & Free Time",
+    "part1": [
+      "What do you like to do in your free time?",
+      "Have your hobbies changed since you were a child?",
+      "Do you prefer hobbies you do alone or with others?",
+      "Is it common in your country for people to have much free time?",
+      "How do you usually spend weekends?"
+    ],
+    "part2": {
+      "title": "Describe a hobby you enjoy.",
+      "bullets": [
+        "What it is",
+        "How you got into it",
+        "How often you do it",
+        "And explain why you enjoy it"
+      ],
+      "prepSeconds": 60,
+      "speakSeconds": 120
+    },
+    "part3": [
+      "Do you think hobbies are as important as work or study?",
+      "How have technology and the internet changed the way people spend their free time?",
+      "Should schools encourage children to develop hobbies outside academics?",
+      "Do people in your country have less free time than in the past?"
+    ],
+    "phrases": [
+      "I got hooked on it",
+      "it's a great way to unwind",
+      "I picked it up from a friend",
+      "it doesn't feel like a chore",
+      "I try to make time for it"
+    ]
+  },
+  {
+    "id": "technology",
+    "topic": "Technology in Daily Life",
+    "part1": [
+      "How often do you use your smartphone?",
+      "What app do you use the most?",
+      "Do you think you rely on technology too much?",
+      "Was there a piece of technology you found difficult to learn to use?",
+      "How has technology changed the way you communicate with family?"
+    ],
+    "part2": {
+      "title": "Describe a piece of technology you find useful.",
+      "bullets": [
+        "What it is",
+        "How you use it",
+        "When you started using it",
+        "And explain why it is useful to you"
+      ],
+      "prepSeconds": 60,
+      "speakSeconds": 120
+    },
+    "part3": [
+      "How has technology changed the workplace in recent decades?",
+      "Do you think older and younger generations use technology differently?",
+      "What are the downsides of relying heavily on technology in everyday life?",
+      "Will technology continue to change as fast in the future as it has recently?"
+    ],
+    "phrases": [
+      "I can't imagine life without it",
+      "it's become second nature",
+      "there's a learning curve",
+      "it's a double-edged sword",
+      "cutting-edge technology"
+    ]
+  },
+  {
+    "id": "travel",
+    "topic": "Travel",
+    "part1": [
+      "Do you enjoy travelling?",
+      "What was the last place you visited?",
+      "Do you prefer travelling alone or with others?",
+      "What kind of place would you like to visit in the future?",
+      "Do you prefer travelling by plane, train, or car?"
+    ],
+    "part2": {
+      "title": "Describe a memorable trip you have taken.",
+      "bullets": [
+        "Where you went",
+        "Who you went with",
+        "What you did there",
+        "And explain why it was memorable"
+      ],
+      "prepSeconds": 60,
+      "speakSeconds": 120
+    },
+    "part3": [
+      "How has tourism changed in your country over the past twenty years?",
+      "What are the benefits and drawbacks of tourism for local communities?",
+      "Do you think people travel more than they used to?",
+      "Should governments limit tourist numbers in popular destinations?"
+    ],
+    "phrases": [
+      "off the beaten track",
+      "it was a real eye-opener",
+      "we hit it off with the locals",
+      "it exceeded my expectations",
+      "a once-in-a-lifetime experience"
+    ]
+  },
+  {
+    "id": "work-study",
+    "topic": "Work or Study",
+    "part1": [
+      "Are you currently working or studying?",
+      "What do you like most about your job or course?",
+      "What skills do you think are important in your field?",
+      "Do you prefer working in a team or independently?",
+      "What are your plans for the future in your career or studies?"
+    ],
+    "part2": {
+      "title": "Describe a job you would like to have in the future.",
+      "bullets": [
+        "What the job is",
+        "What skills it requires",
+        "Why it appeals to you",
+        "And explain how you plan to achieve it"
+      ],
+      "prepSeconds": 60,
+      "speakSeconds": 120
+    },
+    "part3": [
+      "Do you think job satisfaction is more important than salary?",
+      "How is the job market changing for young people in your country?",
+      "Should universities focus more on practical skills or academic knowledge?",
+      "Do you think artificial intelligence will replace many jobs in the future?"
+    ],
+    "phrases": [
+      "climb the career ladder",
+      "it plays to my strengths",
+      "a steep learning curve",
+      "work-life balance",
+      "it's not just a job, it's a passion"
+    ]
+  },
+  {
+    "id": "environment",
+    "topic": "Environment",
+    "part1": [
+      "Do you think people in your country care about the environment?",
+      "What do you do personally to protect the environment?",
+      "Is recycling common where you live?",
+      "Do you think environmental problems get enough media attention?",
+      "What environmental issue concerns you most?"
+    ],
+    "part2": {
+      "title": "Describe an environmental problem in your country.",
+      "bullets": [
+        "What the problem is",
+        "What causes it",
+        "Who it affects",
+        "And explain what could be done about it"
+      ],
+      "prepSeconds": 60,
+      "speakSeconds": 120
+    },
+    "part3": [
+      "Should individuals or governments bear more responsibility for protecting the environment?",
+      "How effective are environmental campaigns at changing people's behaviour?",
+      "Do you think economic growth and environmental protection can go together?",
+      "What role can technology play in solving environmental problems?"
+    ],
+    "phrases": [
+      "carbon footprint",
+      "it's a drop in the ocean",
+      "sustainable living",
+      "take a toll on the environment",
+      "there's no quick fix"
+    ]
+  }
+]

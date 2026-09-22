@@ -1,0 +1,823 @@
+[
+  {
+    "id": "booking-campsite",
+    "title": "Booking a Campsite",
+    "timeLimitMinutes": 15,
+    "transcript": {
+      "title": "Booking a Campsite",
+      "lines": [
+        {
+          "speaker": "Staff",
+          "text": "Good morning, Willow Creek Campsite, how can I help you?"
+        },
+        {
+          "speaker": "Caller",
+          "text": "Hi, I'd like to book a pitch for a tent, for two adults, for the second week of July."
+        },
+        {
+          "speaker": "Staff",
+          "text": "Sure, let me check availability. That would be arriving Monday the fourteenth?"
+        },
+        {
+          "speaker": "Caller",
+          "text": "Yes, that's right. We'd like to stay for five nights."
+        },
+        {
+          "speaker": "Staff",
+          "text": "Great, we do have space. For a standard tent pitch, that's eighteen pounds per night, so ninety pounds total for five nights."
+        },
+        {
+          "speaker": "Caller",
+          "text": "Is that with access to the showers and everything?"
+        },
+        {
+          "speaker": "Staff",
+          "text": "Yes, shower and toilet blocks are included in the pitch fee. If you'd like electric hook-up, that's an extra four pounds fifty per night."
+        },
+        {
+          "speaker": "Caller",
+          "text": "We'll skip that, thanks. Do you allow campfires?"
+        },
+        {
+          "speaker": "Staff",
+          "text": "Campfires are only allowed in the designated fire pit area near the lake, not directly on your pitch. We do sell firewood at reception, six pounds a bag."
+        },
+        {
+          "speaker": "Caller",
+          "text": "Good to know. And is the campsite shop open the whole time we're there?"
+        },
+        {
+          "speaker": "Staff",
+          "text": "The shop's open from eight in the morning until eight in the evening, seven days a week during July and August."
+        },
+        {
+          "speaker": "Caller",
+          "text": "Perfect. One more thing — is there a laundry facility?"
+        },
+        {
+          "speaker": "Staff",
+          "text": "Yes, there's a small laundry room next to the shower block. It's coin-operated, two pounds per wash."
+        },
+        {
+          "speaker": "Caller",
+          "text": "Great, that covers everything. Can I book now?"
+        },
+        {
+          "speaker": "Staff",
+          "text": "Of course, can I take your name and a contact number to confirm the booking?"
+        },
+        {
+          "speaker": "Caller",
+          "text": "It's Daniel Ostrowski, and my number is 07 700 456 231."
+        },
+        {
+          "speaker": "Staff",
+          "text": "Thank you, Mr Ostrowski. I've booked pitch number fourteen for you, arriving Monday the fourteenth of July for five nights. You'll receive a confirmation email shortly."
+        },
+        {
+          "speaker": "Caller",
+          "text": "Brilliant, thank you very much."
+        },
+        {
+          "speaker": "Staff",
+          "text": "You're welcome, enjoy your stay."
+        }
+      ]
+    },
+    "questions": [
+      {
+        "id": 1,
+        "type": "gap",
+        "prompt": "The pitch is booked for ______ nights.",
+        "acceptedAnswers": [
+          "five",
+          "5"
+        ]
+      },
+      {
+        "id": 2,
+        "type": "gap",
+        "prompt": "The total cost for the standard pitch is ______ pounds.",
+        "acceptedAnswers": [
+          "ninety",
+          "90"
+        ]
+      },
+      {
+        "id": 3,
+        "type": "mcq",
+        "prompt": "Electric hook-up costs an extra:",
+        "options": [
+          "£2.50 per night",
+          "£4.50 per night",
+          "£6 per night",
+          "£8 per night"
+        ],
+        "answer": "£4.50 per night"
+      },
+      {
+        "id": 4,
+        "type": "mcq",
+        "prompt": "Where are campers allowed to have a campfire?",
+        "options": [
+          "Anywhere on their own pitch",
+          "Only in the designated fire pit area near the lake",
+          "Only inside the campsite shop",
+          "Campfires are not allowed at all"
+        ],
+        "answer": "Only in the designated fire pit area near the lake"
+      },
+      {
+        "id": 5,
+        "type": "gap",
+        "prompt": "A bag of firewood costs ______ pounds.",
+        "acceptedAnswers": [
+          "six",
+          "6"
+        ]
+      },
+      {
+        "id": 6,
+        "type": "mcq",
+        "prompt": "What time does the campsite shop close during July and August?",
+        "options": [
+          "6 pm",
+          "7 pm",
+          "8 pm",
+          "9 pm"
+        ],
+        "answer": "8 pm"
+      },
+      {
+        "id": 7,
+        "type": "gap",
+        "prompt": "The laundry room is coin-operated and costs ______ pounds per wash.",
+        "acceptedAnswers": [
+          "two",
+          "2"
+        ]
+      },
+      {
+        "id": 8,
+        "type": "mcq",
+        "prompt": "What is the customer's surname?",
+        "options": [
+          "Osmond",
+          "Ostrowski",
+          "Osgood",
+          "Ostrov"
+        ],
+        "answer": "Ostrowski"
+      },
+      {
+        "id": 9,
+        "type": "gap",
+        "prompt": "The customer's pitch number is ______.",
+        "acceptedAnswers": [
+          "fourteen",
+          "14"
+        ]
+      },
+      {
+        "id": 10,
+        "type": "mcq",
+        "prompt": "What will the customer receive after the call?",
+        "options": [
+          "A text message",
+          "A confirmation email",
+          "A phone call back",
+          "A printed voucher by post"
+        ],
+        "answer": "A confirmation email"
+      }
+    ]
+  },
+  {
+    "id": "museum-tour",
+    "title": "A Guided Tour of the City Museum",
+    "timeLimitMinutes": 15,
+    "transcript": {
+      "title": "A Guided Tour of the City Museum",
+      "lines": [
+        {
+          "speaker": "Guide",
+          "text": "Good afternoon everyone, and welcome to the City History Museum. My name's Priya, and I'll be your guide for the next forty-five minutes."
+        },
+        {
+          "speaker": "Guide",
+          "text": "Before we start, just a few housekeeping points: photography without flash is allowed in every gallery except the Textiles Room on the second floor, where the fabrics are light-sensitive. There's no food or drink permitted beyond the café on the ground floor, and I'd ask you to keep mobile phones on silent throughout the tour."
+        },
+        {
+          "speaker": "Guide",
+          "text": "We'll begin here in the Entrance Hall, which was actually the original building's ballroom back when this was a private residence in the 1880s. Notice the ceiling — that plasterwork is entirely original and was restored in 2015 at a cost of a little over two hundred thousand pounds."
+        },
+        {
+          "speaker": "Guide",
+          "text": "From here, we'll move into the Founders' Gallery, covering the city's early industrial history. Look out for the large loom in the centre of the room; it's one of only three surviving examples of its kind in the country."
+        },
+        {
+          "speaker": "Guide",
+          "text": "After that, we'll head upstairs to the Textiles Room I mentioned, followed by the Maritime Gallery, which covers the city's shipping and trade history, and finally the Modern City exhibit, which brings the story up to the present day."
+        },
+        {
+          "speaker": "Guide",
+          "text": "If you'd like to explore independently after the guided section, the museum stays open until six in the evening on weekdays, and until eight on Thursdays for our late-night openings, which usually include a small musical performance in the Entrance Hall from around six thirty."
+        },
+        {
+          "speaker": "Guide",
+          "text": "One more thing — the museum shop, located just past the café, is currently running an exhibition catalogue special: normally twelve pounds, reduced to eight pounds for anyone who's been on today's tour, just mention my name at the till."
+        },
+        {
+          "speaker": "Guide",
+          "text": "Right, if everyone's ready, let's head into the Founders' Gallery."
+        }
+      ]
+    },
+    "questions": [
+      {
+        "id": 1,
+        "type": "mcq",
+        "prompt": "In which room is flash-free photography NOT allowed?",
+        "options": [
+          "The Entrance Hall",
+          "The Founders' Gallery",
+          "The Textiles Room",
+          "The Maritime Gallery"
+        ],
+        "answer": "The Textiles Room"
+      },
+      {
+        "id": 2,
+        "type": "gap",
+        "prompt": "The Entrance Hall was originally used as a ______ in the 1880s.",
+        "acceptedAnswers": [
+          "ballroom"
+        ]
+      },
+      {
+        "id": 3,
+        "type": "gap",
+        "prompt": "Restoring the ceiling plasterwork cost a little over ______ pounds.",
+        "acceptedAnswers": [
+          "two hundred thousand",
+          "200000",
+          "200,000"
+        ]
+      },
+      {
+        "id": 4,
+        "type": "mcq",
+        "prompt": "What is notable about the loom in the Founders' Gallery?",
+        "options": [
+          "It is the oldest object in the museum",
+          "It is one of only three surviving examples in the country",
+          "It was donated by the guide's family",
+          "It was recently restored"
+        ],
+        "answer": "It is one of only three surviving examples in the country"
+      },
+      {
+        "id": 5,
+        "type": "matching",
+        "prompt": "Which gallery is visited directly after the Textiles Room?",
+        "options": [
+          "Founders' Gallery",
+          "Maritime Gallery",
+          "Modern City exhibit",
+          "Entrance Hall"
+        ],
+        "answer": "Maritime Gallery"
+      },
+      {
+        "id": 6,
+        "type": "mcq",
+        "prompt": "On which day does the museum stay open until 8 pm?",
+        "options": [
+          "Monday",
+          "Wednesday",
+          "Thursday",
+          "Sunday"
+        ],
+        "answer": "Thursday"
+      },
+      {
+        "id": 7,
+        "type": "gap",
+        "prompt": "On late-night openings, a musical performance usually starts at around ______.",
+        "acceptedAnswers": [
+          "six thirty",
+          "6:30",
+          "half past six"
+        ]
+      },
+      {
+        "id": 8,
+        "type": "mcq",
+        "prompt": "Where is the museum shop located?",
+        "options": [
+          "Next to the Entrance Hall",
+          "Just past the café",
+          "On the second floor",
+          "Inside the Founders' Gallery"
+        ],
+        "answer": "Just past the café"
+      },
+      {
+        "id": 9,
+        "type": "gap",
+        "prompt": "The exhibition catalogue is reduced from twelve pounds to ______ pounds for tour visitors.",
+        "acceptedAnswers": [
+          "eight",
+          "8"
+        ]
+      },
+      {
+        "id": 10,
+        "type": "mcq",
+        "prompt": "What is the guide's name?",
+        "options": [
+          "Priya",
+          "Priyanka",
+          "Pria",
+          "Preeti"
+        ],
+        "answer": "Priya"
+      }
+    ]
+  },
+  {
+    "id": "final-year-project",
+    "title": "Choosing a Final-Year Project",
+    "timeLimitMinutes": 15,
+    "transcript": {
+      "title": "Choosing a Final-Year Project",
+      "lines": [
+        {
+          "speaker": "Maya",
+          "text": "Tom, have you decided on your final-year project topic yet? The deadline to register is Friday."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Not completely — I'm stuck between two options. One's a data analysis project looking at recycling rates across different neighbourhoods, and the other's more of a design project, building a small mobile app prototype."
+        },
+        {
+          "speaker": "Maya",
+          "text": "What's pulling you towards the recycling one?"
+        },
+        {
+          "speaker": "Tom",
+          "text": "Honestly, the data's already publicly available from the city council, so I wouldn't need to spend weeks just collecting it. I could get straight into the analysis."
+        },
+        {
+          "speaker": "Maya",
+          "text": "That's a real advantage. Though isn't Dr. Whitfield supervising a lot of data projects already this year? I heard he's got something like twelve students."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Yeah, that worries me a bit — less one-on-one time. The app project would be supervised by Dr. Chen instead, and I think she's only got four students so far."
+        },
+        {
+          "speaker": "Maya",
+          "text": "That's a big difference. What about your own interest, though — which one actually excites you more?"
+        },
+        {
+          "speaker": "Tom",
+          "text": "If I'm honest, the app idea. I've wanted an excuse to properly learn app development for ages."
+        },
+        {
+          "speaker": "Maya",
+          "text": "Then maybe factor that in too — a project you're motivated to work on for eight months matters more than people think."
+        },
+        {
+          "speaker": "Tom",
+          "text": "True. I think there's also a cost question — the recycling project needs no budget at all, but for the app I might need about eighty pounds for a developer account and some testing devices."
+        },
+        {
+          "speaker": "Maya",
+          "text": "The department does have a small project fund, though — you can apply for up to one hundred pounds if you ask before the project starts."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Oh, I didn't know that. That solves the cost issue, then."
+        },
+        {
+          "speaker": "Maya",
+          "text": "So it sounds like it's between supervisor availability and your own motivation now."
+        },
+        {
+          "speaker": "Tom",
+          "text": "I think I'm going to go with the app project. More supervision time, and I'll actually enjoy the process."
+        },
+        {
+          "speaker": "Maya",
+          "text": "Sounds like the right call. Don't forget to submit the registration form by Friday at five."
+        },
+        {
+          "speaker": "Tom",
+          "text": "Will do — thanks, Maya."
+        }
+      ]
+    },
+    "questions": [
+      {
+        "id": 1,
+        "type": "mcq",
+        "prompt": "What is Tom's first project option about?",
+        "options": [
+          "Building a mobile app prototype",
+          "Analysing recycling rates across neighbourhoods",
+          "Studying university funding",
+          "Designing a new campus building"
+        ],
+        "answer": "Analysing recycling rates across neighbourhoods"
+      },
+      {
+        "id": 2,
+        "type": "gap",
+        "prompt": "The recycling data is already available from the ______.",
+        "acceptedAnswers": [
+          "city council"
+        ]
+      },
+      {
+        "id": 3,
+        "type": "mcq",
+        "prompt": "Approximately how many students is Dr. Whitfield supervising this year?",
+        "options": [
+          "Four",
+          "Eight",
+          "Ten",
+          "Twelve"
+        ],
+        "answer": "Twelve"
+      },
+      {
+        "id": 4,
+        "type": "gap",
+        "prompt": "Dr. Chen is currently supervising around ______ students.",
+        "acceptedAnswers": [
+          "four",
+          "4"
+        ]
+      },
+      {
+        "id": 5,
+        "type": "mcq",
+        "prompt": "Why does Tom say he's drawn to the app project personally?",
+        "options": [
+          "It requires no budget",
+          "He wants an excuse to learn app development",
+          "It has the easiest supervisor",
+          "It takes less time to complete"
+        ],
+        "answer": "He wants an excuse to learn app development"
+      },
+      {
+        "id": 6,
+        "type": "gap",
+        "prompt": "Tom estimates the app project will cost about ______ pounds.",
+        "acceptedAnswers": [
+          "eighty",
+          "80"
+        ]
+      },
+      {
+        "id": 7,
+        "type": "mcq",
+        "prompt": "How can Tom cover the cost of the app project?",
+        "options": [
+          "Pay out of his own savings",
+          "Apply to the department's project fund",
+          "Ask Dr. Chen to pay for it",
+          "He cannot cover the cost"
+        ],
+        "answer": "Apply to the department's project fund"
+      },
+      {
+        "id": 8,
+        "type": "gap",
+        "prompt": "Students can apply for up to ______ pounds from the department's project fund.",
+        "acceptedAnswers": [
+          "one hundred",
+          "100"
+        ]
+      },
+      {
+        "id": 9,
+        "type": "mcq",
+        "prompt": "Which project does Tom decide to choose?",
+        "options": [
+          "The recycling data project",
+          "The mobile app project",
+          "Neither project",
+          "He remains undecided"
+        ],
+        "answer": "The mobile app project"
+      },
+      {
+        "id": 10,
+        "type": "mcq",
+        "prompt": "By when must Tom submit his registration form?",
+        "options": [
+          "Monday morning",
+          "Wednesday afternoon",
+          "Friday at five",
+          "The following week"
+        ],
+        "answer": "Friday at five"
+      }
+    ]
+  },
+  {
+    "id": "history-of-coffee",
+    "title": "The History of Coffee",
+    "timeLimitMinutes": 15,
+    "transcript": {
+      "title": "The History of Coffee",
+      "lines": [
+        {
+          "speaker": "Lecturer",
+          "text": "Today I want to talk briefly about the history of coffee, a drink that's now consumed by roughly two billion cups a day worldwide, but whose origins are surprisingly difficult to pin down precisely."
+        },
+        {
+          "speaker": "Lecturer",
+          "text": "According to the most widely repeated account, coffee's stimulating effect was first noticed in the ninth century in the region we now call Ethiopia, when a goat herder allegedly noticed his goats becoming unusually energetic after eating berries from a certain shrub. Historians generally treat this as a charming legend rather than a verified fact, since the earliest reliable written evidence of coffee drinking doesn't appear until several centuries later."
+        },
+        {
+          "speaker": "Lecturer",
+          "text": "The first solid documentary evidence places coffee cultivation and drinking in fifteenth-century Yemen, where Sufi monks reportedly used it to stay alert during long nights of prayer. From Yemen, coffee spread relatively quickly across the wider Middle East, reaching Mecca, Cairo, and Istanbul by the early sixteenth century, where the first coffeehouses, known as qahveh khaneh, began to appear as social and intellectual meeting places."
+        },
+        {
+          "speaker": "Lecturer",
+          "text": "Coffee reached Europe by the early seventeenth century, arriving first in Venice through trade routes, and its reception was, at least initially, mixed. Some religious leaders in Europe reportedly viewed the drink with suspicion, associating it with its Islamic origins, though this resistance faded fairly quickly once coffee's popularity among ordinary drinkers became clear. London alone is estimated to have had over two thousand coffeehouses by the late seventeenth century, many of which became so associated with particular trades and professions that some evolved directly into financial institutions still recognisable today."
+        },
+        {
+          "speaker": "Lecturer",
+          "text": "Cultivation eventually spread far beyond its origins as European colonial powers established plantations in their overseas territories. The Dutch introduced coffee cultivation to Java in the late seventeenth century, and by the eighteenth century, coffee plants had reached Central and South America, with Brazil eventually becoming, and remaining today, the world's largest producer by a considerable margin."
+        },
+        {
+          "speaker": "Lecturer",
+          "text": "One point worth emphasising for anyone researching this topic further: much of the popular history of coffee, including the goat-herder story I mentioned earlier, rests on oral tradition recorded centuries after the events supposedly occurred, so it should be treated as cultural legend rather than confirmed historical fact."
+        }
+      ]
+    },
+    "questions": [
+      {
+        "id": 1,
+        "type": "gap",
+        "prompt": "Coffee is now consumed at a rate of roughly ______ cups a day worldwide.",
+        "acceptedAnswers": [
+          "two billion",
+          "2 billion"
+        ]
+      },
+      {
+        "id": 2,
+        "type": "mcq",
+        "prompt": "According to the popular legend, who first noticed coffee's stimulating effect?",
+        "options": [
+          "A Sufi monk",
+          "A goat herder",
+          "A Venetian trader",
+          "A Dutch colonist"
+        ],
+        "answer": "A goat herder"
+      },
+      {
+        "id": 3,
+        "type": "mcq",
+        "prompt": "How do historians generally treat the goat-herder story?",
+        "options": [
+          "As a fully verified historical fact",
+          "As a legend rather than a verified fact",
+          "As a story invented in the twentieth century",
+          "As an account confirmed by Ethiopian records"
+        ],
+        "answer": "As a legend rather than a verified fact"
+      },
+      {
+        "id": 4,
+        "type": "gap",
+        "prompt": "The first solid documentary evidence of coffee drinking comes from fifteenth-century ______.",
+        "acceptedAnswers": [
+          "yemen",
+          "Yemen"
+        ]
+      },
+      {
+        "id": 5,
+        "type": "mcq",
+        "prompt": "Who reportedly used coffee to stay alert during nights of prayer?",
+        "options": [
+          "Sufi monks",
+          "Venetian traders",
+          "Dutch colonists",
+          "London merchants"
+        ],
+        "answer": "Sufi monks"
+      },
+      {
+        "id": 6,
+        "type": "gap",
+        "prompt": "Early coffeehouses in the Middle East were known as ______.",
+        "acceptedAnswers": [
+          "qahveh khaneh"
+        ]
+      },
+      {
+        "id": 7,
+        "type": "mcq",
+        "prompt": "Coffee first arrived in Europe through which city?",
+        "options": [
+          "London",
+          "Venice",
+          "Vienna",
+          "Amsterdam"
+        ],
+        "answer": "Venice"
+      },
+      {
+        "id": 8,
+        "type": "gap",
+        "prompt": "By the late seventeenth century, London is estimated to have had over ______ coffeehouses.",
+        "acceptedAnswers": [
+          "two thousand",
+          "2000",
+          "2,000"
+        ]
+      },
+      {
+        "id": 9,
+        "type": "mcq",
+        "prompt": "Which country introduced coffee cultivation to Java?",
+        "options": [
+          "Britain",
+          "Portugal",
+          "The Netherlands",
+          "Spain"
+        ],
+        "answer": "The Netherlands"
+      },
+      {
+        "id": 10,
+        "type": "mcq",
+        "prompt": "Which country is described as the world's largest coffee producer today?",
+        "options": [
+          "Ethiopia",
+          "Yemen",
+          "Brazil",
+          "Indonesia"
+        ],
+        "answer": "Brazil"
+      }
+    ]
+  },
+  {
+    "id": "community-garden",
+    "title": "Community Garden Volunteer Orientation",
+    "timeLimitMinutes": 15,
+    "transcript": {
+      "title": "Community Garden Volunteer Orientation",
+      "lines": [
+        {
+          "speaker": "Alex",
+          "text": "Hi everyone, thanks so much for coming along, and welcome to Fernbank Community Garden. I'm Alex, and I coordinate the volunteer program here, so I'll be running through a few essentials before we get you started today."
+        },
+        {
+          "speaker": "Alex",
+          "text": "First, a bit about how the garden's organised. We're split into four main sections: the vegetable plots, the herb garden, the orchard, and the wildflower meadow at the far end near the fence. Most new volunteers start in the vegetable plots, simply because there's usually the most hands-on work available there — weeding, watering, and harvesting depending on the season."
+        },
+        {
+          "speaker": "Alex",
+          "text": "In terms of timing, the garden's open to volunteers Tuesday to Saturday, from nine in the morning until four in the afternoon. You don't need to commit to a fixed schedule; people generally just turn up whenever suits them, though we do ask for at least two hours per visit so the coordinator on duty can actually give you a proper task rather than something rushed."
+        },
+        {
+          "speaker": "Alex",
+          "text": "Safety-wise, closed-toe shoes are required at all times — no sandals, I'm afraid, no matter the weather. Gardening gloves are provided, but you're welcome to bring your own if you prefer. We also ask that anyone using the larger tools, like the rotavator or the hedge trimmer, complete a short five-minute safety briefing with a staff member first; that's a one-time thing, not something you need to repeat each visit."
+        },
+        {
+          "speaker": "Alex",
+          "text": "We do grow a genuinely impressive amount of food here — last year the garden produced a little over one and a half tonnes of vegetables and fruit, most of which goes directly to the food bank two streets over, with a smaller portion sold at our Saturday stall to cover running costs like seeds and tools."
+        },
+        {
+          "speaker": "Alex",
+          "text": "If you'd like to get more involved beyond casual volunteering, we run a monthly volunteer meeting on the first Wednesday of each month at six in the evening, where we plan upcoming projects and anyone can put forward ideas. There's also a WhatsApp group for volunteers — just give me your number at the end of today and I'll add you."
+        },
+        {
+          "speaker": "Alex",
+          "text": "Right, let's get you all some gloves and head over to the vegetable plots to make a start."
+        }
+      ]
+    },
+    "questions": [
+      {
+        "id": 1,
+        "type": "gap",
+        "prompt": "The garden is divided into ______ main sections.",
+        "acceptedAnswers": [
+          "four",
+          "4"
+        ]
+      },
+      {
+        "id": 2,
+        "type": "mcq",
+        "prompt": "Where do most new volunteers start working?",
+        "options": [
+          "The herb garden",
+          "The vegetable plots",
+          "The orchard",
+          "The wildflower meadow"
+        ],
+        "answer": "The vegetable plots"
+      },
+      {
+        "id": 3,
+        "type": "mcq",
+        "prompt": "Which days is the garden open to volunteers?",
+        "options": [
+          "Monday to Friday",
+          "Tuesday to Saturday",
+          "Wednesday to Sunday",
+          "Every day of the week"
+        ],
+        "answer": "Tuesday to Saturday"
+      },
+      {
+        "id": 4,
+        "type": "gap",
+        "prompt": "Volunteers are asked to stay for at least ______ hours per visit.",
+        "acceptedAnswers": [
+          "two",
+          "2"
+        ]
+      },
+      {
+        "id": 5,
+        "type": "mcq",
+        "prompt": "What footwear is required for all volunteers?",
+        "options": [
+          "Sandals",
+          "Closed-toe shoes",
+          "Rubber boots only",
+          "No specific footwear is required"
+        ],
+        "answer": "Closed-toe shoes"
+      },
+      {
+        "id": 6,
+        "type": "gap",
+        "prompt": "Volunteers using large tools must first complete a ______-minute safety briefing.",
+        "acceptedAnswers": [
+          "five",
+          "5"
+        ]
+      },
+      {
+        "id": 7,
+        "type": "mcq",
+        "prompt": "How much food did the garden produce last year?",
+        "options": [
+          "Half a tonne",
+          "A little over one and a half tonnes",
+          "Around five tonnes",
+          "Exactly one tonne"
+        ],
+        "answer": "A little over one and a half tonnes"
+      },
+      {
+        "id": 8,
+        "type": "mcq",
+        "prompt": "Where does most of the produce go?",
+        "options": [
+          "A local restaurant",
+          "The food bank two streets over",
+          "Directly to volunteers' homes",
+          "It is thrown away"
+        ],
+        "answer": "The food bank two streets over"
+      },
+      {
+        "id": 9,
+        "type": "gap",
+        "prompt": "The monthly volunteer meeting takes place on the first ______ of each month.",
+        "acceptedAnswers": [
+          "wednesday",
+          "Wednesday"
+        ]
+      },
+      {
+        "id": 10,
+        "type": "mcq",
+        "prompt": "How can volunteers join the WhatsApp group?",
+        "options": [
+          "Sign up on the garden's website",
+          "Give Alex their phone number",
+          "Ask another volunteer to add them",
+          "Scan a QR code at the entrance"
+        ],
+        "answer": "Give Alex their phone number"
+      }
+    ]
+  }
+]

@@ -1,0 +1,620 @@
+[
+  {
+    "id": "academic-writing",
+    "title": "Academic & Essay Writing",
+    "words": [
+      {
+        "word": "Substantial",
+        "pos": "adjective",
+        "definition": "Fairly large in amount or degree.",
+        "example": "The new policy led to a **substantial** drop in unemployment."
+      },
+      {
+        "word": "Consequently",
+        "pos": "adverb",
+        "definition": "As a result of something just mentioned.",
+        "example": "It rained heavily all week; **consequently**, the festival was postponed."
+      },
+      {
+        "word": "Predominantly",
+        "pos": "adverb",
+        "definition": "Mainly or mostly.",
+        "example": "The workforce in this sector is **predominantly** made up of young graduates."
+      },
+      {
+        "word": "Contentious",
+        "pos": "adjective",
+        "definition": "Likely to cause disagreement between people.",
+        "example": "Immigration remains a **contentious** issue in many countries."
+      },
+      {
+        "word": "Mitigate",
+        "pos": "verb",
+        "definition": "To make a problem or its effects less severe.",
+        "example": "New building codes were introduced to **mitigate** earthquake damage."
+      },
+      {
+        "word": "Plausible",
+        "pos": "adjective",
+        "definition": "Reasonable or likely to be true.",
+        "example": "She offered a **plausible** explanation for the delay."
+      },
+      {
+        "word": "Comprehensive",
+        "pos": "adjective",
+        "definition": "Complete and including everything necessary.",
+        "example": "The report gives a **comprehensive** overview of the industry."
+      },
+      {
+        "word": "Ambiguous",
+        "pos": "adjective",
+        "definition": "Having more than one possible meaning; unclear.",
+        "example": "The instructions were so **ambiguous** that nobody knew what to do."
+      },
+      {
+        "word": "Underlying",
+        "pos": "adjective",
+        "definition": "Existing as a hidden or less obvious cause of something.",
+        "example": "Poverty is often an **underlying** cause of poor health."
+      },
+      {
+        "word": "Correlation",
+        "pos": "noun",
+        "definition": "A connection between two things where one tends to change along with the other.",
+        "example": "Researchers found a strong **correlation** between exercise and mental wellbeing."
+      },
+      {
+        "word": "Feasible",
+        "pos": "adjective",
+        "definition": "Possible to do easily or practically.",
+        "example": "It isn't **feasible** to finish the project in just two days."
+      },
+      {
+        "word": "Inevitable",
+        "pos": "adjective",
+        "definition": "Certain to happen and impossible to avoid.",
+        "example": "As the city grew, traffic congestion became **inevitable**."
+      },
+      {
+        "word": "Diminish",
+        "pos": "verb",
+        "definition": "To become, or to make, smaller or less important.",
+        "example": "Public interest in the project began to **diminish** over time."
+      },
+      {
+        "word": "Facilitate",
+        "pos": "verb",
+        "definition": "To make an action or process easier.",
+        "example": "The new software will **facilitate** communication between departments."
+      },
+      {
+        "word": "Prevalent",
+        "pos": "adjective",
+        "definition": "Widespread or common in a particular place or at a particular time.",
+        "example": "Obesity has become increasingly **prevalent** in developed countries."
+      },
+      {
+        "word": "Notion",
+        "pos": "noun",
+        "definition": "An idea or belief about something.",
+        "example": "Many people reject the **notion** that money guarantees happiness."
+      },
+      {
+        "word": "Subsequent",
+        "pos": "adjective",
+        "definition": "Happening after something else.",
+        "example": "The **subsequent** meeting was cancelled due to low attendance."
+      },
+      {
+        "word": "Constitute",
+        "pos": "verb",
+        "definition": "To form or be a part of something as a whole.",
+        "example": "Women **constitute** nearly half of the university's student body."
+      },
+      {
+        "word": "Derive",
+        "pos": "verb",
+        "definition": "To obtain or receive something from a particular source.",
+        "example": "Much of the country's income is **derived** from tourism."
+      },
+      {
+        "word": "Implication",
+        "pos": "noun",
+        "definition": "A possible effect or result of an action or decision.",
+        "example": "The policy change has serious **implications** for small businesses."
+      },
+      {
+        "word": "Skeptical",
+        "pos": "adjective",
+        "definition": "Having doubts about whether something is true or will work.",
+        "example": "Many scientists remained **skeptical** of the new theory at first."
+      },
+      {
+        "word": "Empirical",
+        "pos": "adjective",
+        "definition": "Based on observation or experiment rather than theory alone.",
+        "example": "The study relies on **empirical** evidence gathered over ten years."
+      },
+      {
+        "word": "Coherent",
+        "pos": "adjective",
+        "definition": "Logical and well organised; easy to follow.",
+        "example": "Her essay presented a **coherent** argument from start to finish."
+      },
+      {
+        "word": "Advocate",
+        "pos": "verb",
+        "definition": "To publicly support a particular cause or policy.",
+        "example": "Many economists **advocate** for reduced trade barriers."
+      },
+      {
+        "word": "Discrepancy",
+        "pos": "noun",
+        "definition": "A difference between things that should otherwise match.",
+        "example": "There was a **discrepancy** between the two sets of figures."
+      },
+      {
+        "word": "Sustainable",
+        "pos": "adjective",
+        "definition": "Able to continue over a long period without causing lasting damage.",
+        "example": "The company adopted more **sustainable** farming methods."
+      },
+      {
+        "word": "Marginal",
+        "pos": "adjective",
+        "definition": "Very small in size, degree, or importance.",
+        "example": "The new design offers only a **marginal** improvement in efficiency."
+      },
+      {
+        "word": "Attribute",
+        "pos": "verb",
+        "definition": "To say that something is caused by a particular thing or person.",
+        "example": "She **attributes** her success to years of hard work."
+      },
+      {
+        "word": "Paradox",
+        "pos": "noun",
+        "definition": "A situation that seems to contradict itself but may still be true.",
+        "example": "It's a strange **paradox** that richer countries often report lower happiness levels."
+      },
+      {
+        "word": "Rigorous",
+        "pos": "adjective",
+        "definition": "Thorough, careful, and demanding of high standards.",
+        "example": "The product went through **rigorous** testing before release."
+      },
+      {
+        "word": "Undermine",
+        "pos": "verb",
+        "definition": "To gradually weaken something, often without it being obvious.",
+        "example": "Corruption continues to **undermine** public trust in government."
+      },
+      {
+        "word": "Versatile",
+        "pos": "adjective",
+        "definition": "Able to adapt easily to many different functions or situations.",
+        "example": "A **versatile** employee can move easily between different roles."
+      },
+      {
+        "word": "Viable",
+        "pos": "adjective",
+        "definition": "Capable of working successfully; practical.",
+        "example": "Solar power is now a **viable** alternative to fossil fuels in many regions."
+      },
+      {
+        "word": "Robust",
+        "pos": "adjective",
+        "definition": "Strong and unlikely to fail or break down.",
+        "example": "The economy showed **robust** growth despite global uncertainty."
+      }
+    ]
+  },
+  {
+    "id": "environment-society",
+    "title": "Environment & Society",
+    "words": [
+      {
+        "word": "Deforestation",
+        "pos": "noun",
+        "definition": "The cutting down of large areas of forest.",
+        "example": "**Deforestation** in the region has accelerated over the past decade."
+      },
+      {
+        "word": "Emission",
+        "pos": "noun",
+        "definition": "A substance, especially a gas, released into the air.",
+        "example": "Vehicle **emissions** are a major contributor to urban air pollution."
+      },
+      {
+        "word": "Renewable",
+        "pos": "adjective",
+        "definition": "Describing an energy source, like wind or sunlight, that is not used up.",
+        "example": "The government aims to double **renewable** energy capacity by 2035."
+      },
+      {
+        "word": "Biodiversity",
+        "pos": "noun",
+        "definition": "The variety of plant and animal life found in a particular habitat.",
+        "example": "Coral reefs support an extraordinary level of marine **biodiversity**."
+      },
+      {
+        "word": "Drought",
+        "pos": "noun",
+        "definition": "A long period of unusually low rainfall.",
+        "example": "The region has suffered its worst **drought** in fifty years."
+      },
+      {
+        "word": "Urbanisation",
+        "pos": "noun",
+        "definition": "The process by which more people come to live in cities.",
+        "example": "Rapid **urbanisation** has put enormous pressure on housing supply."
+      },
+      {
+        "word": "Depletion",
+        "pos": "noun",
+        "definition": "The reduction in the amount of something over time.",
+        "example": "The **depletion** of fish stocks has alarmed marine biologists."
+      },
+      {
+        "word": "Ecosystem",
+        "pos": "noun",
+        "definition": "All the living things in an area, together with how they interact with their surroundings.",
+        "example": "Removing one species can disrupt an entire **ecosystem**."
+      },
+      {
+        "word": "Pollutant",
+        "pos": "noun",
+        "definition": "A substance that causes harm to the environment.",
+        "example": "Factories were ordered to reduce the **pollutants** released into the river."
+      },
+      {
+        "word": "Conservation",
+        "pos": "noun",
+        "definition": "The protection of the natural environment and wildlife.",
+        "example": "The organisation focuses on the **conservation** of endangered species."
+      },
+      {
+        "word": "Overpopulation",
+        "pos": "noun",
+        "definition": "A situation in which there are too many people for the available resources.",
+        "example": "Some experts blame food shortages partly on **overpopulation**."
+      },
+      {
+        "word": "Sanitation",
+        "pos": "noun",
+        "definition": "Systems for removing waste and dirty water to protect public health.",
+        "example": "Poor **sanitation** remains a leading cause of disease in the region."
+      },
+      {
+        "word": "Congestion",
+        "pos": "noun",
+        "definition": "A situation in which a place, especially a road, is overcrowded.",
+        "example": "Traffic **congestion** costs the city millions in lost productivity each year."
+      },
+      {
+        "word": "Infrastructure",
+        "pos": "noun",
+        "definition": "The basic physical systems a country needs, such as roads and power supplies.",
+        "example": "The country needs to invest heavily in transport **infrastructure**."
+      },
+      {
+        "word": "Displacement",
+        "pos": "noun",
+        "definition": "The forced movement of people away from their homes.",
+        "example": "Flooding caused the **displacement** of thousands of families."
+      },
+      {
+        "word": "Regulation",
+        "pos": "noun",
+        "definition": "An official rule that controls how something is done.",
+        "example": "New **regulations** require factories to limit their emissions."
+      },
+      {
+        "word": "Habitat",
+        "pos": "noun",
+        "definition": "The natural home or environment of a plant or animal.",
+        "example": "Logging has destroyed much of the species' natural **habitat**."
+      },
+      {
+        "word": "Municipality",
+        "pos": "noun",
+        "definition": "A town or city that has its own local government.",
+        "example": "The **municipality** introduced a new recycling scheme last year."
+      },
+      {
+        "word": "Subsidy",
+        "pos": "noun",
+        "definition": "Money given by a government to reduce the cost of something.",
+        "example": "Farmers receive a **subsidy** to grow certain crops."
+      },
+      {
+        "word": "Consumption",
+        "pos": "noun",
+        "definition": "The use of goods, energy, or natural resources.",
+        "example": "Household energy **consumption** rises sharply during winter."
+      },
+      {
+        "word": "Degradation",
+        "pos": "noun",
+        "definition": "The process of something, especially land or the environment, being made worse.",
+        "example": "Soil **degradation** threatens agricultural output in many regions."
+      },
+      {
+        "word": "Inequality",
+        "pos": "noun",
+        "definition": "Unfair differences between groups of people in wealth, opportunity, or status.",
+        "example": "Income **inequality** has widened in many developed economies."
+      },
+      {
+        "word": "Welfare",
+        "pos": "noun",
+        "definition": "The general health, happiness, and safety of a person or group.",
+        "example": "The reforms aim to improve the **welfare** of low-income families."
+      },
+      {
+        "word": "Legislation",
+        "pos": "noun",
+        "definition": "Laws considered as a group, or the process of making laws.",
+        "example": "New **legislation** was passed to protect coastal wetlands."
+      },
+      {
+        "word": "Commute",
+        "pos": "verb",
+        "definition": "To travel regularly between home and a place of work.",
+        "example": "Many residents **commute** over an hour each way to the city centre."
+      },
+      {
+        "word": "Landfill",
+        "pos": "noun",
+        "definition": "A site where large amounts of waste are buried in the ground.",
+        "example": "Reducing packaging waste keeps more material out of **landfill**."
+      },
+      {
+        "word": "Agriculture",
+        "pos": "noun",
+        "definition": "The practice of farming, including growing crops and raising animals.",
+        "example": "**Agriculture** remains the largest employer in several developing economies."
+      },
+      {
+        "word": "Resilience",
+        "pos": "noun",
+        "definition": "The ability to recover quickly from difficulties or damage.",
+        "example": "Coastal cities are investing in flood defences to improve **resilience**."
+      },
+      {
+        "word": "Initiative",
+        "pos": "noun",
+        "definition": "A new plan or process introduced to achieve a particular goal.",
+        "example": "The city launched an **initiative** to plant one million trees."
+      },
+      {
+        "word": "Overconsumption",
+        "pos": "noun",
+        "definition": "The use of more resources than is necessary or sustainable.",
+        "example": "Critics argue that **overconsumption** in wealthy nations drives much environmental damage."
+      },
+      {
+        "word": "Contamination",
+        "pos": "noun",
+        "definition": "The process of making something impure by adding a harmful substance.",
+        "example": "**Contamination** of the water supply forced the plant to shut down."
+      },
+      {
+        "word": "Livelihood",
+        "pos": "noun",
+        "definition": "A person's main way of earning enough money to live.",
+        "example": "Fishing is the main **livelihood** for many coastal families."
+      },
+      {
+        "word": "Accessibility",
+        "pos": "noun",
+        "definition": "The quality of being easy to reach, enter, or use.",
+        "example": "The new subway line greatly improved **accessibility** for disabled residents."
+      }
+    ]
+  },
+  {
+    "id": "everyday-speaking",
+    "title": "Everyday & Speaking",
+    "words": [
+      {
+        "word": "Get the hang of",
+        "pos": "phrase",
+        "definition": "To learn how to do something after some practice.",
+        "example": "It took me a while to **get the hang of** driving on the left."
+      },
+      {
+        "word": "Look forward to",
+        "pos": "phrase",
+        "definition": "To feel excited about something that is going to happen.",
+        "example": "I really **look forward to** visiting my grandparents every summer."
+      },
+      {
+        "word": "Make up your mind",
+        "pos": "phrase",
+        "definition": "To decide on something.",
+        "example": "I still haven't **made up my mind** about which course to take."
+      },
+      {
+        "word": "On the go",
+        "pos": "phrase",
+        "definition": "Very busy, moving from one activity to another.",
+        "example": "Between work and family, I'm constantly **on the go**."
+      },
+      {
+        "word": "Catch up with",
+        "pos": "phrasal verb",
+        "definition": "To spend time with someone you haven't seen in a while, sharing recent news.",
+        "example": "We met for coffee to **catch up** after months apart."
+      },
+      {
+        "word": "Get along with",
+        "pos": "phrasal verb",
+        "definition": "To have a friendly relationship with someone.",
+        "example": "I **get along with** most of my colleagues really well."
+      },
+      {
+        "word": "Take up",
+        "pos": "phrasal verb",
+        "definition": "To start doing a new hobby or activity.",
+        "example": "She decided to **take up** painting during the lockdown."
+      },
+      {
+        "word": "Put off",
+        "pos": "phrasal verb",
+        "definition": "To delay doing something.",
+        "example": "I keep **putting off** cleaning out the garage."
+      },
+      {
+        "word": "Come across",
+        "pos": "phrasal verb",
+        "definition": "To find something by chance, or to give a particular impression.",
+        "example": "He **comes across** as very confident in interviews."
+      },
+      {
+        "word": "Turn out",
+        "pos": "phrasal verb",
+        "definition": "To happen in a particular way, especially one that was not expected.",
+        "example": "The weather **turned out** much better than the forecast suggested."
+      },
+      {
+        "word": "Get by",
+        "pos": "phrasal verb",
+        "definition": "To manage to live or cope, especially with limited money or resources.",
+        "example": "It's hard to **get by** on a part-time salary in this city."
+      },
+      {
+        "word": "Bring up",
+        "pos": "phrasal verb",
+        "definition": "To raise a child, or to mention a topic in conversation.",
+        "example": "She was **brought up** in a small village outside the capital."
+      },
+      {
+        "word": "Figure out",
+        "pos": "phrasal verb",
+        "definition": "To understand or solve something after thinking about it.",
+        "example": "It took me ages to **figure out** how the new app worked."
+      },
+      {
+        "word": "Rely on",
+        "pos": "phrasal verb",
+        "definition": "To depend on someone or something.",
+        "example": "Many rural communities **rely on** a single road for access to the city."
+      },
+      {
+        "word": "Stand out",
+        "pos": "phrasal verb",
+        "definition": "To be noticeably better or different from others around it.",
+        "example": "Her application really **stood out** among hundreds of others."
+      },
+      {
+        "word": "Keep up with",
+        "pos": "phrasal verb",
+        "definition": "To move or progress at the same rate as someone or something.",
+        "example": "It's hard to **keep up with** how quickly technology changes."
+      },
+      {
+        "word": "Settle down",
+        "pos": "phrasal verb",
+        "definition": "To start living a stable, quiet life, often after a period of travel or change.",
+        "example": "After years abroad, they decided to **settle down** back home."
+      },
+      {
+        "word": "Get over",
+        "pos": "phrasal verb",
+        "definition": "To recover from something difficult, such as an illness or disappointment.",
+        "example": "It took him months to **get over** the loss of his job."
+      },
+      {
+        "word": "Look into",
+        "pos": "phrasal verb",
+        "definition": "To investigate or examine something carefully.",
+        "example": "The council agreed to **look into** residents' complaints about noise."
+      },
+      {
+        "word": "Run into",
+        "pos": "phrasal verb",
+        "definition": "To meet someone unexpectedly.",
+        "example": "I **ran into** an old classmate at the airport last week."
+      },
+      {
+        "word": "Set aside",
+        "pos": "phrasal verb",
+        "definition": "To save something, usually time or money, for a particular purpose.",
+        "example": "I try to **set aside** a little money every month for savings."
+      },
+      {
+        "word": "Take after",
+        "pos": "phrasal verb",
+        "definition": "To resemble a parent or older relative in appearance or character.",
+        "example": "She really **takes after** her mother in terms of ambition."
+      },
+      {
+        "word": "Wear off",
+        "pos": "phrasal verb",
+        "definition": "For a feeling or effect to gradually disappear.",
+        "example": "The excitement of the new job soon **wore off**."
+      },
+      {
+        "word": "Break the ice",
+        "pos": "phrase",
+        "definition": "To say or do something that makes people feel more relaxed in a new or awkward situation.",
+        "example": "The host told a joke to **break the ice** at the start of the meeting."
+      },
+      {
+        "word": "Weigh up",
+        "pos": "phrasal verb",
+        "definition": "To carefully consider the advantages and disadvantages of something.",
+        "example": "We need to **weigh up** the pros and cons before deciding."
+      },
+      {
+        "word": "Get around to",
+        "pos": "phrase",
+        "definition": "To eventually find the time to do something.",
+        "example": "I finally **got around to** fixing the leaking tap."
+      },
+      {
+        "word": "Make ends meet",
+        "pos": "phrase",
+        "definition": "To have just enough money to cover basic living costs.",
+        "example": "With rising rent, it's getting harder to **make ends meet**."
+      },
+      {
+        "word": "Take it easy",
+        "pos": "phrase",
+        "definition": "To relax and avoid stress or hard work.",
+        "example": "After the exams, I just want to **take it easy** for a while."
+      },
+      {
+        "word": "Under the weather",
+        "pos": "phrase",
+        "definition": "Feeling slightly unwell.",
+        "example": "I'm feeling a bit **under the weather**, so I might skip the gym today."
+      },
+      {
+        "word": "Out of the blue",
+        "pos": "phrase",
+        "definition": "Happening suddenly and unexpectedly.",
+        "example": "She called me **out of the blue** after years of silence."
+      },
+      {
+        "word": "On the same page",
+        "pos": "phrase",
+        "definition": "Having the same understanding or opinion as someone else about something.",
+        "example": "Before we start the project, let's make sure we're **on the same page**."
+      },
+      {
+        "word": "Get straight to the point",
+        "pos": "phrase",
+        "definition": "To say something directly, without unnecessary detail.",
+        "example": "I'll **get straight to the point**: the project is behind schedule."
+      },
+      {
+        "word": "In the long run",
+        "pos": "phrase",
+        "definition": "Over a long period of time; eventually.",
+        "example": "Buying quality tools costs more now but saves money **in the long run**."
+      }
+    ]
+  }
+]

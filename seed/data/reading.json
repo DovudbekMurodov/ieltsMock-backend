@@ -1,0 +1,922 @@
+[
+  {
+    "id": "twilight-zone",
+    "title": "The Ocean's Twilight Zone",
+    "timeLimitMinutes": 20,
+    "passage": {
+      "title": "The Ocean's Twilight Zone",
+      "paragraphs": [
+        {
+          "label": "A",
+          "text": "Between the sunlit surface waters of the ocean and the pitch-black depths lies a vast, dim region known as the mesopelagic zone, or more evocatively, the “twilight zone.” Stretching from roughly 200 to 1,000 metres below the surface, this layer receives only a faint trace of sunlight — enough for some visual predators to hunt by, but far too little to support photosynthesis. Despite its gloom and crushing pressure, the twilight zone is thought to hold the largest, and least understood, aggregation of animal biomass on the planet, a fact that has only become clear to scientists within the last few decades."
+        },
+        {
+          "label": "B",
+          "text": "One of the twilight zone’s most striking features is the sheer abundance of bioluminescent organisms. Scientists estimate that up to ninety percent of the animals living at these depths can produce their own light, either through chemical reactions inside specialised cells or with the help of light-emitting bacteria housed in their tissue. Bioluminescence serves several purposes: some creatures use flashes of light to startle predators, others dangle a glowing lure to attract prey, and many small fish use a technique called counter-illumination, projecting light downward from their bellies to erase the shadow they would otherwise cast against the faint light filtering down from above."
+        },
+        {
+          "label": "C",
+          "text": "Perhaps the most significant behaviour observed in this zone is diel vertical migration, widely regarded as the largest synchronised movement of biomass on Earth. Each evening, billions of small fish, shrimp-like krill, and other zooplankton rise from the twilight zone toward the surface under cover of darkness to feed on phytoplankton, before descending again before sunrise to avoid visual predators that hunt by sight. This nightly commute, repeated across every ocean basin on the planet, moves an immense quantity of carbon and nutrients between the surface and the deep sea, on a scale that dwarfs most other biological processes."
+        },
+        {
+          "label": "D",
+          "text": "That migration is central to what oceanographers call the biological carbon pump. When surface-dwelling organisms consume carbon-rich phytoplankton and then migrate downward, they effectively transport carbon away from the atmosphere and lock it deeper in the ocean, whether through respiration, waste, or their own eventual death and sinking. Some estimates suggest the twilight zone's migrating creatures account for a significant share of the ocean's capacity to draw down atmospheric carbon dioxide, making the region quietly important to the planet's climate system even though it receives comparatively little public attention or funding relative to more visible ecosystems such as coral reefs."
+        },
+        {
+          "label": "E",
+          "text": "Studying this zone, however, presents considerable technical challenges. Conventional nets often damage or miss fast-swimming, gelatinous, or fragile organisms, while many animals are notoriously adept at detecting and avoiding an approaching research vessel, a phenomenon researchers call “net avoidance.” As a result, biomass estimates derived from trawl surveys are widely suspected to be too low, in some cases by an order of magnitude. Newer approaches, including acoustic surveys, underwater cameras, and autonomous submersibles capable of following migrating layers without disturbing them, have begun to paint a more accurate picture, but the true scale of life in the twilight zone remains a matter of active scientific debate."
+        },
+        {
+          "label": "F",
+          "text": "The zone's obscurity has not stopped commercial interest from emerging. Fisheries have begun to explore the twilight zone as a potential source of fishmeal and fish oil, given the sheer volume of small fish such as bristlemouths and lanternfish believed to live there. Conservationists warn that harvesting a layer of the ocean so poorly understood, and so central to carbon cycling, could carry consequences far beyond the fishery itself, potentially weakening one of the planet's most significant natural buffers against climate change before scientists have even finished mapping what lives there or how the system actually works."
+        }
+      ]
+    },
+    "questions": [
+      {
+        "id": 1,
+        "type": "tfng",
+        "prompt": "The mesopelagic zone receives no sunlight at all.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 2,
+        "type": "tfng",
+        "prompt": "Diel vertical migration is considered the largest synchronised movement of biomass on Earth.",
+        "answer": "TRUE"
+      },
+      {
+        "id": 3,
+        "type": "tfng",
+        "prompt": "The exact total biomass living in the twilight zone has now been precisely measured.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 4,
+        "type": "tfng",
+        "prompt": "Fisheries are already carrying out large-scale commercial harvesting of lanternfish.",
+        "answer": "NOT GIVEN"
+      },
+      {
+        "id": 5,
+        "type": "mcq",
+        "prompt": "According to the passage, counter-illumination is used by small fish primarily to:",
+        "options": [
+          "attract mates",
+          "startle predators",
+          "hide their silhouette from predators below",
+          "navigate in darkness"
+        ],
+        "answer": "hide their silhouette from predators below"
+      },
+      {
+        "id": 6,
+        "type": "mcq",
+        "prompt": "The biological carbon pump is driven mainly by:",
+        "options": [
+          "volcanic activity on the seafloor",
+          "organisms consuming surface carbon and transporting it downward through migration",
+          "sunlight penetrating to 1,000 metres",
+          "fishing vessels stirring up sediment"
+        ],
+        "answer": "organisms consuming surface carbon and transporting it downward through migration"
+      },
+      {
+        "id": 7,
+        "type": "mcq",
+        "prompt": "Why do conventional nets give unreliable biomass estimates?",
+        "options": [
+          "They are too expensive to deploy widely",
+          "Many organisms are fragile, fast, or avoid the nets",
+          "They can only be used in shallow water",
+          "They only capture bioluminescent species"
+        ],
+        "answer": "Many organisms are fragile, fast, or avoid the nets"
+      },
+      {
+        "id": 8,
+        "type": "mcq",
+        "prompt": "What method does the passage mention for studying the twilight zone with less disturbance?",
+        "options": [
+          "chemical tracers",
+          "satellite imagery",
+          "autonomous submersibles",
+          "manual net dredging"
+        ],
+        "answer": "autonomous submersibles"
+      },
+      {
+        "id": 9,
+        "type": "gap",
+        "prompt": "Up to ______ percent of animals in the twilight zone can produce their own light.",
+        "acceptedAnswers": [
+          "ninety",
+          "90"
+        ]
+      },
+      {
+        "id": 10,
+        "type": "gap",
+        "prompt": "Researchers call the tendency of twilight zone animals to evade research vessels '______ avoidance.'",
+        "acceptedAnswers": [
+          "net"
+        ]
+      },
+      {
+        "id": 11,
+        "type": "matching",
+        "prompt": "Which heading best fits paragraph E?",
+        "options": [
+          "The commercial risks of an unmapped ecosystem",
+          "Technical difficulties in measuring life in the deep",
+          "How light is produced and used by deep-sea creatures",
+          "A daily journey that shapes the carbon cycle",
+          "Comparing surface and deep-sea food webs",
+          "The discovery of the twilight zone"
+        ],
+        "answer": "Technical difficulties in measuring life in the deep"
+      },
+      {
+        "id": 12,
+        "type": "matching",
+        "prompt": "Which heading best fits paragraph D?",
+        "options": [
+          "The commercial risks of an unmapped ecosystem",
+          "Technical difficulties in measuring life in the deep",
+          "How light is produced and used by deep-sea creatures",
+          "A daily journey that shapes the carbon cycle",
+          "Comparing surface and deep-sea food webs",
+          "The discovery of the twilight zone"
+        ],
+        "answer": "A daily journey that shapes the carbon cycle"
+      }
+    ]
+  },
+  {
+    "id": "rise-of-the-bicycle",
+    "title": "The Rise of the Bicycle",
+    "timeLimitMinutes": 20,
+    "passage": {
+      "title": "The Rise of the Bicycle",
+      "paragraphs": [
+        {
+          "label": "A",
+          "text": "For a machine built from little more than two wheels, a frame, and a chain, the bicycle has had an outsized influence on modern life. Its earliest ancestor, a wooden contraption called the draisine, appeared in 1817 and had no pedals at all; riders propelled it by pushing their feet directly against the ground, much like walking while seated. It would take several more decades of tinkering — the addition of pedals, then gears, then pneumatic rubber tyres — before the bicycle resembled anything close to the machine recognised today, and even longer before it became something ordinary people could afford to own."
+        },
+        {
+          "label": "B",
+          "text": "The 1890s are often remembered as the “golden age” of the bicycle, a decade in which the machine became genuinely affordable and wildly popular across Europe and North America. Manufacturing improvements, particularly the standardisation of parts, drove prices down sharply, while the introduction of the “safety bicycle” — with two equally sized wheels and a chain-driven rear wheel — replaced the dangerously top-heavy penny-farthing and made cycling accessible to a far broader range of riders, including many who had never dared attempt the earlier, more perilous designs that preceded it."
+        },
+        {
+          "label": "C",
+          "text": "The social consequences of this new mobility were considerable, particularly for women. The suffragist Susan B. Anthony famously remarked that the bicycle had “done more to emancipate women than anything else in the world,” and while the claim invites debate, there is little doubt that cycling gave many women a practical means of independent travel for the first time, unmediated by a chaperone, a carriage, or a train timetable. The bicycle also influenced fashion, hastening the decline of restrictive corsets and long skirts in favour of clothing that allowed freer, safer movement."
+        },
+        {
+          "label": "D",
+          "text": "As the twentieth century advanced and the automobile became the dominant symbol of personal transport, the bicycle in many wealthy nations was gradually recast as a child’s toy or a recreational device rather than serious transportation. Cities built around the car sprawled outward, and cycling infrastructure — where it existed at all — was frequently treated as an afterthought in planning decisions. Yet in much of the world, the bicycle never lost its role as essential, affordable transport, remaining central to daily commuting, small-scale trade, and even emergency transport in regions where car ownership stayed low."
+        },
+        {
+          "label": "E",
+          "text": "In recent decades, however, urban planners in car-dominated cities have begun reconsidering the bicycle’s place, driven by concerns over traffic congestion, air pollution, and public health. Cities that have invested heavily in protected bike lanes, connected cycling networks, and bike-share schemes have generally seen cycling rates climb sharply within just a few years, suggesting that the earlier decline of urban cycling had less to do with any inherent unsuitability of the bicycle and more to do with infrastructure that simply made cycling unpleasant or dangerous."
+        },
+        {
+          "label": "F",
+          "text": "The most recent chapter in the bicycle’s long history is electrification. E-bikes, equipped with a small motor that assists rather than replaces pedalling, have proven particularly effective at extending cycling’s appeal to hillier terrain, longer commutes, and older riders who might otherwise be discouraged by physical exertion. Some transport researchers now argue that e-bikes, rather than electric cars, may prove to be the more transformative technology for reducing urban car dependence, precisely because they lower the physical barrier to cycling without requiring the vast infrastructure and energy investment that electric cars still demand."
+        }
+      ]
+    },
+    "questions": [
+      {
+        "id": 1,
+        "type": "tfng",
+        "prompt": "The draisine, invented in 1817, had pedals.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 2,
+        "type": "tfng",
+        "prompt": "The safety bicycle was more dangerous to ride than the penny-farthing.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 3,
+        "type": "tfng",
+        "prompt": "Susan B. Anthony believed cycling had no real effect on women's independence.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 4,
+        "type": "tfng",
+        "prompt": "In every country, the bicycle stopped being used as serious transport during the twentieth century.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 5,
+        "type": "mcq",
+        "prompt": "According to paragraph B, what mainly caused bicycles to become cheaper in the 1890s?",
+        "options": [
+          "Government subsidies",
+          "Standardisation of manufactured parts",
+          "Reduced tyre taxes",
+          "A drop in steel prices"
+        ],
+        "answer": "Standardisation of manufactured parts"
+      },
+      {
+        "id": 6,
+        "type": "mcq",
+        "prompt": "The passage suggests the earlier decline in urban cycling was mainly caused by:",
+        "options": [
+          "people simply preferring the look of cars",
+          "inadequate or unpleasant cycling infrastructure",
+          "a global shortage of bicycles",
+          "new laws banning bicycles in cities"
+        ],
+        "answer": "inadequate or unpleasant cycling infrastructure"
+      },
+      {
+        "id": 7,
+        "type": "mcq",
+        "prompt": "Why might e-bikes be more transformative than electric cars, according to some researchers?",
+        "options": [
+          "They are cheaper to manufacture",
+          "They lower the physical barrier to cycling while needing far less infrastructure and energy investment",
+          "They can travel longer distances than electric cars",
+          "They produce zero emissions while electric cars do not"
+        ],
+        "answer": "They lower the physical barrier to cycling while needing far less infrastructure and energy investment"
+      },
+      {
+        "id": 8,
+        "type": "mcq",
+        "prompt": "What replaced the penny-farthing?",
+        "options": [
+          "The draisine",
+          "The e-bike",
+          "The safety bicycle",
+          "The mountain bike"
+        ],
+        "answer": "The safety bicycle"
+      },
+      {
+        "id": 9,
+        "type": "gap",
+        "prompt": "The bicycle's ancestor, the draisine, first appeared in the year ______.",
+        "acceptedAnswers": [
+          "1817"
+        ]
+      },
+      {
+        "id": 10,
+        "type": "gap",
+        "prompt": "Cities that invest in protected bike lanes and bike-share schemes have generally seen cycling rates ______.",
+        "acceptedAnswers": [
+          "climb",
+          "climb sharply",
+          "rise",
+          "increase"
+        ]
+      },
+      {
+        "id": 11,
+        "type": "matching",
+        "prompt": "Which heading best fits paragraph C?",
+        "options": [
+          "A machine reborn through electric power",
+          "An overlooked factor in women's independence",
+          "From wooden toy to global industry",
+          "Rethinking streets once built for cars",
+          "The decade prices fell and popularity soared",
+          "A gradual fall from serious transport to plaything"
+        ],
+        "answer": "An overlooked factor in women's independence"
+      },
+      {
+        "id": 12,
+        "type": "matching",
+        "prompt": "Which heading best fits paragraph F?",
+        "options": [
+          "A machine reborn through electric power",
+          "An overlooked factor in women's independence",
+          "From wooden toy to global industry",
+          "Rethinking streets once built for cars",
+          "The decade prices fell and popularity soared",
+          "A gradual fall from serious transport to plaything"
+        ],
+        "answer": "A machine reborn through electric power"
+      }
+    ]
+  },
+  {
+    "id": "silk-road-revival",
+    "title": "The Silk Road's Quiet Revival",
+    "timeLimitMinutes": 20,
+    "passage": {
+      "title": "The Silk Road's Quiet Revival",
+      "paragraphs": [
+        {
+          "label": "A",
+          "text": "For roughly 1,500 years, a shifting network of caravan routes known collectively as the Silk Road connected China to the Mediterranean, carrying silk, spices, and ideas across Central Asia long before the concept of globalisation existed. The rise of cheap sea transport in the sixteenth century, followed by the steamship and later the container ship, gradually made the overland route commercially irrelevant, and by the twentieth century the historical Silk Road survived mainly as a subject for historians and tourists rather than a functioning trade corridor."
+        },
+        {
+          "label": "B",
+          "text": "In the past fifteen years, however, a modern equivalent has quietly re-emerged in the form of freight rail. Regular container trains now run from manufacturing hubs in eastern China, across Kazakhstan and Russia or via a more southerly route through Central Asia, Iran and Turkey, before terminating in cities such as Duisburg, Madrid, and London. The number of such trains has grown from a handful of experimental services a decade ago to several thousand journeys annually, an expansion that surprised even some logistics specialists who had assumed sea freight’s cost advantage was insurmountable."
+        },
+        {
+          "label": "C",
+          "text": "The appeal of rail lies in a straightforward trade-off between the two dominant alternatives. Sea freight remains far cheaper but can take five to seven weeks door-to-door from China to Western Europe; air freight is fast, often under a week, but prohibitively expensive for anything but the lightest, highest-value cargo. Rail occupies a middle ground, typically completing the journey in twelve to eighteen days at a price closer to sea freight than air, making it particularly attractive for time-sensitive but bulky goods such as electronics and automotive parts."
+        },
+        {
+          "label": "D",
+          "text": "Central Asian states, largely bypassed by the container-shipping era, have found themselves unexpectedly central to this revival. Kazakhstan in particular has invested heavily in dry ports and rail infrastructure, positioning itself as an indispensable transit hub between China and Europe simply by virtue of geography. Cities that once served as staging posts for camel caravans now host modern logistics terminals, and local officials have been quick to frame the trend as a long-delayed return to historical relevance rather than a novel development."
+        },
+        {
+          "label": "E",
+          "text": "The revival is not without serious obstacles. Differences in railway gauge between China, the former Soviet states, and Europe mean freight must be transferred between trains at least twice per journey, adding cost and delay at each border. Customs procedures across multiple jurisdictions remain inconsistent, and the route's dependence on stable relations between the countries it crosses leaves it vulnerable to disruption from political tension or conflict in ways that sea routes generally are not."
+        },
+        {
+          "label": "F",
+          "text": "Looking ahead, two forces seem likely to shape the corridor's future more than any government policy. Digital tracking systems are gradually making it easier for shippers to monitor cargo in real time across multiple borders, addressing one of rail freight's traditional disadvantages relative to sea carriers. At the same time, growing pressure to reduce shipping emissions may work in rail's favour, since a single freight train produces substantially less carbon dioxide per tonne of cargo than either a cargo plane or, on a like-for-like basis, a significant share of oceangoing vessels still running on heavy fuel oil."
+        }
+      ]
+    },
+    "questions": [
+      {
+        "id": 1,
+        "type": "tfng",
+        "prompt": "Sea transport made the overland Silk Road commercially irrelevant before the twentieth century.",
+        "answer": "TRUE"
+      },
+      {
+        "id": 2,
+        "type": "tfng",
+        "prompt": "Air freight is cheaper than rail freight for bulky goods.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 3,
+        "type": "tfng",
+        "prompt": "The Chinese government subsidises freight rail companies to keep prices competitive.",
+        "answer": "NOT GIVEN"
+      },
+      {
+        "id": 4,
+        "type": "tfng",
+        "prompt": "Rail freight between China and Europe always uses trains of the same gauge throughout the journey.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 5,
+        "type": "mcq",
+        "prompt": "According to the passage, rail freight between China and Europe typically takes:",
+        "options": [
+          "5-7 weeks",
+          "under a week",
+          "12-18 days",
+          "more than two months"
+        ],
+        "answer": "12-18 days"
+      },
+      {
+        "id": 6,
+        "type": "mcq",
+        "prompt": "Kazakhstan's importance to the modern rail corridor is mainly due to:",
+        "options": [
+          "low labour costs",
+          "its geographic location",
+          "government subsidies for rail companies",
+          "its large domestic market"
+        ],
+        "answer": "its geographic location"
+      },
+      {
+        "id": 7,
+        "type": "mcq",
+        "prompt": "What is described as one of rail freight's traditional disadvantages compared with sea carriers?",
+        "options": [
+          "higher fuel consumption",
+          "difficulty tracking cargo in real time across borders",
+          "inability to carry heavy goods",
+          "lack of available routes"
+        ],
+        "answer": "difficulty tracking cargo in real time across borders"
+      },
+      {
+        "id": 8,
+        "type": "mcq",
+        "prompt": "Why might growing concern about emissions favour rail freight?",
+        "options": [
+          "trains can be powered entirely by solar panels",
+          "a train produces less CO2 per tonne of cargo than planes or many ships",
+          "rail companies are legally required to cut emissions",
+          "sea freight has been banned in some countries"
+        ],
+        "answer": "a train produces less CO2 per tonne of cargo than planes or many ships"
+      },
+      {
+        "id": 9,
+        "type": "gap",
+        "prompt": "A journey from China to Western Europe by sea freight can take five to ______ weeks.",
+        "acceptedAnswers": [
+          "seven",
+          "seven weeks"
+        ]
+      },
+      {
+        "id": 10,
+        "type": "gap",
+        "prompt": "Freight must be transferred between trains at least ______ times per journey due to gauge differences.",
+        "acceptedAnswers": [
+          "twice",
+          "two"
+        ]
+      },
+      {
+        "id": 11,
+        "type": "matching",
+        "prompt": "Which heading best fits paragraph C?",
+        "options": [
+          "A geography-driven rise to prominence",
+          "The trade-off between speed and cost",
+          "Borders, gauges, and political risk",
+          "Two trends that could define the future",
+          "A route's long decline",
+          "An unexpected surge in rail journeys"
+        ],
+        "answer": "The trade-off between speed and cost"
+      },
+      {
+        "id": 12,
+        "type": "matching",
+        "prompt": "Which heading best fits paragraph E?",
+        "options": [
+          "A geography-driven rise to prominence",
+          "The trade-off between speed and cost",
+          "Borders, gauges, and political risk",
+          "Two trends that could define the future",
+          "A route's long decline",
+          "An unexpected surge in rail journeys"
+        ],
+        "answer": "Borders, gauges, and political risk"
+      }
+    ]
+  },
+  {
+    "id": "octopus-intelligence",
+    "title": "Octopus Intelligence",
+    "timeLimitMinutes": 20,
+    "passage": {
+      "title": "Octopus Intelligence",
+      "paragraphs": [
+        {
+          "label": "A",
+          "text": "Octopuses are solitary, short-lived invertebrates that appear, on the surface, to be poor candidates for sophisticated intelligence, yet decades of research suggest otherwise. Their evolutionary lineage split from the one leading to vertebrates roughly five hundred million years ago, long before anything resembling a complex brain had evolved in either branch. This means that whatever cognitive abilities octopuses possess must have evolved entirely independently of the pathway that produced intelligence in mammals and birds, making them one of the clearest natural experiments in how intelligence can arise more than once, by entirely different routes, within the animal kingdom."
+        },
+        {
+          "label": "B",
+          "text": "Much of what makes the octopus nervous system unusual lies in its distribution. Roughly two-thirds of an octopus's neurons are located not in its central brain but in its eight arms, each of which contains a substantial cluster of nerve cells capable of processing sensory information and directing movement with a striking degree of independence. Researchers have observed that a severed octopus arm can still respond to stimuli and execute coordinated movements for a period afterward, leading some scientists to describe the arms as semi-autonomous problem-solvers rather than simple limbs awaiting instructions from a central controller."
+        },
+        {
+          "label": "C",
+          "text": "Laboratory studies have repeatedly demonstrated behaviour that would be considered impressive even in vertebrates widely regarded as intelligent. Captive octopuses have learned to unscrew jar lids to reach food hidden inside, navigate mazes, and recognise individual human keepers, sometimes squirting water at people they appear to dislike. In the wild, the veined octopus has been observed collecting and carrying halved coconut shells across the seafloor, later assembling them into a makeshift shelter, a behaviour some researchers consider a rare example of tool use among invertebrates, since the shells are carried before their protective function is actually needed."
+        },
+        {
+          "label": "D",
+          "text": "Equally remarkable is the octopus's camouflage system, which allows it to alter both the colour and texture of its skin within a fraction of a second to match its surroundings. Curiously, octopuses are colour-blind according to conventional tests of their eyes, yet their skin contains light-sensitive proteins similar to those found in eyes, leading some researchers to propose that octopuses may somehow sense colour or light patterns directly through their skin. Precisely how this information is processed and translated into an accurate colour match remains one of the more actively debated questions in cephalopod research."
+        },
+        {
+          "label": "E",
+          "text": "What makes the octopus's cognitive abilities particularly puzzling is how briefly most individuals live to make use of them. The majority of octopus species survive only one to two years, reproducing once at the end of their life before dying shortly afterward. This is unusually short for an animal capable of learning complex tasks, since in most other intelligent species — elephants, parrots, primates — a long lifespan is thought to be closely linked to the evolutionary value of being able to learn from experience over time."
+        },
+        {
+          "label": "F",
+          "text": "This tension has made octopuses a genuinely difficult subject to research using the standard toolkit of animal cognition science, much of which was designed around long-lived, social species that learn partly by observing others. Because octopuses are largely solitary and short-lived, many conventional tests of social learning simply do not apply to them, forcing researchers to design new experimental approaches. The resulting body of evidence has already begun to reshape a long-standing assumption in the field: that sophisticated cognition necessarily requires either a long lifespan, a highly social lifestyle, or a vertebrate-style centralised brain. Octopuses appear to meet none of these conditions, yet by most reasonable measures, they still think."
+        }
+      ]
+    },
+    "questions": [
+      {
+        "id": 1,
+        "type": "tfng",
+        "prompt": "Octopuses and vertebrates share a recent common ancestor with a complex brain.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 2,
+        "type": "tfng",
+        "prompt": "A severed octopus arm can continue to move in a coordinated way for some time.",
+        "answer": "TRUE"
+      },
+      {
+        "id": 3,
+        "type": "tfng",
+        "prompt": "All octopus species are known to use coconut shells as shelters.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 4,
+        "type": "tfng",
+        "prompt": "Scientists fully understand how octopus skin translates light into an accurate colour match.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 5,
+        "type": "mcq",
+        "prompt": "According to the passage, why are octopuses considered a natural experiment in the evolution of intelligence?",
+        "options": [
+          "They are the only invertebrates capable of learning",
+          "Their intelligence evolved separately from the vertebrate lineage",
+          "They have the largest brains of any invertebrate",
+          "They evolved directly from early vertebrates"
+        ],
+        "answer": "Their intelligence evolved separately from the vertebrate lineage"
+      },
+      {
+        "id": 6,
+        "type": "mcq",
+        "prompt": "What is unusual about the octopus's nervous system?",
+        "options": [
+          "It has no central brain at all",
+          "Most of its neurons are located in its arms rather than its brain",
+          "It lacks the ability to process sensory information",
+          "It is identical in structure to a vertebrate brain"
+        ],
+        "answer": "Most of its neurons are located in its arms rather than its brain"
+      },
+      {
+        "id": 7,
+        "type": "mcq",
+        "prompt": "Why do octopuses' short lifespans puzzle researchers?",
+        "options": [
+          "Short lifespans are rare among invertebrates",
+          "Long lifespans are usually linked to the evolutionary value of learning from experience",
+          "Octopuses are expected to live longer than elephants",
+          "No other marine animal has a short lifespan"
+        ],
+        "answer": "Long lifespans are usually linked to the evolutionary value of learning from experience"
+      },
+      {
+        "id": 8,
+        "type": "mcq",
+        "prompt": "Why do standard animal cognition tests often not apply well to octopuses?",
+        "options": [
+          "Octopuses cannot see color at all",
+          "Those tests were designed mainly for long-lived, social species",
+          "Octopuses are too large to test in laboratories",
+          "Octopuses do not respond to any stimuli"
+        ],
+        "answer": "Those tests were designed mainly for long-lived, social species"
+      },
+      {
+        "id": 9,
+        "type": "gap",
+        "prompt": "Roughly ______ of an octopus's neurons are located in its arms rather than its brain.",
+        "acceptedAnswers": [
+          "two-thirds"
+        ]
+      },
+      {
+        "id": 10,
+        "type": "gap",
+        "prompt": "Most octopus species live only one to ______ years.",
+        "acceptedAnswers": [
+          "two",
+          "two years"
+        ]
+      },
+      {
+        "id": 11,
+        "type": "matching",
+        "prompt": "Which heading best fits paragraph B?",
+        "options": [
+          "An intelligence that evolved on its own path",
+          "A nervous system spread across eight arms",
+          "Signs of problem-solving in the lab and the wild",
+          "A camouflage puzzle scientists can't fully explain",
+          "A short life that doesn't fit the pattern",
+          "Rethinking what intelligence requires"
+        ],
+        "answer": "A nervous system spread across eight arms"
+      },
+      {
+        "id": 12,
+        "type": "matching",
+        "prompt": "Which heading best fits paragraph F?",
+        "options": [
+          "An intelligence that evolved on its own path",
+          "A nervous system spread across eight arms",
+          "Signs of problem-solving in the lab and the wild",
+          "A camouflage puzzle scientists can't fully explain",
+          "A short life that doesn't fit the pattern",
+          "Rethinking what intelligence requires"
+        ],
+        "answer": "Rethinking what intelligence requires"
+      }
+    ]
+  },
+  {
+    "id": "four-day-work-week",
+    "title": "The Four-Day Work Week",
+    "timeLimitMinutes": 20,
+    "passage": {
+      "title": "The Four-Day Work Week",
+      "paragraphs": [
+        {
+          "label": "A",
+          "text": "For most of the twentieth century, the five-day, forty-hour working week was treated as a natural and permanent feature of modern employment, yet it was itself once a radical reform. When Henry Ford’s company adopted a five-day week in 1926, critics warned it would cripple productivity; instead, output held steady and the practice spread across industry within a generation. Nearly a century later, a similar argument is being made for a further reduction. It is worth distinguishing two different proposals often lumped together under the same label: a \"compressed\" week, in which the same total hours are simply squeezed into four longer days, and a genuine reduced-hours model, in which employees work fewer total hours for the same pay."
+        },
+        {
+          "label": "B",
+          "text": "Over the past several years, a number of large-scale trials across multiple countries have tested the reduced-hours version specifically, with participating organisations cutting the working week to roughly thirty-two hours while maintaining full salaries. Results reported by the organisers of these trials have been strikingly consistent: the overwhelming majority of participating companies chose to continue with the shorter week after the trial period ended, employees reported markedly lower stress and burnout, and measures of staff turnover and sick leave generally improved rather than worsened."
+        },
+        {
+          "label": "C",
+          "text": "Proponents argue that the results are less paradoxical than they first appear. The central claim is that a great deal of a standard working week is consumed by low-value activity — unnecessary meetings, context-switching between tasks, and the simple fact that work tends to expand to fill whatever time is made available for it. Under a tighter schedule, the argument goes, employees and managers become more disciplined about cutting exactly this kind of waste, so that output per hour rises enough to offset the reduction in total hours worked, leaving overall productivity roughly unchanged or even improved."
+        },
+        {
+          "label": "D",
+          "text": "Sceptics point out that this logic applies far more comfortably to knowledge work than to other sectors. Roles that require continuous coverage — hospitals, manufacturing lines, retail counters — cannot simply compress the same output into fewer hours without hiring additional staff to cover the missing shifts, which erodes much of the cost saving that makes the idea attractive to employers in the first place. There is also a real risk with the compressed-week variant specifically: cramming forty hours into four days rather than genuinely reducing total hours can increase daily fatigue and burnout rather than relieving it, undermining the wellbeing gains the wider movement claims to offer."
+        },
+        {
+          "label": "E",
+          "text": "Beyond employee wellbeing, businesses experimenting with shorter weeks often cite more self-interested motivations. In competitive labour markets, offering a four-day week has become a meaningful point of differentiation for recruiting and retaining staff, particularly among younger workers who tell surveys they value time outside work as highly as salary. Some organisations have also found modest savings on office overheads — utilities, cleaning, and shared space costs — simply by closing their premises for an extra day each week, an incidental benefit rather than the primary motivation but a welcome one nonetheless."
+        },
+        {
+          "label": "F",
+          "text": "It seems unlikely that a four-day week will become universal in the near future, given how unevenly the underlying logic applies across different sectors of the economy. It does, however, appear increasingly likely to become a standard offering within white-collar and knowledge-based industries specifically, where several governments have begun exploring legislation or tax incentives to encourage employers to adopt it. Underlying all of this is a broader generational shift in attitudes toward work, with younger employees, by most survey evidence, considerably less willing than their predecessors to treat long hours as an inherent marker of professional commitment."
+        }
+      ]
+    },
+    "questions": [
+      {
+        "id": 1,
+        "type": "tfng",
+        "prompt": "The five-day working week was widely accepted without controversy when it was first introduced.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 2,
+        "type": "tfng",
+        "prompt": "In recent large-scale trials, most participating companies abandoned the shorter week once the trial ended.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 3,
+        "type": "tfng",
+        "prompt": "A compressed four-day week and a reduced-hours four-day week are exactly the same model.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 4,
+        "type": "tfng",
+        "prompt": "Governments in some countries are considering legislation to encourage a four-day week.",
+        "answer": "TRUE"
+      },
+      {
+        "id": 5,
+        "type": "mcq",
+        "prompt": "According to the passage, what is a 'compressed' work week?",
+        "options": [
+          "Working fewer total hours for the same pay",
+          "Working the same total hours across fewer, longer days",
+          "Working four days but for reduced pay",
+          "A model no company has ever tried"
+        ],
+        "answer": "Working the same total hours across fewer, longer days"
+      },
+      {
+        "id": 6,
+        "type": "mcq",
+        "prompt": "Proponents argue productivity is maintained under a shorter week mainly because:",
+        "options": [
+          "Employees are paid less, motivating harder work",
+          "Cutting hours forces the elimination of low-value activity like unnecessary meetings",
+          "Companies hire more staff to cover the same output",
+          "Technology has made most jobs unnecessary"
+        ],
+        "answer": "Cutting hours forces the elimination of low-value activity like unnecessary meetings"
+      },
+      {
+        "id": 7,
+        "type": "mcq",
+        "prompt": "Why do sceptics say the reduced-hours model is harder to apply in healthcare or manufacturing?",
+        "options": [
+          "Workers in these sectors do not want shorter weeks",
+          "These sectors require continuous coverage, so extra staff may be needed",
+          "These sectors already work fewer than thirty-two hours",
+          "There is no demand for change in these sectors"
+        ],
+        "answer": "These sectors require continuous coverage, so extra staff may be needed"
+      },
+      {
+        "id": 8,
+        "type": "mcq",
+        "prompt": "Which incidental benefit for businesses is mentioned in the passage?",
+        "options": [
+          "Reduced office overhead costs from closing an extra day",
+          "Lower taxes from national governments",
+          "Free marketing from social media coverage",
+          "Reduced need for computers and equipment"
+        ],
+        "answer": "Reduced office overhead costs from closing an extra day"
+      },
+      {
+        "id": 9,
+        "type": "gap",
+        "prompt": "In several large-scale trials, organisations cut the working week to roughly ______ hours while maintaining full salaries.",
+        "acceptedAnswers": [
+          "thirty-two",
+          "32"
+        ]
+      },
+      {
+        "id": 10,
+        "type": "gap",
+        "prompt": "Henry Ford's company adopted a five-day week in ______.",
+        "acceptedAnswers": [
+          "1926"
+        ]
+      },
+      {
+        "id": 11,
+        "type": "matching",
+        "prompt": "Which heading best fits paragraph C?",
+        "options": [
+          "An old reform and a new proposal",
+          "What the recent trials found",
+          "Why cutting hours might not cut output",
+          "Not every job fits the model",
+          "Self-interested reasons to shorten the week",
+          "A shift unlikely to be universal, but growing"
+        ],
+        "answer": "Why cutting hours might not cut output"
+      },
+      {
+        "id": 12,
+        "type": "matching",
+        "prompt": "Which heading best fits paragraph D?",
+        "options": [
+          "An old reform and a new proposal",
+          "What the recent trials found",
+          "Why cutting hours might not cut output",
+          "Not every job fits the model",
+          "Self-interested reasons to shorten the week",
+          "A shift unlikely to be universal, but growing"
+        ],
+        "answer": "Not every job fits the model"
+      }
+    ]
+  },
+  {
+    "id": "urban-heat-islands",
+    "title": "Urban Heat Islands",
+    "timeLimitMinutes": 20,
+    "passage": {
+      "title": "Urban Heat Islands",
+      "paragraphs": [
+        {
+          "label": "A",
+          "text": "Anyone who has walked from a paved city centre into a nearby park on a summer evening has likely experienced the urban heat island effect directly, even without recognising the term for it. Cities are, on average, measurably warmer than the rural areas surrounding them, a gap that is often modest during the day but can widen to several degrees Celsius after sunset, when the difference becomes most pronounced and, in extreme cases, most dangerous to residents' health."
+        },
+        {
+          "label": "B",
+          "text": "Several overlapping factors drive this effect. Dark, impervious surfaces such as asphalt roads and conventional roofing absorb a large share of incoming solar radiation during the day and release it slowly as heat well into the night, unlike vegetated or lighter-coloured natural surfaces. The replacement of vegetation with pavement also removes a natural cooling mechanism: plants cool their surroundings through evapotranspiration, the release of water vapour that draws heat away from the surface, in much the same way sweating cools human skin. On top of this, cities generate substantial waste heat directly, from vehicle engines, industrial processes, and the exhaust of air conditioning units, while tall, closely spaced buildings can form street canyons that trap warm air and restrict the natural wind flow that might otherwise disperse it."
+        },
+        {
+          "label": "C",
+          "text": "The consequences extend well beyond simple discomfort. Higher urban temperatures increase demand for air conditioning, which itself generates further waste heat and electricity demand, a feedback loop that can strain power grids precisely when demand peaks during heatwaves. The health consequences can be severe: heat-related illness and mortality rise sharply during extreme heat events, with elderly residents and those with pre-existing health conditions at greatest risk, particularly in neighbourhoods with limited tree cover or air conditioning access. Elevated temperatures also accelerate the chemical reactions that produce ground-level ozone, a pollutant linked to respiratory problems, worsening urban air quality precisely when heat already poses its own separate health risk."
+        },
+        {
+          "label": "D",
+          "text": "One widely studied mitigation strategy involves restoring vegetation to urban environments through green roofs, expanded street tree canopies, and urban parks. Beyond providing direct shade, plants cool the surrounding air through the same evapotranspiration process absent from paved surfaces, and pilot projects in several cities have measured noticeably lower ambient temperatures in tree-covered neighbourhoods compared with otherwise similar streets nearby lacking significant vegetation, sometimes by several degrees during peak summer afternoons."
+        },
+        {
+          "label": "E",
+          "text": "A second, complementary approach targets the materials themselves rather than adding vegetation. So-called \"cool roofs\" and reflective pavements are engineered to have a higher albedo, meaning they reflect a greater proportion of incoming sunlight rather than absorbing it as heat. Painting a dark roof a lighter colour, or coating it with specially formulated reflective material, can measurably reduce both the roof’s own surface temperature and, to a lesser extent, the surrounding air temperature, at a relatively modest cost compared with large-scale vegetation projects."
+        },
+        {
+          "label": "F",
+          "text": "Despite growing evidence for both approaches, implementation faces real obstacles. Retrofitting existing infrastructure is costly and slow compared with incorporating heat-reducing design into new construction from the outset, and researchers have increasingly highlighted an equity dimension to the problem: lower-income neighbourhoods frequently have the least tree cover and the oldest, most heat-retaining infrastructure, and therefore experience the most extreme local temperatures, even within the same city. Most researchers now argue that no single intervention is sufficient on its own, and that meaningful reduction of the urban heat island effect requires combining vegetation, reflective materials, and broader urban planning changes simultaneously rather than treating any one measure as a complete solution."
+        }
+      ]
+    },
+    "questions": [
+      {
+        "id": 1,
+        "type": "tfng",
+        "prompt": "The urban heat island effect is usually strongest during the day.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 2,
+        "type": "tfng",
+        "prompt": "Evapotranspiration helps cool the air in the same general way that sweating cools the human body.",
+        "answer": "TRUE"
+      },
+      {
+        "id": 3,
+        "type": "tfng",
+        "prompt": "Air conditioning use only affects the temperature inside buildings, not the surrounding city.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 4,
+        "type": "tfng",
+        "prompt": "Cool roofs are generally more expensive to implement than large-scale vegetation projects.",
+        "answer": "FALSE"
+      },
+      {
+        "id": 5,
+        "type": "mcq",
+        "prompt": "According to the passage, when is the urban heat island effect most pronounced?",
+        "options": [
+          "Early morning",
+          "During the day",
+          "After sunset",
+          "It is constant throughout the day"
+        ],
+        "answer": "After sunset"
+      },
+      {
+        "id": 6,
+        "type": "mcq",
+        "prompt": "Which of the following is NOT mentioned as a cause of urban heat islands?",
+        "options": [
+          "Dark, heat-absorbing surfaces",
+          "Waste heat from air conditioning units",
+          "Increased rainfall in cities",
+          "Reduced wind flow between tall buildings"
+        ],
+        "answer": "Increased rainfall in cities"
+      },
+      {
+        "id": 7,
+        "type": "mcq",
+        "prompt": "Why are lower-income neighbourhoods often more affected by urban heat, according to the passage?",
+        "options": [
+          "They are located further from the coast",
+          "They typically have less tree cover and older infrastructure",
+          "Residents use more air conditioning",
+          "They are built with more reflective materials"
+        ],
+        "answer": "They typically have less tree cover and older infrastructure"
+      },
+      {
+        "id": 8,
+        "type": "mcq",
+        "prompt": "What do most researchers now believe about solving the urban heat island problem?",
+        "options": [
+          "A single intervention, if well-funded, is enough",
+          "Combining several different interventions is necessary",
+          "The problem cannot realistically be reduced",
+          "Only new construction can address it"
+        ],
+        "answer": "Combining several different interventions is necessary"
+      },
+      {
+        "id": 9,
+        "type": "gap",
+        "prompt": "Plants cool their surroundings through a process called ______, similar to how sweating cools human skin.",
+        "acceptedAnswers": [
+          "evapotranspiration"
+        ]
+      },
+      {
+        "id": 10,
+        "type": "gap",
+        "prompt": "Cool roofs and reflective pavements are designed to have a higher ______, reflecting more sunlight.",
+        "acceptedAnswers": [
+          "albedo"
+        ]
+      },
+      {
+        "id": 11,
+        "type": "matching",
+        "prompt": "Which heading best fits paragraph B?",
+        "options": [
+          "A warmth most city-dwellers have felt",
+          "Why cities hold onto heat",
+          "A cycle of rising temperatures and health risks",
+          "Cooling cities with plants",
+          "Reflecting heat instead of absorbing it",
+          "An uneven and unfinished solution"
+        ],
+        "answer": "Why cities hold onto heat"
+      },
+      {
+        "id": 12,
+        "type": "matching",
+        "prompt": "Which heading best fits paragraph E?",
+        "options": [
+          "A warmth most city-dwellers have felt",
+          "Why cities hold onto heat",
+          "A cycle of rising temperatures and health risks",
+          "Cooling cities with plants",
+          "Reflecting heat instead of absorbing it",
+          "An uneven and unfinished solution"
+        ],
+        "answer": "Reflecting heat instead of absorbing it"
+      }
+    ]
+  }
+]
