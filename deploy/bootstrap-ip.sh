@@ -93,6 +93,13 @@ ufw --force enable >/dev/null
 id -u "$APP_USER" >/dev/null 2>&1 || \
     adduser --system --group --home "$APP_DIR" "$APP_USER"
 
+# adduser --system builds the home directory 0750, which stops nginx dead: the
+# static and media files inside are world-readable and the directories holding
+# them are 0775, but www-data cannot traverse the home to reach any of it and
+# every asset comes back 403. Grant execute only. Others still cannot list this
+# directory, and .env stays 0600 either way.
+chmod o+x "$APP_DIR"
+
 # -------------------------------------------------------------------- source
 log "Fetching source"
 if [ -d "$APP_DIR/.git" ]; then
