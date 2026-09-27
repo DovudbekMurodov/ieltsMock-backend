@@ -2,6 +2,7 @@
 
 from django.urls import include, path
 
+from apps.analytics import progress_views as analytics_progress
 from apps.analytics import views as analytics_views
 from apps.content import views as content_views
 from apps.speaking import session_views as speaking_sessions
@@ -17,6 +18,7 @@ urlpatterns = [
     path("auth/", include("config.auth_urls")),
     path("attempts/", include("config.attempt_urls")),
     path("events/", analytics_views.record_event, name="event-record"),
+    path("me/progress/", analytics_progress.my_progress, name="my-progress"),
     path("tests/", content_views.test_list, name="test-list"),
     path("tests/<slug:slug>/", content_views.test_detail, name="test-detail"),
     path("writing/", writing_views.task_list, name="writing-list"),

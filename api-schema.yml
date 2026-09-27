@@ -357,6 +357,22 @@ paths:
       responses:
         '202':
           description: No response body
+  /api/v1/me/progress/:
+    get:
+      operationId: myProgress
+      summary: This user's live progress across skills
+      tags:
+      - me
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /api/v1/speaking/:
     get:
       operationId: listSpeakingTopics
