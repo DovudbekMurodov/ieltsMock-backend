@@ -12,4 +12,5 @@ urlpatterns = [
     path("logout-all/", views.logout_all, name="logout-all"),
     path("verify/", views.verify, name="verify"),
     path("me/", views.me, name="me"),
+    path("me/avatar/", views.avatar, name="avatar"),
 ]

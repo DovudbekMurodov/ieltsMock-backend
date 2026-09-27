@@ -1,11 +1,17 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    # A URL rather than the field, so the client never has to know where media
+    # is served from. Uploading goes through its own endpoint; PATCH /me/ stays
+    # JSON rather than becoming multipart for one field.
+    avatar = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = (
@@ -13,6 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "first_name",
             "last_name",
+            "avatar",
             "target_band",
             "exam_date",
             "country",
@@ -22,6 +29,14 @@ class UserSerializer(serializers.ModelSerializer):
             "date_joined",
         )
         read_only_fields = ("id", "email", "is_staff", "date_joined")
+
+    @extend_schema_field(serializers.URLField(allow_null=True))
+    def get_avatar(self, user):
+        if not user.avatar:
+            return None
+        request = self.context.get("request")
+        url = user.avatar.url
+        return request.build_absolute_uri(url) if request else url
 
 
 class RegisterSerializer(serializers.ModelSerializer):

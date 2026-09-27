@@ -15,6 +15,10 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(_("email address"), unique=True)
 
+    # Normalised on the way in — squared, capped and re-encoded, so what is
+    # stored never carries the EXIF (and therefore the GPS) of the original.
+    avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
+
     target_band = models.DecimalField(max_digits=2, decimal_places=1, null=True, blank=True)
     exam_date = models.DateField(null=True, blank=True)
     country = models.CharField(max_length=2, blank=True)
