@@ -68,6 +68,7 @@ def build_group(group) -> dict:
         "id": group.id,
         "order": group.order,
         "type": group.type,
+        "heading": group.heading,
         "instructions": group.instructions,
         "questions": [build_question(q, group) for q in group.questions.all()],
     }

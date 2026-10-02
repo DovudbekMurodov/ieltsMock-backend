@@ -48,9 +48,16 @@ class BlockForm(forms.ModelForm):
 class QuestionGroupForm(forms.ModelForm):
     class Meta:
         model = QuestionGroup
-        fields = ("type", "instructions", "allow_article_omission", "allow_plural_variants")
+        fields = (
+            "type",
+            "heading",
+            "instructions",
+            "allow_article_omission",
+            "allow_plural_variants",
+        )
         widgets = {
             "type": forms.Select(attrs=TEXT_INPUT),
+            "heading": forms.Textarea(attrs={**TEXTAREA, "rows": 2}),
             "instructions": forms.Textarea(attrs={**TEXTAREA, "rows": 2}),
         }
 

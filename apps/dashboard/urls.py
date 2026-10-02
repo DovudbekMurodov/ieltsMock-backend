@@ -70,6 +70,7 @@ urlpatterns = [
     path("hx/questions/<int:pk>/answer/", editor.answer_set, name="hx-answer-set"),
     path("hx/questions/<int:pk>/keys/", editor.answer_key_add, name="hx-key-add"),
     path("hx/keys/<int:pk>/", editor.answer_key_delete, name="hx-key-delete"),
+    path("hx/keys/<int:pk>/save/", editor.answer_key_save, name="hx-key-save"),
     path("hx/options/<int:pk>/", editor.option_save, name="hx-option"),
     path("hx/options/<int:pk>/delete/", editor.pool_option_delete, name="hx-pool-option-delete"),
     path("hx/reorder/<str:model>/<int:pk>/", editor.reorder, name="hx-reorder"),

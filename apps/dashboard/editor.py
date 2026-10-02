@@ -174,6 +174,23 @@ def test_publish(request, pk):
         messages.error(request, "Add at least one question before publishing.")
         return redirect("dashboard:test-edit", pk=pk)
 
+    # Scoring compares a submission against this question's keys, so a question
+    # with none marks every candidate wrong and says nothing about why. That is
+    # worse than refusing to publish.
+    unanswerable = list(
+        Question.objects.filter(test=test, answer_keys__isnull=True)
+        .order_by("number")
+        .values_list("number", flat=True)
+    )
+    if unanswerable:
+        numbers = ", ".join(str(n) for n in unanswerable)
+        messages.error(
+            request,
+            f"No accepted answer for question{'s' if len(unanswerable) > 1 else ''} {numbers}. "
+            "Every question needs at least one before the test can be published.",
+        )
+        return redirect("dashboard:test-edit", pk=pk)
+
     _renumber(test)
     publish_test(test)
     bump_content_version()
@@ -322,7 +339,11 @@ def _seed_answer_scaffolding(question, group) -> None:
     if group.type == QuestionType.TFNG:
         AnswerKey.objects.create(question=question, value="TRUE")
     elif group.type == QuestionType.GAP:
-        AnswerKey.objects.create(question=question, value="", order=0)
+        # Nothing. A blank key rendered as an empty read-only box that looked
+        # exactly like an input and rejected every keystroke, which is what
+        # staff were clicking into. The add row below it is the real control,
+        # and publishing now refuses a question with no key at all.
+        pass
     elif group.type == QuestionType.MCQ:
         for index in range(4):
             Option.objects.create(
@@ -436,6 +457,26 @@ def answer_key_add(request, pk):
         order=(question.answer_keys.aggregate(m=Max("order"))["m"] or 0) + 1,
     )
     return _group_card(request, question.group)
+
+
+@staff_required
+@require_POST
+def answer_key_save(request, pk):
+    """Correct one accepted spelling in place.
+
+    Deliberately returns 204 rather than the re-rendered group: this fires on
+    every keystroke, and swapping the card out from under the caret would move
+    focus mid-word. It also keeps the key's pk, which the delete buttons in the
+    same fragment are addressed by.
+    """
+    key = get_object_or_404(AnswerKey.objects.select_related("question__group"), pk=pk)
+    form = AnswerKeyForm(request.POST)
+    if not form.is_valid():
+        return HttpResponse(str(form.errors), status=400)
+
+    key.value = form.cleaned_data["value"]
+    key.save(update_fields=["value"])
+    return saved()
 
 
 @staff_required

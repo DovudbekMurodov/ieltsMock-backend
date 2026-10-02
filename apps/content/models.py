@@ -182,6 +182,13 @@ class QuestionGroup(models.Model):
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name="groups")
     order = models.PositiveSmallIntegerField(default=1)
     type = models.CharField(max_length=16, choices=QuestionType.choices)
+    # The title of the thing being completed -- "The Globe", "Student
+    # Accommodation Enquiries" -- shown once above the group. Separate from
+    # instructions, which holds the rubric ("Write NO MORE THAN TWO WORDS")
+    # and is repeated per question. A note-completion task usually wants a
+    # second line under the title, so this is a TextField rather than a
+    # CharField and its line breaks are preserved.
+    heading = models.TextField(blank=True)
     instructions = models.TextField(blank=True)
     options_scope = models.CharField(
         max_length=16, choices=OptionsScope.choices, default=OptionsScope.PER_QUESTION

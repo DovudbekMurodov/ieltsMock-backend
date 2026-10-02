@@ -18,6 +18,10 @@
 
   <form hx-post="{% url 'dashboard:hx-group' group.pk %}"
         hx-trigger="change, keyup changed delay:600ms" class="mb-4">
+    <label class="label" for="heading-{{ group.pk }}">Heading</label>
+    <textarea id="heading-{{ group.pk }}" name="heading" rows="2" class="input text-sm mb-3"
+              placeholder="e.g. The Globe&#10;Parts of the original Globe">{{ group.heading }}</textarea>
+
     <label class="label" for="instructions-{{ group.pk }}">Instructions</label>
     <textarea id="instructions-{{ group.pk }}" name="instructions" rows="2" class="input text-sm"
               placeholder="e.g. Write NO MORE THAN TWO WORDS for each answer.">{{ group.instructions }}</textarea>
