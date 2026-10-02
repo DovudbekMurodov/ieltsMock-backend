@@ -310,3 +310,25 @@ def test_an_empty_part_renders_an_empty_editor(staff, section):
     body = staff.get(reverse("dashboard:test-edit", args=[section.test.pk])).content.decode()
 
     assert 'data-placeholder=' in body
+
+
+def test_the_staff_preview_draws_the_passage_like_the_app(staff, section):
+    """It printed the **bold** markers as characters and gave every block a
+    stray "." where a label would go, because it predated both and was never
+    taught about kinds."""
+    section.test.status = "published"
+    section.test.save(update_fields=["status"])
+    post(
+        staff,
+        section,
+        [
+            {"kind": "section", "text": "The Globe"},
+            {"kind": "paragraph", "text": "Opened in **1599**."},
+        ],
+    )
+
+    body = staff.get(reverse("dashboard:test-preview", args=[section.test.pk])).content.decode()
+
+    assert "**1599**" not in body
+    assert "<strong>1599</strong>" in body
+    assert "<h2" in body

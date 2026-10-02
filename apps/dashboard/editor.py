@@ -200,7 +200,12 @@ def test_preview(request, pk):
     return render(
         request,
         "dashboard/test_preview.html",
-        page_context(request, test=test, payload=build_test_payload(test)),
+        page_context(
+            request,
+            test=test,
+            payload=build_test_payload(test),
+            label_key="speaker" if test.skill == Skill.LISTENING else "label",
+        ),
     )
 
 

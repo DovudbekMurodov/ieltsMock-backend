@@ -13,13 +13,16 @@
   {% for section in payload.sections %}
     <div class="card p-6">
       <h2 class="font-display font-bold text-lg text-gray-900 mb-4">{{ section.title }}</h2>
-      <div class="space-y-3 text-sm leading-relaxed text-gray-700">
-        {% for block in section.blocks %}
-          <p><span class="font-bold text-gray-900">{% firstof block.label block.speaker %}{% if block.speaker %}:{% else %}.{% endif %}</span> {{ block.text }}</p>
-        {% empty %}
-          <p class="text-gray-400 italic">Transcript withheld until submission.</p>
-        {% endfor %}
-      </div>
+      {% comment %}
+        The same partial the editor's own preview uses, so this page cannot
+        drift from it. It drew every block as a paragraph with a stray "." for
+        a label and printed the **bold** markers as characters.
+      {% endcomment %}
+      {% if section.blocks %}
+        {% include "dashboard/partials/passage_preview.html" with blocks=section.blocks label_key=label_key %}
+      {% else %}
+        <p class="text-sm text-gray-400 italic">Transcript withheld until submission.</p>
+      {% endif %}
     </div>
 
     <div class="card p-6 space-y-6">
