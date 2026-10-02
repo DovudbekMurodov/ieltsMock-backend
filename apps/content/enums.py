@@ -48,3 +48,16 @@ class TranscriptVisibility(models.TextChoices):
 # TFNG answers are a fixed vocabulary; the frontend renders the three radio
 # choices itself rather than reading them from the data.
 TFNG_VALUES = ["TRUE", "FALSE", "NOT GIVEN"]
+
+
+class BlockKind(models.TextChoices):
+    """What a block is, structurally.
+
+    Kept as a type rather than as inline markup because the payload is JSON the
+    frontend renders directly: a stored HTML string would mean the app running
+    author-supplied markup to show a heading.
+    """
+
+    PARAGRAPH = "paragraph", "Paragraph"
+    HEADING = "heading", "Heading"
+    RULE = "rule", "Divider"

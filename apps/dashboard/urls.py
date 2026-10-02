@@ -62,7 +62,10 @@ urlpatterns = [
     # Fragment endpoints live under /hx/ so it is obvious at a glance which
     # URLs return partials rather than pages.
     path("hx/tests/<int:pk>/meta/", editor.test_meta_save, name="hx-test-meta"),
+    path("tests/<int:pk>/sections/new/", editor.section_create, name="section-create"),
+    path("hx/sections/<int:pk>/", editor.section_detail, name="hx-section"),
     path("hx/sections/<int:pk>/blocks/bulk/", editor.section_bulk_blocks, name="hx-bulk-blocks"),
+    path("hx/sections/<int:pk>/blocks/new/", editor.block_create, name="hx-block-create"),
     path("hx/blocks/<int:pk>/", editor.block_detail, name="hx-block"),
     path("hx/sections/<int:pk>/groups/", editor.group_create, name="hx-group-create"),
     path("hx/groups/<int:pk>/", editor.group_detail, name="hx-group"),

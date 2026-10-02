@@ -38,8 +38,9 @@ class SectionForm(forms.ModelForm):
 class BlockForm(forms.ModelForm):
     class Meta:
         model = Block
-        fields = ("label", "text")
+        fields = ("kind", "label", "text")
         widgets = {
+            "kind": forms.Select(attrs=TEXT_INPUT),
             "label": forms.TextInput(attrs={**TEXT_INPUT, "placeholder": "A / Speaker"}),
             "text": forms.Textarea(attrs={**TEXTAREA, "rows": 4}),
         }
@@ -113,7 +114,7 @@ class BulkBlockForm(forms.Form):
     replace = forms.BooleanField(required=False, initial=True)
 
 
-def parse_blocks(text: str, *, as_transcript: bool) -> list[tuple[str, str]]:
+def parse_blocks(text: str, *, as_transcript: bool, letter: bool = True) -> list[tuple[str, str]]:
     """Split pasted text into (label, body) pairs."""
     if as_transcript:
         blocks = []
@@ -133,6 +134,11 @@ def parse_blocks(text: str, *, as_transcript: bool) -> list[tuple[str, str]]:
         return blocks
 
     paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
+    if not letter:
+        # Plenty of passages are plain prose. Lettering those produces an A, B,
+        # C column down the margin that means nothing and that the candidate
+        # then has to ignore.
+        return [("", paragraph) for paragraph in paragraphs]
     return [
         (chr(ord("A") + index) if index < 26 else str(index + 1), paragraph)
         for index, paragraph in enumerate(paragraphs)

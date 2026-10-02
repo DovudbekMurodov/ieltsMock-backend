@@ -22,6 +22,7 @@ from django.views.decorators.http import require_http_methods, require_POST
 from apps.common.caching import bump_content_version
 from apps.common.models import PublishStatus
 from apps.content.enums import (
+    BlockKind,
     MatchMode,
     OptionsScope,
     QuestionType,
@@ -51,6 +52,7 @@ from .forms import (
     OptionForm,
     QuestionForm,
     QuestionGroupForm,
+    SectionForm,
     TestForm,
     parse_blocks,
 )
@@ -131,7 +133,18 @@ def test_create(request):
             test.created_by = request.user
             test.status = PublishStatus.DRAFT
             test.save()
-            Section.objects.create(test=test, order=1, title=test.title)
+
+            # A full IELTS reading paper is three passages and a listening one
+            # is four sections; a single-part test is a drill. One section was
+            # created here regardless, and nothing in the editor could add a
+            # second, so a full paper was unbuildable.
+            parts = max(1, min(int(request.POST.get("parts") or 1), 4))
+            for index in range(1, parts + 1):
+                Section.objects.create(
+                    test=test,
+                    order=index,
+                    title=test.title if parts == 1 else f"Part {index}",
+                )
             return redirect("dashboard:test-edit", pk=test.pk)
     else:
         form = TestForm(initial={"skill": request.GET.get("skill", Skill.READING)})
@@ -154,6 +167,7 @@ def test_edit(request, pk):
             is_listening=test.skill == Skill.LISTENING,
             audio_assets=AudioAsset.objects.order_by("-created_at"),
             visibility_choices=TranscriptVisibility.choices,
+            block_kinds=BlockKind.choices,
         ),
     )
 
@@ -245,7 +259,9 @@ def section_bulk_blocks(request, pk):
         return HttpResponse("Nothing to import.", status=400)
 
     parsed = parse_blocks(
-        form.cleaned_data["text"], as_transcript=section.test.skill == Skill.LISTENING
+        form.cleaned_data["text"],
+        as_transcript=section.test.skill == Skill.LISTENING,
+        letter=bool(request.POST.get("letter")),
     )
     if not parsed:
         return HttpResponse("Nothing to import.", status=400)
@@ -262,7 +278,70 @@ def section_bulk_blocks(request, pk):
     return render(
         request,
         "dashboard/partials/block_list.html",
-        {"section": section, "blocks": section.blocks.order_by("order")},
+        {
+            "section": section,
+            "blocks": section.blocks.order_by("order"),
+            "block_kinds": BlockKind.choices,
+        },
+    )
+
+
+@staff_required
+@require_POST
+def section_create(request, pk):
+    """Another part of the paper."""
+    test = get_object_or_404(Test, pk=pk)
+    order = (test.sections.aggregate(m=Max("order"))["m"] or 0) + 1
+    Section.objects.create(test=test, order=order, title=f"Part {order}")
+    return redirect("dashboard:test-edit", pk=test.pk)
+
+
+@staff_required
+@require_http_methods(["POST", "DELETE"])
+def section_detail(request, pk):
+    section = get_object_or_404(Section.objects.select_related("test"), pk=pk)
+
+    if request.method == "DELETE":
+        test = section.test
+        if test.sections.count() == 1:
+            return HttpResponse("A test needs at least one part.", status=400)
+        # Questions go with it, so this is not an undo-able click.
+        section.delete()
+        return redirect("dashboard:test-edit", pk=test.pk)
+
+    # Inline editing posts one field at a time, so the unsent ones are filled
+    # in from the instance. Validating the whole form against a single-field
+    # post would reject a rename for leaving playback_policy out.
+    data = {
+        field: request.POST.get(field, getattr(section, field))
+        for field in SectionForm.Meta.fields
+    }
+    form = SectionForm(data, instance=section)
+    if not form.is_valid():
+        return HttpResponse(str(form.errors), status=400)
+    form.save()
+    return saved()
+
+
+@staff_required
+@require_POST
+def block_create(request, pk):
+    """One block, appended. The paste box handles a whole passage; this is for
+    the heading or divider you add afterwards."""
+    section = get_object_or_404(Section, pk=pk)
+    kind = request.POST.get("kind", BlockKind.PARAGRAPH)
+    if kind not in BlockKind.values:
+        raise Http404
+
+    Block.objects.create(
+        section=section,
+        order=(section.blocks.aggregate(m=Max("order"))["m"] or 0) + 1,
+        kind=kind,
+    )
+    return render(
+        request,
+        "dashboard/partials/block_list.html",
+        {"section": section, "blocks": section.blocks.all(), "block_kinds": BlockKind.choices},
     )
 
 

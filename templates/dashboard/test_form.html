@@ -16,6 +16,19 @@
       {% for e in field.errors %}<p class="text-xs text-red-600 mt-1">{{ e }}</p>{% endfor %}
     </div>
   {% endfor %}
+  <div>
+    <label class="label" for="parts">Parts</label>
+    <select id="parts" name="parts" class="input">
+      <option value="1">One part</option>
+      <option value="2">Two parts</option>
+      <option value="3">Three parts — a full reading paper</option>
+      <option value="4">Four parts — a full listening paper</option>
+    </select>
+    <p class="text-xs text-gray-400 mt-1">
+      Each part gets its own passage and its own questions. You can add or remove parts later.
+    </p>
+  </div>
+
   <div class="flex gap-2 pt-2">
     <button type="submit" class="btn-primary btn-md">Create draft</button>
     <a href="{% url 'dashboard:test-list' %}" class="btn-secondary btn-md">Cancel</a>

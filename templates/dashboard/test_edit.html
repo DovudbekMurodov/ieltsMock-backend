@@ -53,10 +53,22 @@
 
     {% for section in test.sections.all %}
       <div class="card p-5">
-        <div class="flex items-baseline justify-between mb-3">
-          <p class="label mb-0">{% if is_listening %}Transcript{% else %}Passage{% endif %}</p>
-          <span class="text-xs text-gray-400">{{ section.blocks.count }} block{{ section.blocks.count|pluralize }}</span>
+        <div class="flex items-center gap-2 mb-3">
+          <input class="input !py-1 text-sm font-semibold" name="title" value="{{ section.title }}"
+                 hx-post="{% url 'dashboard:hx-section' section.pk %}"
+                 hx-trigger="change, keyup changed delay:600ms"
+                 aria-label="Part name">
+          <span class="text-xs text-gray-400 whitespace-nowrap shrink-0">
+            {{ section.blocks.count }} block{{ section.blocks.count|pluralize }}
+          </span>
+          {% if test.sections.count > 1 %}
+            <button type="button" class="text-gray-300 hover:text-red-500 px-1 text-xs shrink-0"
+                    aria-label="Delete this part"
+                    hx-delete="{% url 'dashboard:hx-section' section.pk %}"
+                    hx-confirm="Delete this part and every question in it?">✕</button>
+          {% endif %}
         </div>
+        <p class="label mb-2">{% if is_listening %}Transcript{% else %}Passage{% endif %}</p>
 
         <div x-data="{ open: false }">
           <button type="button" @click="open = !open" class="btn-secondary btn-sm w-full mb-3">
@@ -74,11 +86,17 @@
               <input type="checkbox" name="replace" checked class="accent-coral-500">
               Replace what is there
             </label>
+            {% if not is_listening %}
+              <label class="flex items-center gap-2 text-xs text-gray-500">
+                <input type="checkbox" name="letter" class="accent-coral-500">
+                Letter the paragraphs A, B, C
+              </label>
+            {% endif %}
             <button type="submit" class="btn-primary btn-sm w-full">Import</button>
           </form>
         </div>
 
-        {% include "dashboard/partials/block_list.html" with section=section blocks=section.blocks.all %}
+        {% include "dashboard/partials/block_list.html" with section=section blocks=section.blocks.all block_kinds=block_kinds %}
       </div>
 
       {% if is_listening %}
@@ -88,6 +106,11 @@
         </div>
       {% endif %}
     {% endfor %}
+
+    <form method="post" action="{% url 'dashboard:section-create' test.pk %}">
+      {% csrf_token %}
+      <button type="submit" class="btn-secondary btn-sm w-full">+ Add a part</button>
+    </form>
   </div>
 
   <!-- questions -->

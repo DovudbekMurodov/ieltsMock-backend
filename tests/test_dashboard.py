@@ -161,17 +161,39 @@ def test_creating_a_test_starts_it_as_a_draft_with_a_section(staff_client):
     assert test.sections.count() == 1
 
 
-def test_pasting_a_passage_creates_labelled_paragraphs(staff_client, draft):
+def test_pasting_a_passage_letters_the_paragraphs_when_asked(staff_client, draft):
     section = draft.sections.get()
 
     response = staff_client.post(
         reverse("dashboard:hx-bulk-blocks", args=[section.pk]),
-        {"text": "First paragraph.\n\nSecond paragraph.\n\nThird paragraph.", "replace": "on"},
+        {
+            "text": "First paragraph.\n\nSecond paragraph.\n\nThird paragraph.",
+            "replace": "on",
+            "letter": "on",
+        },
     )
 
     assert response.status_code == 200
     labels = list(section.blocks.order_by("order").values_list("label", flat=True))
     assert labels == ["A", "B", "C"]
+
+
+def test_a_pasted_passage_is_unlettered_by_default(staff_client, draft):
+    """Lettering used to be unconditional.
+
+    Only passages with a matching-headings task need A, B, C; on the rest it
+    puts a column of letters down the margin that mean nothing and that the
+    candidate has to learn to ignore.
+    """
+    section = draft.sections.get()
+
+    staff_client.post(
+        reverse("dashboard:hx-bulk-blocks", args=[section.pk]),
+        {"text": "First paragraph.\n\nSecond paragraph.", "replace": "on"},
+    )
+
+    labels = list(section.blocks.order_by("order").values_list("label", flat=True))
+    assert labels == ["", ""]
 
 
 def test_pasting_a_transcript_splits_on_speaker(staff_client):

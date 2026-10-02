@@ -15,6 +15,7 @@ from django.utils import timezone
 
 from apps.common.models import PublishStatus
 from apps.common.payloads import payload_etag
+from apps.common.text import split_bold
 
 from .enums import Skill, TranscriptVisibility
 from .models import Option, Question, QuestionGroup, Section, Test
@@ -89,6 +90,21 @@ def build_audio(section) -> dict | None:
     }
 
 
+def build_block(block, label_key: str) -> dict:
+    """One paragraph, heading or divider.
+
+    `parts` carries the **bold** split so the client renders structure it was
+    given rather than markup it has to trust. `text` stays alongside it,
+    markers and all, because older clients read it and a divider has neither.
+    """
+    return {
+        "kind": block.kind,
+        label_key: block.label,
+        "text": block.text,
+        "parts": split_bold(block.text) if block.text else [],
+    }
+
+
 def build_section(section, skill) -> dict:
     data = {
         "id": section.id,
@@ -107,9 +123,7 @@ def build_section(section, skill) -> dict:
     )
     label_key = "label" if skill == Skill.READING else "speaker"
     data["blocks"] = (
-        []
-        if hide_blocks
-        else [{label_key: b.label, "text": b.text} for b in section.blocks.all()]
+        [] if hide_blocks else [build_block(b, label_key) for b in section.blocks.all()]
     )
     data["blocksAvailableAfterSubmit"] = (
         hide_blocks and section.transcript_visibility == TranscriptVisibility.AFTER_SUBMIT

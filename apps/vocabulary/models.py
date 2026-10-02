@@ -1,5 +1,3 @@
-import re
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -7,7 +5,9 @@ from django.utils import timezone
 
 from apps.common.models import PublishStatus, TimeStampedModel
 
-BOLD_PATTERN = re.compile(r"\*\*(.+?)\*\*", re.DOTALL)
+# One definition, in common, now that content needs it too. Re-exported so
+# `from apps.vocabulary.models import split_bold` keeps working.
+from apps.common.text import BOLD_PATTERN, split_bold
 
 
 class PartOfSpeech(models.TextChoices):
@@ -17,23 +17,6 @@ class PartOfSpeech(models.TextChoices):
     ADVERB = "adverb", "adverb"
     PHRASE = "phrase", "phrase"
     PHRASAL_VERB = "phrasal verb", "phrasal verb"
-
-
-def split_bold(text: str) -> list[dict]:
-    """Split ``a **b** c`` into ordered {text, bold} parts.
-
-    Returned by the API so the frontend does not have to parse markers itself.
-    """
-    parts = []
-    cursor = 0
-    for match in BOLD_PATTERN.finditer(text):
-        if match.start() > cursor:
-            parts.append({"text": text[cursor : match.start()], "bold": False})
-        parts.append({"text": match.group(1), "bold": True})
-        cursor = match.end()
-    if cursor < len(text):
-        parts.append({"text": text[cursor:], "bold": False})
-    return parts
 
 
 class VocabularySection(TimeStampedModel):

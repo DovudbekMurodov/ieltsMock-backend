@@ -6,6 +6,7 @@ from apps.common.models import PublishStatus, TimeStampedModel
 
 from .enums import (
     TFNG_VALUES,
+    BlockKind,
     Difficulty,
     MatchMode,
     OptionsScope,
@@ -156,8 +157,12 @@ class Block(models.Model):
 
     section = models.ForeignKey(Section, on_delete=models.CASCADE, related_name="blocks")
     order = models.PositiveSmallIntegerField(default=1)
+    kind = models.CharField(max_length=16, choices=BlockKind.choices, default=BlockKind.PARAGRAPH)
     label = models.CharField(max_length=60, blank=True)
-    text = models.TextField()
+    # **bold** is split server-side into parts, the same convention the
+    # vocabulary examples use, so the client never parses markers or renders
+    # markup it was handed.
+    text = models.TextField(blank=True)
 
     class Meta:
         ordering = ("section", "order")
