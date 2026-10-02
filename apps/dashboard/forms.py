@@ -1,6 +1,7 @@
 from django import forms
 
 from apps.content.models import AnswerKey, Block, Option, Question, QuestionGroup, Section, Test
+from apps.content.slugs import unique_slug
 from apps.speaking.models import SpeakingCueCard, SpeakingItem, SpeakingTopic
 from apps.vocabulary.models import VocabularySection, VocabularyWord
 from apps.writing.models import WritingModelAnswer, WritingTask
@@ -10,6 +11,25 @@ TEXTAREA = {"class": "input", "rows": 3}
 
 
 class TestForm(forms.ModelForm):
+    """The slug is optional here and generated from the title when left blank.
+
+    Inventing a unique URL slug by hand for every test is a chore with nothing
+    at the end of it, and getting it wrong is a 'test with this slug already
+    exists' error on the one field the author cared least about.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["slug"].required = False
+        self.fields["slug"].help_text = "Leave blank to generate one from the title."
+
+    def clean_slug(self):
+        slug = self.cleaned_data.get("slug")
+        if slug:
+            return slug
+        title = self.data.get("title") or self.cleaned_data.get("title") or ""
+        return unique_slug(Test, title)
+
     class Meta:
         model = Test
         fields = ("title", "slug", "skill", "description", "time_limit_minutes", "difficulty")

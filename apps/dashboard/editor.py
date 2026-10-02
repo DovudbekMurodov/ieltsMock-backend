@@ -14,7 +14,7 @@ import json
 
 from django.contrib import messages
 from django.db import transaction
-from django.db.models import Max
+from django.db.models import Count, Max, Prefetch
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods, require_POST
@@ -69,6 +69,11 @@ def saved(extra_trigger=None) -> HttpResponse:
 def _hydrated(test_id) -> Test:
     return get_object_or_404(
         Test.objects.prefetch_related(
+            # Counted here rather than in the template so the part tabs do not
+            # fire one query each.
+            Prefetch("sections", queryset=Section.objects.annotate(
+                questions_count=Count("groups__questions", distinct=True)
+            )),
             "sections__blocks",
             "sections__groups__questions__options",
             "sections__groups__questions__answer_keys",

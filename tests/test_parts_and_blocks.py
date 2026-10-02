@@ -193,3 +193,81 @@ def test_an_imported_draft_is_still_a_draft_with_several_parts(staff):
     )
 
     assert Test.objects.get(slug="three-parts").status == PublishStatus.DRAFT
+
+
+def test_the_editor_shows_one_part_at_a_time(staff, draft):
+    """Three parts stacked down one column put the passage editor below the
+    fold three times over. The page carries a tab per part now."""
+    Section.objects.create(test=draft, order=2, title="Part 2")
+    body = staff.get(reverse("dashboard:test-edit", args=[draft.pk])).content.decode()
+
+    for section in draft.sections.all():
+        assert f"part === {section.pk}" in body
+
+
+def test_each_part_tab_carries_its_question_count(staff, draft):
+    """Annotated in the view, so the tabs do not fire a query each."""
+    response = staff.get(reverse("dashboard:test-edit", args=[draft.pk]))
+
+    section = response.context["test"].sections.get()
+    assert hasattr(section, "questions_count")
+
+
+def test_the_slug_is_generated_when_left_blank(staff):
+    """Inventing a unique URL by hand for every test is a chore with nothing
+    at the end of it, and getting it wrong is an error on the one field the
+    author cared least about."""
+    staff.post(
+        reverse("dashboard:test-create"),
+        {
+            "title": "The Globe Theatre",
+            "slug": "",
+            "skill": Skill.READING,
+            "time_limit_minutes": 60,
+            "parts": "1",
+            "description": "",
+            "difficulty": "",
+        },
+    )
+
+    assert Test.objects.get(title="The Globe Theatre").slug == "the-globe-theatre"
+
+
+def test_a_generated_slug_steps_aside_for_one_already_taken(staff):
+    Test.objects.create(
+        skill=Skill.READING, slug="the-globe-theatre", title="Older", time_limit_minutes=20
+    )
+
+    staff.post(
+        reverse("dashboard:test-create"),
+        {
+            "title": "The Globe Theatre",
+            "slug": "",
+            "skill": Skill.READING,
+            "time_limit_minutes": 60,
+            "parts": "1",
+            "description": "",
+            "difficulty": "",
+        },
+    )
+
+    created = Test.objects.get(title="The Globe Theatre")
+    assert created.slug.startswith("the-globe-theatre-")
+    assert created.slug != "the-globe-theatre"
+
+
+def test_a_slug_typed_by_hand_is_kept(staff):
+    staff.post(
+        reverse("dashboard:test-create"),
+        {
+            "title": "Anything",
+            "slug": "my-own-url",
+            "skill": Skill.READING,
+            "time_limit_minutes": 60,
+            "parts": "1",
+            "description": "",
+            "difficulty": "",
+        },
+    )
+
+    assert Test.objects.filter(slug="my-own-url").exists()

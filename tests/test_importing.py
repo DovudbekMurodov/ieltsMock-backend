@@ -150,20 +150,20 @@ def test_importing_the_same_document_twice_does_not_collide():
     second = import_test(document(slug="coffee"))
 
     assert first.slug == "coffee"
-    assert second.slug == "coffee-2"
+    # A random tag rather than a counted one: counting makes the second
+    # import's URL depend on how many came before it.
+    assert second.slug.startswith("coffee-")
+    assert second.slug != first.slug
     assert first.pk != second.pk
 
 
 def test_a_third_import_keeps_counting():
-    for _ in range(3):
+    for _ in range(5):
         import_test(document(slug="coffee"))
 
-    slugs = Test.objects.filter(slug__startswith="coffee").values_list("slug", flat=True)
-    assert sorted(slugs) == [
-        "coffee",
-        "coffee-2",
-        "coffee-3",
-    ]
+    slugs = list(Test.objects.filter(slug__startswith="coffee").values_list("slug", flat=True))
+    assert len(slugs) == 5
+    assert len(set(slugs)) == 5, "every import must get its own URL"
 
 
 def test_a_document_with_no_slug_is_fine():

@@ -32,117 +32,138 @@
   Changes save as you type, but the app keeps serving the last published version until you publish again.
 </div>
 
-<div class="grid lg:grid-cols-[320px_1fr] gap-6 items-start">
+{% comment %}
+  One part at a time. Stacking every part down one narrow column meant the
+  passage editor was a 320px box below the fold, and a three-part paper put
+  three of them there. The part is chosen here and takes the whole page.
+{% endcomment %}
+<div x-data="{ part: {{ test.sections.all.0.pk|default:0 }}, settings: false }">
 
-  <!-- settings + passage -->
-  <div class="space-y-4">
-    <div class="card p-5">
-      <p class="label">Test settings</p>
-      <form hx-post="{% url 'dashboard:hx-test-meta' test.pk %}"
-            hx-trigger="change, keyup changed delay:600ms"
-            class="space-y-3">
-        <input type="hidden" name="version" value="{{ test.version }}">
-        {% for field in form %}
-          <div>
-            <label class="label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-            {{ field }}
-          </div>
-        {% endfor %}
-      </form>
-    </div>
-
+  <div class="flex flex-wrap items-center gap-2 mb-4">
     {% for section in test.sections.all %}
-      <div class="card p-5">
-        <div class="flex items-center gap-2 mb-3">
-          <input class="input !py-1 text-sm font-semibold" name="title" value="{{ section.title }}"
-                 hx-post="{% url 'dashboard:hx-section' section.pk %}"
-                 hx-trigger="change, keyup changed delay:600ms"
-                 aria-label="Part name">
-          <span class="text-xs text-gray-400 whitespace-nowrap shrink-0">
-            {{ section.blocks.count }} block{{ section.blocks.count|pluralize }}
-          </span>
-          {% if test.sections.count > 1 %}
-            <button type="button" class="text-gray-300 hover:text-red-500 px-1 text-xs shrink-0"
-                    aria-label="Delete this part"
-                    hx-delete="{% url 'dashboard:hx-section' section.pk %}"
-                    hx-confirm="Delete this part and every question in it?">✕</button>
-          {% endif %}
-        </div>
-        <p class="label mb-2">{% if is_listening %}Transcript{% else %}Passage{% endif %}</p>
-
-        <div x-data="{ open: false }">
-          <button type="button" @click="open = !open" class="btn-secondary btn-sm w-full mb-3">
-            <span x-text="open ? 'Close paste box' : 'Paste whole {% if is_listening %}transcript{% else %}passage{% endif %}'"></span>
-          </button>
-
-          <form x-show="open" x-cloak
-                hx-post="{% url 'dashboard:hx-bulk-blocks' section.pk %}"
-                hx-target="#blocks-{{ section.pk }}"
-                hx-swap="outerHTML"
-                @htmx:after-request="open = false"
-                class="space-y-2 mb-4">
-            {{ bulk_form.text }}
-            <label class="flex items-center gap-2 text-xs text-gray-500">
-              <input type="checkbox" name="replace" checked class="accent-coral-500">
-              Replace what is there
-            </label>
-            {% if not is_listening %}
-              <label class="flex items-center gap-2 text-xs text-gray-500">
-                <input type="checkbox" name="letter" class="accent-coral-500">
-                Letter the paragraphs A, B, C
-              </label>
-            {% endif %}
-            <button type="submit" class="btn-primary btn-sm w-full">Import</button>
-          </form>
-        </div>
-
-        {% include "dashboard/partials/block_list.html" with section=section blocks=section.blocks.all block_kinds=block_kinds %}
-      </div>
-
-      {% if is_listening %}
-        <div class="card p-5">
-          <p class="label">Audio</p>
-          {% include "dashboard/partials/section_audio.html" with section=section assets=audio_assets visibility_choices=visibility_choices %}
-        </div>
-      {% endif %}
+      <button type="button" @click="part = {{ section.pk }}"
+              class="pill"
+              :class="part === {{ section.pk }} ? 'bg-coral-50 border-coral-300 text-coral-700' : ''">
+        {{ section.title|default:"Untitled part" }}
+        <span class="text-[10px] text-gray-400 ml-1">{{ section.questions_count }}</span>
+      </button>
     {% endfor %}
 
-    <form method="post" action="{% url 'dashboard:section-create' test.pk %}">
+    <form method="post" action="{% url 'dashboard:section-create' test.pk %}" class="inline">
       {% csrf_token %}
-      <button type="submit" class="btn-secondary btn-sm w-full">+ Add a part</button>
+      <button type="submit" class="pill">+ Add a part</button>
+    </form>
+
+    <button type="button" @click="settings = !settings" class="pill ml-auto">
+      <span x-text="settings ? 'Hide settings' : 'Test settings'">Test settings</span>
+    </button>
+  </div>
+
+  <div x-show="settings" x-cloak class="card p-5 mb-4">
+    <form hx-post="{% url 'dashboard:hx-test-meta' test.pk %}"
+          hx-trigger="change, keyup changed delay:600ms"
+          class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <input type="hidden" name="version" value="{{ test.version }}">
+      {% for field in form %}
+        <div>
+          <label class="label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+        </div>
+      {% endfor %}
     </form>
   </div>
 
-  <!-- questions -->
-  <div class="space-y-4">
-    {% for section in test.sections.all %}
-      <div id="groups-{{ section.pk }}" class="space-y-4"
-           data-reorder-url="{% url 'dashboard:hx-reorder' 'section-groups' section.pk %}">
-        {% for group in section.groups.all %}
-          {% include "dashboard/partials/group_card.html" with group=group questions=group.questions.all %}
-        {% endfor %}
+  {% for section in test.sections.all %}
+    <div x-show="part === {{ section.pk }}" x-cloak
+         class="grid gap-6 items-start xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+
+      <!-- the passage: the main stage, not a sidebar -->
+      <div class="space-y-4 min-w-0">
+        <div class="card p-5">
+          <div class="flex items-center gap-2 mb-4">
+            <input class="input !py-1.5 text-sm font-semibold" name="title" value="{{ section.title }}"
+                   hx-post="{% url 'dashboard:hx-section' section.pk %}"
+                   hx-trigger="change, keyup changed delay:600ms"
+                   aria-label="Part name">
+            {% if test.sections.count > 1 %}
+              <button type="button" class="text-gray-300 hover:text-red-500 px-1 text-sm shrink-0"
+                      aria-label="Delete this part"
+                      hx-delete="{% url 'dashboard:hx-section' section.pk %}"
+                      hx-confirm="Delete this part and every question in it?">✕</button>
+            {% endif %}
+          </div>
+
+          <div x-data="{ open: false }" class="mb-4">
+            <button type="button" @click="open = !open" class="btn-secondary btn-sm w-full">
+              <span x-text="open ? 'Close paste box' : 'Paste {% if is_listening %}transcript{% else %}text{% endif %}'"></span>
+            </button>
+
+            <form x-show="open" x-cloak
+                  hx-post="{% url 'dashboard:hx-bulk-blocks' section.pk %}"
+                  hx-target="#blocks-{{ section.pk }}"
+                  hx-swap="outerHTML"
+                  @htmx:after-request="open = false"
+                  class="space-y-2 mt-2">
+              {{ bulk_form.text }}
+              <label class="flex items-center gap-2 text-xs text-gray-500">
+                <input type="checkbox" name="replace" class="accent-coral-500">
+                Replace what is there
+              </label>
+              {% if not is_listening %}
+                <label class="flex items-center gap-2 text-xs text-gray-500">
+                  <input type="checkbox" name="letter" class="accent-coral-500">
+                  Letter the paragraphs A, B, C
+                </label>
+              {% endif %}
+              <p class="text-[11px] text-gray-400">
+                Leave "replace" off to add a second text below the first.
+              </p>
+              <button type="submit" class="btn-primary btn-sm w-full">Add</button>
+            </form>
+          </div>
+
+          {% include "dashboard/partials/block_list.html" with section=section blocks=section.blocks.all block_kinds=block_kinds %}
+        </div>
+
+        {% if is_listening %}
+          <div class="card p-5">
+            <p class="label">Audio</p>
+            {% include "dashboard/partials/section_audio.html" with section=section assets=audio_assets visibility_choices=visibility_choices %}
+          </div>
+        {% endif %}
       </div>
 
-      <div class="card p-5">
-        <p class="label">Add a question group</p>
-        <p class="text-xs text-gray-400 mb-3">
-          A group is one numbered instruction block. Every question inside it shares the same
-          type, which is why the type is chosen once here rather than per question.
-        </p>
-        <div class="flex flex-wrap gap-2">
-          {% for value, label in question_types %}
-            <button class="pill"
-                    hx-post="{% url 'dashboard:hx-group-create' section.pk %}"
-                    hx-vals='{"type": "{{ value }}"}'
-                    hx-target="#groups-{{ section.pk }}"
-                    hx-swap="beforeend">
-              + {{ label }}
-            </button>
+      <!-- questions for this part -->
+      <div class="space-y-4 min-w-0">
+        <div id="groups-{{ section.pk }}" class="space-y-4"
+             data-reorder-url="{% url 'dashboard:hx-reorder' 'section-groups' section.pk %}">
+          {% for group in section.groups.all %}
+            {% include "dashboard/partials/group_card.html" with group=group questions=group.questions.all %}
           {% endfor %}
         </div>
+
+        <div class="card p-5">
+          <p class="label">Add a question group</p>
+          <p class="text-xs text-gray-400 mb-3">
+            A group is one numbered instruction block. Every question inside it shares the same
+            type, which is why the type is chosen once here rather than per question.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            {% for value, label in question_types %}
+              <button class="pill"
+                      hx-post="{% url 'dashboard:hx-group-create' section.pk %}"
+                      hx-vals='{"type": "{{ value }}"}'
+                      hx-target="#groups-{{ section.pk }}"
+                      hx-swap="beforeend">
+                + {{ label }}
+              </button>
+            {% endfor %}
+          </div>
+        </div>
       </div>
-    {% endfor %}
-  </div>
+
+    </div>
+  {% endfor %}
 </div>
 {% endblock %}
 
