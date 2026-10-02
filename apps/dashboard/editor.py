@@ -22,7 +22,6 @@ from django.views.decorators.http import require_http_methods, require_POST
 from apps.common.caching import bump_content_version
 from apps.common.models import PublishStatus
 from apps.content.enums import (
-    BlockKind,
     MatchMode,
     OptionsScope,
     QuestionType,
@@ -35,26 +34,23 @@ from apps.content.importing import import_test
 from apps.content.models import (
     AnswerKey,
     AudioAsset,
-    Block,
     Option,
     Question,
     QuestionGroup,
     Section,
     Test,
 )
-from apps.content.publishing import publish_test
+from apps.content.passage import editor_html, is_lettered, save_passage
+from apps.content.publishing import build_block, publish_test
 
 from .access import staff_required
 from .forms import (
     AnswerKeyForm,
-    BlockForm,
-    BulkBlockForm,
     OptionForm,
     QuestionForm,
     QuestionGroupForm,
     SectionForm,
     TestForm,
-    parse_blocks,
 )
 from .nav import page_context
 
@@ -171,6 +167,15 @@ def test_create(request):
 @staff_required
 def test_edit(request, pk):
     test = _hydrated(pk)
+    is_listening = test.skill == Skill.LISTENING
+
+    # The passage goes to the page as one document. Built here off the already
+    # prefetched blocks, so a four-part paper still costs no extra queries.
+    for section in test.sections.all():
+        blocks = section.blocks.all()
+        section.document = editor_html(blocks, as_transcript=is_listening)
+        section.lettered = not is_listening and is_lettered(blocks)
+
     return render(
         request,
         "dashboard/test_edit.html",
@@ -178,12 +183,10 @@ def test_edit(request, pk):
             request,
             test=test,
             form=TestForm(instance=test),
-            bulk_form=BulkBlockForm(),
             question_types=QuestionType.choices,
-            is_listening=test.skill == Skill.LISTENING,
+            is_listening=is_listening,
             audio_assets=AudioAsset.objects.order_by("-created_at"),
             visibility_choices=TranscriptVisibility.choices,
-            block_kinds=BlockKind.choices,
         ),
     )
 
@@ -268,38 +271,32 @@ def test_meta_save(request, pk):
 
 @staff_required
 @require_POST
-def section_bulk_blocks(request, pk):
+def section_passage(request, pk):
+    """The whole passage, saved as one document.
+
+    The editor owns the document, so this replaces every block in the section
+    rather than patching them one at a time. What arrives is {kind, text} with
+    the text as plain characters -- no markup crosses this line in either
+    direction.
+    """
     section = get_object_or_404(Section.objects.select_related("test"), pk=pk)
-    form = BulkBlockForm(request.POST)
-    if not form.is_valid():
-        return HttpResponse("Nothing to import.", status=400)
 
-    parsed = parse_blocks(
-        form.cleaned_data["text"],
+    try:
+        document = json.loads(request.body or b"{}")
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return HttpResponse("Not JSON.", status=400)
+
+    blocks = document.get("blocks")
+    if not isinstance(blocks, list):
+        return HttpResponse("No document.", status=400)
+
+    save_passage(
+        section,
+        [item for item in blocks if isinstance(item, dict)],
+        letter=bool(document.get("letter")),
         as_transcript=section.test.skill == Skill.LISTENING,
-        letter=bool(request.POST.get("letter")),
     )
-    if not parsed:
-        return HttpResponse("Nothing to import.", status=400)
-
-    with transaction.atomic():
-        if form.cleaned_data.get("replace"):
-            section.blocks.all().delete()
-        start = (section.blocks.aggregate(m=Max("order"))["m"] or 0) + 1
-        Block.objects.bulk_create(
-            Block(section=section, order=start + index, label=label, text=text)
-            for index, (label, text) in enumerate(parsed)
-        )
-
-    return render(
-        request,
-        "dashboard/partials/block_list.html",
-        {
-            "section": section,
-            "blocks": section.blocks.order_by("order"),
-            "block_kinds": BlockKind.choices,
-        },
-    )
+    return saved()
 
 
 @staff_required
@@ -310,6 +307,29 @@ def section_create(request, pk):
     order = (test.sections.aggregate(m=Max("order"))["m"] or 0) + 1
     Section.objects.create(test=test, order=order, title=f"Part {order}")
     return redirect("dashboard:test-edit", pk=test.pk)
+
+
+@staff_required
+def section_passage_preview(request, pk):
+    """The passage as the candidate will see it.
+
+    Rendered from the saved blocks through the same `build_block` the published
+    payload uses, rather than from the editor's own markup, so the preview can
+    only show what a candidate would actually be served. The editor flushes
+    before asking for it.
+    """
+    section = get_object_or_404(Section.objects.select_related("test"), pk=pk)
+    label_key = "speaker" if section.test.skill == Skill.LISTENING else "label"
+
+    return render(
+        request,
+        "dashboard/partials/passage_preview.html",
+        {
+            "section": section,
+            "blocks": [build_block(block, label_key) for block in section.blocks.all()],
+            "label_key": label_key,
+        },
+    )
 
 
 @staff_required
@@ -333,43 +353,6 @@ def section_detail(request, pk):
         for field in SectionForm.Meta.fields
     }
     form = SectionForm(data, instance=section)
-    if not form.is_valid():
-        return HttpResponse(str(form.errors), status=400)
-    form.save()
-    return saved()
-
-
-@staff_required
-@require_POST
-def block_create(request, pk):
-    """One block, appended. The paste box handles a whole passage; this is for
-    the heading or divider you add afterwards."""
-    section = get_object_or_404(Section, pk=pk)
-    kind = request.POST.get("kind", BlockKind.PARAGRAPH)
-    if kind not in BlockKind.values:
-        raise Http404
-
-    Block.objects.create(
-        section=section,
-        order=(section.blocks.aggregate(m=Max("order"))["m"] or 0) + 1,
-        kind=kind,
-    )
-    return render(
-        request,
-        "dashboard/partials/block_list.html",
-        {"section": section, "blocks": section.blocks.all(), "block_kinds": BlockKind.choices},
-    )
-
-
-@staff_required
-@require_http_methods(["POST", "DELETE"])
-def block_detail(request, pk):
-    block = get_object_or_404(Block, pk=pk)
-    if request.method == "DELETE":
-        block.delete()
-        return HttpResponse(status=200)
-
-    form = BlockForm(request.POST, instance=block)
     if not form.is_valid():
         return HttpResponse(str(form.errors), status=400)
     form.save()
@@ -599,7 +582,6 @@ def reorder(request, model, pk):
     models = {
         "group-questions": (QuestionGroup, "questions"),
         "section-groups": (Section, "groups"),
-        "section-blocks": (Section, "blocks"),
     }
     if model not in models:
         raise Http404

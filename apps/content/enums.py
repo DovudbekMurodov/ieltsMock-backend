@@ -59,5 +59,9 @@ class BlockKind(models.TextChoices):
     """
 
     PARAGRAPH = "paragraph", "Paragraph"
+    # Two weights, not two unrelated things: a title opens a part of the paper
+    # and a heading sits inside it, which is why the app draws them as h2 and
+    # h3 off the same renderer.
+    SECTION = "section", "Title"
     HEADING = "heading", "Heading"
     RULE = "rule", "Divider"

@@ -1,0 +1,98 @@
+{% comment %}
+  One editor for the whole passage, not a column of one-paragraph boxes.
+
+  The document the author edits is HTML, but nothing stores HTML: on save it is
+  taken apart into one row per paragraph, with **bold** markers, because the
+  published payload is JSON the app renders directly. The browser's markup
+  never leaves this page.
+{% endcomment %}
+<div class="space-y-3"
+     x-data="passageEditor({
+       url: '{% url 'dashboard:hx-passage' section.pk %}',
+       previewUrl: '{% url 'dashboard:hx-passage-preview' section.pk %}',
+       lettered: {{ section.lettered|yesno:'true,false' }},
+       transcript: {{ is_listening|yesno:'true,false' }},
+     })">
+
+  <div class="flex flex-wrap items-center gap-1 rounded-xl border border-gray-200 bg-gray-50/80 px-2 py-1.5">
+    {% comment %}
+      mousedown.prevent on every tool: a button that takes focus first would
+      drop the selection the command is meant to act on.
+    {% endcomment %}
+    {% comment %}
+      Off inside a heading. A heading is already bold, and asking the browser
+      to bold it again makes it *un*-bold the words instead -- it has no tag
+      for that, so it reaches for a font-weight:normal span.
+    {% endcomment %}
+    <button type="button" class="tool disabled:opacity-40" :class="active.bold && 'tool--on'"
+            :disabled="heading" @mousedown.prevent="run('bold')"
+            :title="heading ? 'A heading is already bold' : 'Bold (⌘B)'"><b>B</b></button>
+
+    <span class="tool-sep"></span>
+
+    <button type="button" class="tool" :class="active.block === 'p' && 'tool--on'"
+            @mousedown.prevent="asBlock('p')" title="Normal text">Text</button>
+    <button type="button" class="tool font-bold" :class="active.block === 'h2' && 'tool--on'"
+            @mousedown.prevent="asBlock('h2')" title="Title">Title</button>
+    <button type="button" class="tool font-semibold text-xs" :class="active.block === 'h3' && 'tool--on'"
+            @mousedown.prevent="asBlock('h3')" title="Heading">Heading</button>
+    <button type="button" class="tool" @mousedown.prevent="insertRule()" title="Horizontal rule">— Divider</button>
+
+    {% if not is_listening %}
+      <span class="tool-sep"></span>
+      <label class="flex items-center gap-1.5 px-2 text-xs text-gray-500 cursor-pointer select-none"
+             title="Number the paragraphs A, B, C down the margin">
+        <input type="checkbox" class="accent-coral-500" x-model="lettered" @change="touch()">
+        A B C
+      </label>
+    {% endif %}
+
+    <div class="ml-auto flex items-center gap-2">
+      <span class="text-[11px] tabular-nums"
+            :class="status === 'Not saved' ? 'text-red-500' : 'text-gray-400'"
+            x-text="status"></span>
+      <button type="button" class="btn-secondary btn-sm" @click="openPreview()">Preview</button>
+    </div>
+  </div>
+
+  <div x-ref="doc" contenteditable="true" spellcheck="true" role="textbox" aria-multiline="true"
+       aria-label="{% if is_listening %}Transcript{% else %}Passage{% endif %}"
+       class="passage-editor"
+       data-placeholder="{% if is_listening %}Tutor: Good morning…{% else %}Write or paste the passage…{% endif %}"
+       @input="touch()"
+       @blur="flush()"
+       @keyup="refresh()"
+       @mouseup="refresh()"
+       @paste.prevent="paste($event)">{{ section.document }}</div>
+
+  <p class="text-[11px] text-gray-400">
+    {% if is_listening %}
+      One line per turn, written as <span class="font-mono">Tutor: Good morning.</span> — the speaker is split off when it saves.
+    {% else %}
+      Paste a whole passage and the blank lines become paragraphs. Select a word and press B, or ⌘B.
+    {% endif %}
+  </p>
+
+  {% comment %} The preview: centred, with the page blurred out behind it. {% endcomment %}
+  <template x-teleport="body">
+    <div x-show="preview" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8"
+         @keydown.escape.window="preview = false" role="dialog" aria-modal="true">
+      <div class="absolute inset-0 bg-gray-900/30 backdrop-blur-md" @click="preview = false"></div>
+
+      <div class="relative flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+           x-transition.opacity>
+        <div class="flex items-center justify-between gap-4 border-b border-gray-100 px-7 py-4">
+          <div>
+            <p class="label mb-0">Preview</p>
+            <p class="text-sm font-semibold text-gray-900">{{ section.title|default:"This part" }}</p>
+          </div>
+          <button type="button" class="btn-secondary btn-sm" @click="preview = false">Close</button>
+        </div>
+        <div class="overflow-y-auto px-7 py-6" x-ref="previewBody"></div>
+        <p class="border-t border-gray-100 px-7 py-2.5 text-[11px] text-gray-400">
+          Rendered from what is saved, the same way the app will render it.
+        </p>
+      </div>
+    </div>
+  </template>
+</div>

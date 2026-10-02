@@ -118,6 +118,56 @@
     @apply badge bg-gray-100 text-gray-400 border border-gray-200;
   }
 
+  /* The passage editor: one document, not a column of boxes. Its children are
+     produced by contenteditable, so they are styled by tag rather than with
+     utility classes. */
+  .passage-editor {
+    @apply min-h-[26rem] w-full rounded-xl border border-gray-200 bg-white px-6 py-5
+           text-[15px] leading-[1.75] text-gray-800
+           focus:border-coral-300 focus:outline-none focus:ring-2 focus:ring-coral-400/15;
+    font-family: ui-serif, Georgia, Cambria, 'Times New Roman', serif;
+  }
+
+  .passage-editor:empty::before {
+    content: attr(data-placeholder);
+    @apply text-gray-300;
+  }
+
+  .passage-editor p {
+    @apply mb-5;
+  }
+
+  .passage-editor h2 {
+    @apply font-display mb-4 mt-8 text-xl font-extrabold tracking-tight text-gray-900 first:mt-0;
+  }
+
+  .passage-editor h3 {
+    @apply font-display mb-3 mt-6 text-base font-bold text-gray-900 first:mt-0;
+  }
+
+  .passage-editor hr {
+    @apply my-7 border-gray-300;
+  }
+
+  .passage-editor strong,
+  .passage-editor b {
+    @apply font-bold text-gray-900;
+  }
+
+  .tool {
+    @apply inline-flex h-7 min-w-[1.75rem] items-center justify-center rounded-lg px-2 text-xs
+           font-medium text-gray-600 transition-colors hover:bg-white hover:text-gray-900
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral-400;
+  }
+
+  .tool--on {
+    @apply bg-white text-coral-600 shadow-sm ring-1 ring-gray-200;
+  }
+
+  .tool-sep {
+    @apply mx-1 h-5 w-px bg-gray-200;
+  }
+
   .nav-link {
     @apply font-display flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold
            text-gray-600 hover:bg-gray-50 transition-colors;

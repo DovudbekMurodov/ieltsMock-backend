@@ -117,27 +117,6 @@ def test_a_part_can_be_deleted_when_it_is_not_the_last(staff, draft):
 # --- block kinds ---------------------------------------------------------
 
 
-def test_a_heading_or_divider_can_be_added_by_hand(staff, draft):
-    """The paste box takes a whole passage; a single heading had no route."""
-    section = draft.sections.get()
-
-    staff.post(reverse("dashboard:hx-block-create", args=[section.pk]), {"kind": "heading"})
-    staff.post(reverse("dashboard:hx-block-create", args=[section.pk]), {"kind": "rule"})
-
-    assert list(section.blocks.order_by("order").values_list("kind", flat=True)) == [
-        "heading",
-        "rule",
-    ]
-
-
-def test_an_unknown_block_kind_is_refused(staff, draft):
-    response = staff.post(
-        reverse("dashboard:hx-block-create", args=[draft.sections.get().pk]), {"kind": "iframe"}
-    )
-
-    assert response.status_code == 404
-
-
 def test_the_kind_reaches_the_published_payload(staff, draft):
     section = draft.sections.get()
     Block.objects.create(section=section, order=1, kind=BlockKind.HEADING, text="The Globe")
@@ -179,13 +158,6 @@ def test_a_divider_carries_no_parts(staff, draft):
     payload = build_test_payload(published_queryset().get(pk=draft.pk))
 
     assert payload["sections"][0]["blocks"][0]["parts"] == []
-
-
-def test_the_editor_page_offers_every_block_kind(staff, draft):
-    body = staff.get(reverse("dashboard:test-edit", args=[draft.pk])).content.decode()
-
-    for _, label in BlockKind.choices:
-        assert f"+ {label}" in body
 
 
 def test_an_imported_draft_is_still_a_draft_with_several_parts(staff):

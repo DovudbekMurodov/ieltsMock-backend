@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.content.models import AnswerKey, Block, Option, Question, QuestionGroup, Section, Test
+from apps.content.models import AnswerKey, Option, Question, QuestionGroup, Section, Test
 from apps.content.slugs import unique_slug
 from apps.speaking.models import SpeakingCueCard, SpeakingItem, SpeakingTopic
 from apps.vocabulary.models import VocabularySection, VocabularyWord
@@ -54,17 +54,6 @@ class SectionForm(forms.ModelForm):
         }
 
 
-class BlockForm(forms.ModelForm):
-    class Meta:
-        model = Block
-        fields = ("kind", "label", "text")
-        widgets = {
-            "kind": forms.Select(attrs=TEXT_INPUT),
-            "label": forms.TextInput(attrs={**TEXT_INPUT, "placeholder": "A / Speaker"}),
-            "text": forms.Textarea(attrs={**TEXTAREA, "rows": 4}),
-        }
-
-
 class QuestionGroupForm(forms.ModelForm):
     class Meta:
         model = QuestionGroup
@@ -107,61 +96,6 @@ class AnswerKeyForm(forms.ModelForm):
         model = AnswerKey
         fields = ("value",)
         widgets = {"value": forms.TextInput(attrs=TEXT_INPUT)}
-
-
-class BulkBlockForm(forms.Form):
-    """Paste a whole passage or transcript at once.
-
-    Entering 6 paragraphs one box at a time is the slowest part of authoring a
-    test, so this is the highest-leverage input in the editor.
-    """
-
-    text = forms.CharField(
-        widget=forms.Textarea(
-            attrs={
-                "class": "input font-mono text-xs",
-                "rows": 12,
-                "placeholder": (
-                    "Paste a passage: blank lines separate paragraphs, labelled A, B, C...\n\n"
-                    "Or a transcript, one line each:\n"
-                    "Tutor: Good morning.\n"
-                    "Student: Hello."
-                ),
-            }
-        )
-    )
-    replace = forms.BooleanField(required=False, initial=True)
-
-
-def parse_blocks(text: str, *, as_transcript: bool, letter: bool = True) -> list[tuple[str, str]]:
-    """Split pasted text into (label, body) pairs."""
-    if as_transcript:
-        blocks = []
-        for line in text.splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            speaker, _, body = line.partition(":")
-            if body.strip():
-                blocks.append((speaker.strip(), body.strip()))
-            else:
-                # No colon: treat it as a continuation of the previous speaker.
-                if blocks:
-                    blocks[-1] = (blocks[-1][0], f"{blocks[-1][1]} {line}")
-                else:
-                    blocks.append(("", line))
-        return blocks
-
-    paragraphs = [p.strip() for p in text.split("\n\n") if p.strip()]
-    if not letter:
-        # Plenty of passages are plain prose. Lettering those produces an A, B,
-        # C column down the margin that means nothing and that the candidate
-        # then has to ignore.
-        return [("", paragraph) for paragraph in paragraphs]
-    return [
-        (chr(ord("A") + index) if index < 26 else str(index + 1), paragraph)
-        for index, paragraph in enumerate(paragraphs)
-    ]
 
 
 class VocabularySectionForm(forms.ModelForm):

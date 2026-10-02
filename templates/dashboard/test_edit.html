@@ -93,36 +93,7 @@
             {% endif %}
           </div>
 
-          <div x-data="{ open: false }" class="mb-4">
-            <button type="button" @click="open = !open" class="btn-secondary btn-sm w-full">
-              <span x-text="open ? 'Close paste box' : 'Paste {% if is_listening %}transcript{% else %}text{% endif %}'"></span>
-            </button>
-
-            <form x-show="open" x-cloak
-                  hx-post="{% url 'dashboard:hx-bulk-blocks' section.pk %}"
-                  hx-target="#blocks-{{ section.pk }}"
-                  hx-swap="outerHTML"
-                  @htmx:after-request="open = false"
-                  class="space-y-2 mt-2">
-              {{ bulk_form.text }}
-              <label class="flex items-center gap-2 text-xs text-gray-500">
-                <input type="checkbox" name="replace" class="accent-coral-500">
-                Replace what is there
-              </label>
-              {% if not is_listening %}
-                <label class="flex items-center gap-2 text-xs text-gray-500">
-                  <input type="checkbox" name="letter" class="accent-coral-500">
-                  Letter the paragraphs A, B, C
-                </label>
-              {% endif %}
-              <p class="text-[11px] text-gray-400">
-                Leave "replace" off to add a second text below the first.
-              </p>
-              <button type="submit" class="btn-primary btn-sm w-full">Add</button>
-            </form>
-          </div>
-
-          {% include "dashboard/partials/block_list.html" with section=section blocks=section.blocks.all block_kinds=block_kinds %}
+          {% include "dashboard/partials/passage_editor.html" with section=section %}
         </div>
 
         {% if is_listening %}
@@ -170,6 +141,172 @@
 {% block scripts %}
 <script src="{% static 'dashboard/vendor/sortable.min.js' %}"></script>
 <script>
+  // The passage editor. One contenteditable document in, one list of
+  // {kind, text} out -- the markup the browser produces is this page's
+  // business and never reaches the database, because the published payload is
+  // JSON the app renders directly.
+  const CSRF = '{{ csrf_token }}'
+
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('passageEditor', ({ url, previewUrl, lettered, transcript }) => ({
+      url, previewUrl, lettered, transcript,
+      status: 'Saved',
+      preview: false,
+      active: { bold: false, block: 'p' },
+      get heading() { return this.active.block === 'h2' || this.active.block === 'h3' },
+      timer: null,
+      last: null,
+
+      init() {
+        // Tags, not inline styles: the serialiser below reads <strong>, and a
+        // span with font-weight:bold is harder to recognise and impossible to
+        // nest sanely. Enter makes a paragraph rather than a div.
+        try {
+          document.execCommand('styleWithCSS', false, false)
+          document.execCommand('defaultParagraphSeparator', false, 'p')
+        } catch { /* older browsers; the serialiser copes either way */ }
+        this.last = this.payload()
+      },
+
+      // --- reading the document ------------------------------------------
+
+      inline(node, insideBold = false) {
+        let out = ''
+        for (const child of node.childNodes) {
+          if (child.nodeType === Node.TEXT_NODE) { out += child.textContent; continue }
+          if (child.nodeType !== Node.ELEMENT_NODE) continue
+          if (child.tagName === 'BR') { out += ' '; continue }
+
+          const weight = child.style && child.style.fontWeight
+          const bold = child.tagName === 'STRONG' || child.tagName === 'B' ||
+                       weight === 'bold' || parseInt(weight, 10) >= 600
+          const inner = this.inline(child, insideBold || bold)
+          // Already inside bold: wrapping again would emit **** and the
+          // server's split would read it as an empty bold run.
+          out += bold && !insideBold && inner.trim() ? `**${inner}**` : inner
+        }
+        return out
+      },
+
+      serialise() {
+        const items = []
+        for (const node of this.$refs.doc.childNodes) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            // Typing into an empty editor leaves a bare text node with no
+            // paragraph around it. Dropping those would eat the first line.
+            const text = node.textContent.trim()
+            if (text) items.push({ kind: 'paragraph', text })
+            continue
+          }
+          if (node.nodeType !== Node.ELEMENT_NODE) continue
+
+          const tag = node.tagName
+          if (tag === 'HR') { items.push({ kind: 'rule', text: '' }); continue }
+          if (tag === 'BR') continue
+
+          const text = this.inline(node).replace(/\s+/g, ' ').trim()
+          if (!text) continue
+
+          const kind = tag === 'H1' || tag === 'H2' ? 'section'
+                     : tag === 'H3' || tag === 'H4' ? 'heading'
+                     : 'paragraph'
+          items.push({ kind, text })
+        }
+        return items
+      },
+
+      payload() {
+        return JSON.stringify({ blocks: this.serialise(), letter: this.lettered })
+      },
+
+      // --- writing in it --------------------------------------------------
+
+      run(command, value = null) {
+        document.execCommand(command, false, value)
+        this.$refs.doc.focus()
+        this.touch()
+      },
+
+      asBlock(tag) { this.run('formatBlock', `<${tag}>`) },
+
+      insertRule() {
+        // The trailing paragraph is the caret's landing place; without it the
+        // rule is the last node and there is nowhere left to type.
+        this.run('insertHTML', '<hr><p><br></p>')
+      },
+
+      paste(event) {
+        const text = (event.clipboardData || window.clipboardData).getData('text/plain')
+        if (!text) return
+        // Plain text only, escaped, blank lines becoming paragraphs. Pasting a
+        // passage out of Word otherwise drags its stylesheet in with it.
+        const html = text
+          .split(/\n\s*\n/)
+          .map((para) => para.replace(/\s*\n\s*/g, ' ').trim())
+          .filter(Boolean)
+          .map((para) => `<p>${this.escape(para)}</p>`)
+          .join('')
+        this.run('insertHTML', html || '<p><br></p>')
+      },
+
+      escape(text) {
+        const holder = document.createElement('div')
+        holder.textContent = text
+        return holder.innerHTML
+      },
+
+      refresh() {
+        try { this.active.bold = document.queryCommandState('bold') } catch { /* unsupported */ }
+        const anchor = window.getSelection() && window.getSelection().anchorNode
+        const element = anchor && (anchor.nodeType === 1 ? anchor : anchor.parentElement)
+        const block = element && element.closest('h1,h2,h3,h4,p,div[contenteditable]')
+        const tag = block && block.tagName ? block.tagName.toLowerCase() : 'p'
+        // Typing into an empty editor leaves the caret loose in the div
+        // itself; that is a paragraph as far as the toolbar is concerned.
+        this.active.block = tag === 'div' ? 'p' : tag
+      },
+
+      // --- saving ----------------------------------------------------------
+
+      touch() {
+        this.status = 'Unsaved'
+        this.refresh()
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => this.flush(), 900)
+      },
+
+      async flush() {
+        clearTimeout(this.timer)
+        const body = this.payload()
+        if (body === this.last) { this.status = 'Saved'; return }
+
+        this.status = 'Saving…'
+        try {
+          const response = await fetch(this.url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
+            body,
+          })
+          if (!response.ok) throw new Error(response.status)
+          this.last = body
+          this.status = 'Saved'
+          window.dispatchEvent(new CustomEvent('saved'))
+        } catch {
+          // Left dirty on purpose: the next keystroke schedules another
+          // attempt, and the words are still on screen either way.
+          this.status = 'Not saved'
+        }
+      },
+
+      async openPreview() {
+        await this.flush()
+        this.preview = true
+        const response = await fetch(this.previewUrl, { headers: { 'X-Requested-With': 'fetch' } })
+        this.$refs.previewBody.innerHTML = await response.text()
+      },
+    }))
+  })
+
   // Drag to reorder, with up/down buttons doing the same thing for anyone not
   // using a mouse. Both post to the same endpoint.
   function wireSortable(root) {

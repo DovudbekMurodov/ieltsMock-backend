@@ -1,0 +1,31 @@
+{% comment %}
+  The passage as the candidate meets it, built from the published payload's own
+  blocks. Nothing here reads the editor's markup, so a preview cannot show
+  something that would not survive publishing.
+{% endcomment %}
+<div class="font-serif text-[15px] leading-[1.75] text-gray-800">
+  {% for block in blocks %}
+    {% if block.kind == "rule" %}
+      <hr class="my-7 border-gray-200">
+    {% elif block.kind == "section" %}
+      <h2 class="font-sans text-xl font-extrabold tracking-tight text-gray-900 mt-8 mb-4 first:mt-0">
+        {% for part in block.parts %}{% if part.bold %}<strong>{{ part.text }}</strong>{% else %}{{ part.text }}{% endif %}{% endfor %}
+      </h2>
+    {% elif block.kind == "heading" %}
+      <h3 class="font-sans text-base font-bold text-gray-900 mt-6 mb-3 first:mt-0">
+        {% for part in block.parts %}{% if part.bold %}<strong>{{ part.text }}</strong>{% else %}{{ part.text }}{% endif %}{% endfor %}
+      </h3>
+    {% else %}
+      <p class="mb-5">
+        {% if label_key == "speaker" %}
+          {% if block.speaker %}<strong class="text-gray-900">{{ block.speaker }}:</strong> {% endif %}
+        {% else %}
+          {% if block.label %}<strong class="text-gray-900">{{ block.label }}</strong> {% endif %}
+        {% endif %}
+        {% for part in block.parts %}{% if part.bold %}<strong>{{ part.text }}</strong>{% else %}{{ part.text }}{% endif %}{% endfor %}
+      </p>
+    {% endif %}
+  {% empty %}
+    <p class="text-gray-400 italic">Nothing written yet.</p>
+  {% endfor %}
+</div>
