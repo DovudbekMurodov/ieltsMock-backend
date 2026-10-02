@@ -2,34 +2,98 @@
 {% block title %}New test{% endblock %}
 {% block heading %}New test{% endblock %}
 {% block subheading %}
-  <p class="text-gray-500">Saved as a draft. Nothing is served until you publish it.</p>
+  <p class="text-gray-500">
+    Saved as a draft. Nothing is served until you publish it, and the URL is made from the title.
+  </p>
 {% endblock %}
 
 {% block content %}
-<form method="post" class="card p-6 max-w-2xl space-y-4">
+{% comment %}
+  Two columns across the whole page rather than one capped at 42rem. The fields
+  are short and there are only a handful of them, so a single narrow column
+  pushed the Create button below the fold with half the screen empty beside it.
+{% endcomment %}
+<form method="post" class="space-y-4">
   {% csrf_token %}
-  {% for field in form %}
-    <div>
-      <label class="label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-      {{ field }}
-      {% if field.help_text %}<p class="text-xs text-gray-400 mt-1">{{ field.help_text }}</p>{% endif %}
-      {% for e in field.errors %}<p class="text-xs text-red-600 mt-1">{{ e }}</p>{% endfor %}
+
+  <div class="grid gap-4 items-start xl:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)]">
+
+    <div class="card p-6 space-y-5 min-w-0">
+      <div>
+        <label class="label" for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+        {{ form.title }}
+        {% for e in form.title.errors %}<p class="text-xs text-red-600 mt-1">{{ e }}</p>{% endfor %}
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-3">
+        {% for field in form %}
+          {% if field.name != "title" and field.name != "description" %}
+            <div>
+              <label class="label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% for e in field.errors %}<p class="text-xs text-red-600 mt-1">{{ e }}</p>{% endfor %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      <div>
+        <label class="label" for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+        {{ form.description }}
+        {% for e in form.description.errors %}<p class="text-xs text-red-600 mt-1">{{ e }}</p>{% endfor %}
+      </div>
     </div>
-  {% endfor %}
-  <div>
-    <label class="label" for="parts">Parts</label>
-    <select id="parts" name="parts" class="input">
-      <option value="1">One part</option>
-      <option value="2">Two parts</option>
-      <option value="3">Three parts — a full reading paper</option>
-      <option value="4">Four parts — a full listening paper</option>
-    </select>
-    <p class="text-xs text-gray-400 mt-1">
-      Each part gets its own passage and its own questions. You can add or remove parts later.
-    </p>
+
+    {% comment %}
+      The shape of the paper, chosen once. "Part 2" builds a single section that
+      is still numbered Part 2, because a drill on one passage belongs somewhere
+      in a paper; "Full test" builds every part up front so the tabs are waiting
+      on the next screen.
+    {% endcomment %}
+    <div class="card p-6 space-y-4 min-w-0"
+         x-data="{
+           shape: 'part-1',
+           parts() {
+             const [kind, n] = this.shape.split('-')
+             return kind === 'part'
+               ? ['Part ' + n]
+               : Array.from({ length: +n }, (_, i) => 'Part ' + (i + 1))
+           },
+         }">
+      <div>
+        <label class="label" for="parts">Parts</label>
+        <select id="parts" name="parts" class="input" x-model="shape">
+          <optgroup label="One part only">
+            <option value="part-1">Part 1</option>
+            <option value="part-2">Part 2</option>
+            <option value="part-3">Part 3</option>
+            <option value="part-4">Part 4</option>
+          </optgroup>
+          <optgroup label="A whole paper">
+            <option value="full-3">Full test — 3 parts (reading)</option>
+            <option value="full-4">Full test — 4 parts (listening)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div>
+        <p class="label">You will get</p>
+        <div class="flex flex-wrap gap-1.5">
+          <template x-for="name in parts()" :key="name">
+            <span class="inline-flex items-center rounded-full border border-coral-200 bg-coral-50
+                         px-3 py-1 text-xs font-semibold text-coral-700" x-text="name"></span>
+          </template>
+        </div>
+      </div>
+
+      <p class="text-xs text-gray-400">
+        Each part gets its own passage and its own questions, and the editor shows one at a time.
+        You can add or remove parts later.
+      </p>
+    </div>
   </div>
 
-  <div class="flex gap-2 pt-2">
+  <div class="flex gap-2">
     <button type="submit" class="btn-primary btn-md">Create draft</button>
     <a href="{% url 'dashboard:test-list' %}" class="btn-secondary btn-md">Cancel</a>
   </div>

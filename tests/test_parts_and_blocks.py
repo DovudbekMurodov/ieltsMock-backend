@@ -31,42 +31,53 @@ def draft(db):
 # --- parts ---------------------------------------------------------------
 
 
-def test_a_test_can_be_created_with_several_parts(staff):
+def _create(staff, **overrides):
+    payload = {
+        "title": "Full paper",
+        "skill": Skill.READING,
+        "time_limit_minutes": 60,
+        "parts": "part-1",
+        "description": "",
+        "difficulty": "",
+    }
+    return staff.post(reverse("dashboard:test-create"), {**payload, **overrides})
+
+
+def test_a_full_paper_is_built_with_all_its_parts(staff):
     """A full reading paper is three passages. One section was created
     regardless and nothing could add a second, so a full paper was
     unbuildable."""
-    staff.post(
-        reverse("dashboard:test-create"),
-        {
-            "title": "Full paper",
-            "slug": "full-paper",
-            "skill": Skill.READING,
-            "time_limit_minutes": 60,
-            "parts": "3",
-            "description": "",
-            "difficulty": "",
-        },
-    )
+    _create(staff, title="Full paper", parts="full-3")
 
-    test = Test.objects.get(slug="full-paper")
+    test = Test.objects.get(title="Full paper")
     assert [s.title for s in test.sections.order_by("order")] == ["Part 1", "Part 2", "Part 3"]
 
 
-def test_a_single_part_test_takes_the_test_title(staff):
-    staff.post(
-        reverse("dashboard:test-create"),
-        {
-            "title": "One passage",
-            "slug": "one-passage",
-            "skill": Skill.READING,
-            "time_limit_minutes": 20,
-            "parts": "1",
-            "description": "",
-            "difficulty": "",
-        },
-    )
+def test_a_full_listening_paper_is_four_parts(staff):
+    _create(staff, title="Listening paper", skill=Skill.LISTENING, parts="full-4")
 
-    assert Test.objects.get(slug="one-passage").sections.get().title == "One passage"
+    test = Test.objects.get(title="Listening paper")
+    assert [s.title for s in test.sections.order_by("order")] == [
+        "Part 1",
+        "Part 2",
+        "Part 3",
+        "Part 4",
+    ]
+
+
+def test_a_single_part_test_is_named_for_the_part_it_is(staff):
+    """It took the test's own title, so a test called "a" showed a tab called
+    "a" — which says nothing about which part of a paper it is."""
+    _create(staff, title="One passage", parts="part-3")
+
+    assert Test.objects.get(title="One passage").sections.get().title == "Part 3"
+
+
+def test_the_form_offers_every_shape_of_paper(staff):
+    body = staff.get(reverse("dashboard:test-create")).content.decode()
+
+    for shape in ("part-1", "part-2", "part-3", "part-4", "full-3", "full-4"):
+        assert f'value="{shape}"' in body
 
 
 def test_a_part_can_be_added_afterwards(staff, draft):
@@ -179,20 +190,9 @@ def test_the_editor_page_offers_every_block_kind(staff, draft):
 
 def test_an_imported_draft_is_still_a_draft_with_several_parts(staff):
     """Parts on create must not quietly publish anything."""
-    staff.post(
-        reverse("dashboard:test-create"),
-        {
-            "title": "Three parts",
-            "slug": "three-parts",
-            "skill": Skill.READING,
-            "time_limit_minutes": 60,
-            "parts": "3",
-            "description": "",
-            "difficulty": "",
-        },
-    )
+    _create(staff, title="Three parts", parts="full-3")
 
-    assert Test.objects.get(slug="three-parts").status == PublishStatus.DRAFT
+    assert Test.objects.get(title="Three parts").status == PublishStatus.DRAFT
 
 
 def test_the_editor_shows_one_part_at_a_time(staff, draft):
@@ -213,24 +213,23 @@ def test_each_part_tab_carries_its_question_count(staff, draft):
     assert hasattr(section, "questions_count")
 
 
-def test_the_slug_is_generated_when_left_blank(staff):
-    """Inventing a unique URL by hand for every test is a chore with nothing
-    at the end of it, and getting it wrong is an error on the one field the
-    author cared least about."""
-    staff.post(
-        reverse("dashboard:test-create"),
-        {
-            "title": "The Globe Theatre",
-            "slug": "",
-            "skill": Skill.READING,
-            "time_limit_minutes": 60,
-            "parts": "1",
-            "description": "",
-            "difficulty": "",
-        },
-    )
+def test_the_slug_is_generated_from_the_title(staff):
+    """The field is gone from the form entirely. Inventing a unique URL by hand
+    for every test is a chore with nothing at the end of it, and getting it
+    wrong is an error on the one field the author cared least about."""
+    _create(staff, title="The Globe Theatre")
 
     assert Test.objects.get(title="The Globe Theatre").slug == "the-globe-theatre"
+
+
+def test_no_page_asks_for_a_slug(staff):
+    create = staff.get(reverse("dashboard:test-create")).content.decode()
+    _create(staff, title="The Globe Theatre")
+    test = Test.objects.get(title="The Globe Theatre")
+    edit = staff.get(reverse("dashboard:test-edit", args=[test.pk])).content.decode()
+
+    for body in (create, edit):
+        assert 'name="slug"' not in body
 
 
 def test_a_generated_slug_steps_aside_for_one_already_taken(staff):
@@ -238,36 +237,27 @@ def test_a_generated_slug_steps_aside_for_one_already_taken(staff):
         skill=Skill.READING, slug="the-globe-theatre", title="Older", time_limit_minutes=20
     )
 
-    staff.post(
-        reverse("dashboard:test-create"),
-        {
-            "title": "The Globe Theatre",
-            "slug": "",
-            "skill": Skill.READING,
-            "time_limit_minutes": 60,
-            "parts": "1",
-            "description": "",
-            "difficulty": "",
-        },
-    )
+    _create(staff, title="The Globe Theatre")
 
     created = Test.objects.get(title="The Globe Theatre")
     assert created.slug.startswith("the-globe-theatre-")
     assert created.slug != "the-globe-theatre"
 
 
-def test_a_slug_typed_by_hand_is_kept(staff):
+def test_renaming_a_test_keeps_its_url(staff, draft):
+    """The slug is the public URL; a rename must not break the links to it."""
     staff.post(
-        reverse("dashboard:test-create"),
+        reverse("dashboard:hx-test-meta", args=[draft.pk]),
         {
-            "title": "Anything",
-            "slug": "my-own-url",
-            "skill": Skill.READING,
-            "time_limit_minutes": 60,
-            "parts": "1",
+            "title": "Renamed",
+            "skill": draft.skill,
             "description": "",
+            "time_limit_minutes": 25,
             "difficulty": "",
+            "version": draft.version,
         },
     )
+    draft.refresh_from_db()
 
-    assert Test.objects.filter(slug="my-own-url").exists()
+    assert draft.title == "Renamed"
+    assert draft.slug == "draft-parts"

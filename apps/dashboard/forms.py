@@ -11,31 +11,30 @@ TEXTAREA = {"class": "input", "rows": 3}
 
 
 class TestForm(forms.ModelForm):
-    """The slug is optional here and generated from the title when left blank.
+    """No slug field: the URL is made from the title and never typed.
 
-    Inventing a unique URL slug by hand for every test is a chore with nothing
-    at the end of it, and getting it wrong is a 'test with this slug already
-    exists' error on the one field the author cared least about.
+    Inventing a unique URL by hand for every test is a chore with nothing at
+    the end of it, and getting it wrong is a "test with this slug already
+    exists" error on the one field the author cared least about.
+
+    An existing slug is left alone when a test is edited. It is the public URL,
+    so renaming a test must not break the links to it.
     """
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["slug"].required = False
-        self.fields["slug"].help_text = "Leave blank to generate one from the title."
-
-    def clean_slug(self):
-        slug = self.cleaned_data.get("slug")
-        if slug:
-            return slug
-        title = self.data.get("title") or self.cleaned_data.get("title") or ""
-        return unique_slug(Test, title)
+    def save(self, commit=True):
+        test = super().save(commit=False)
+        if not test.slug:
+            test.slug = unique_slug(Test, test.title)
+        if commit:
+            test.save()
+            self._save_m2m()
+        return test
 
     class Meta:
         model = Test
-        fields = ("title", "slug", "skill", "description", "time_limit_minutes", "difficulty")
+        fields = ("title", "skill", "description", "time_limit_minutes", "difficulty")
         widgets = {
             "title": forms.TextInput(attrs=TEXT_INPUT),
-            "slug": forms.TextInput(attrs=TEXT_INPUT),
             "skill": forms.Select(attrs=TEXT_INPUT),
             "description": forms.Textarea(attrs=TEXTAREA),
             "time_limit_minutes": forms.NumberInput(attrs=TEXT_INPUT),

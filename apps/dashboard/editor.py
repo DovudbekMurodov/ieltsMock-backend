@@ -129,6 +129,26 @@ def _group_card(request, group):
 # --- pages ---------------------------------------------------------------------
 
 
+def _part_numbers(shape):
+    """Which parts a new test starts with, from the shape chosen on the form.
+
+    A full IELTS reading paper is three passages and a listening one is four
+    sections, so "full-3" and "full-4" build the whole paper up front; one
+    section was created here regardless and nothing in the editor could add a
+    second, which made a full paper unbuildable.
+
+    "part-2" is a single section that is still *Part 2* of a paper. An author
+    drilling one passage wants it numbered where it belongs, and the part used
+    to borrow the test's own title instead — so a test called "a" showed a tab
+    called "a", which says nothing about which part it is.
+
+    A bare number is read the way the old form meant it: that many parts.
+    """
+    kind, _, value = (shape or "").strip().rpartition("-")
+    number = max(1, min(int(value), 4)) if value.isdigit() else 1
+    return [number] if kind == "part" else list(range(1, number + 1))
+
+
 @staff_required
 def test_create(request):
     if request.method == "POST":
@@ -139,17 +159,8 @@ def test_create(request):
             test.status = PublishStatus.DRAFT
             test.save()
 
-            # A full IELTS reading paper is three passages and a listening one
-            # is four sections; a single-part test is a drill. One section was
-            # created here regardless, and nothing in the editor could add a
-            # second, so a full paper was unbuildable.
-            parts = max(1, min(int(request.POST.get("parts") or 1), 4))
-            for index in range(1, parts + 1):
-                Section.objects.create(
-                    test=test,
-                    order=index,
-                    title=test.title if parts == 1 else f"Part {index}",
-                )
+            for order, number in enumerate(_part_numbers(request.POST.get("parts")), start=1):
+                Section.objects.create(test=test, order=order, title=f"Part {number}")
             return redirect("dashboard:test-edit", pk=test.pk)
     else:
         form = TestForm(initial={"skill": request.GET.get("skill", Skill.READING)})

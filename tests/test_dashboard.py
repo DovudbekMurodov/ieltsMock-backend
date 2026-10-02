@@ -147,7 +147,6 @@ def test_creating_a_test_starts_it_as_a_draft_with_a_section(staff_client):
         reverse("dashboard:test-create"),
         {
             "title": "New Reading Test",
-            "slug": "new-reading-test",
             "skill": Skill.READING,
             "description": "",
             "time_limit_minutes": 20,
@@ -404,7 +403,6 @@ def test_editing_the_test_meta_saves(staff_client, draft):
         reverse("dashboard:hx-test-meta", args=[draft.pk]),
         {
             "title": "Renamed",
-            "slug": draft.slug,
             "skill": draft.skill,
             "description": "",
             "time_limit_minutes": 25,
@@ -425,7 +423,6 @@ def test_a_stale_edit_is_refused_rather_than_overwriting(staff_client, draft):
         reverse("dashboard:hx-test-meta", args=[draft.pk]),
         {
             "title": "Stale write",
-            "slug": draft.slug,
             "skill": draft.skill,
             "description": "",
             "time_limit_minutes": 20,
