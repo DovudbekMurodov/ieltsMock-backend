@@ -10,6 +10,8 @@ public. The publish pipeline is the precondition for this editing model, not an
 optimisation on top of it.
 """
 
+import json
+
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Max
@@ -26,6 +28,9 @@ from apps.content.enums import (
     Skill,
     TranscriptVisibility,
 )
+from apps.content.import_template import BRIEF, template_json
+from apps.content.importing import ImportError_ as ContentImportError
+from apps.content.importing import import_test
 from apps.content.models import (
     AnswerKey,
     AudioAsset,
@@ -525,3 +530,62 @@ def reorder(request, model, pk):
         _renumber(test)
 
     return saved("reordered")
+
+
+# --- JSON import ---------------------------------------------------------------
+
+
+@staff_required
+def test_import(request):
+    """Turn a JSON document into a draft test.
+
+    Nothing published, nothing overwritten. The point of the feature is that an
+    author can have a model fill in a template and get a test they then read
+    through in the editor — so the import ends at the editor, not at the test
+    list, and certainly not live.
+    """
+    problems: list[str] = []
+    pasted = ""
+
+    if request.method == "POST":
+        upload = request.FILES.get("file")
+        pasted = request.POST.get("document", "")
+        source = upload.read().decode("utf-8", errors="replace") if upload else pasted
+
+        if not source.strip():
+            problems = ["Paste the JSON, or choose a file."]
+        else:
+            try:
+                raw = json.loads(source)
+            except json.JSONDecodeError as cause:
+                # Line and column, because the usual cause is a model that
+                # trailed a comma and the file is several hundred lines long.
+                problems = [
+                    f"That is not valid JSON: {cause.msg} "
+                    f"(line {cause.lineno}, column {cause.colno})."
+                ]
+            else:
+                try:
+                    test = import_test(raw, created_by=request.user)
+                except ContentImportError as rejected:
+                    problems = rejected.problems
+                else:
+                    messages.success(
+                        request,
+                        f"Imported {test.title} as a draft. Read it through, then publish.",
+                    )
+                    return redirect("dashboard:test-edit", pk=test.pk)
+
+    return render(
+        request,
+        "dashboard/test_import.html",
+        page_context(request, problems=problems, document=pasted, brief=BRIEF),
+    )
+
+
+@staff_required
+def test_import_template(request):
+    """The empty document, as a download."""
+    response = HttpResponse(template_json(), content_type="application/json")
+    response["Content-Disposition"] = 'attachment; filename="preppath-test-template.json"'
+    return response

@@ -3,7 +3,10 @@
 {% block heading %}{{ page_title }}{% endblock %}
 {% block subheading %}<p class="text-gray-500">Only published tests reach the app.</p>{% endblock %}
 {% block actions %}
-  <a href="{% url 'dashboard:test-create' %}?skill={{ skill }}" class="btn-primary btn-md">New test</a>
+  <div class="flex gap-2">
+    <a href="{% url 'dashboard:test-import' %}" class="btn-secondary btn-md">Import JSON</a>
+    <a href="{% url 'dashboard:test-create' %}?skill={{ skill }}" class="btn-primary btn-md">New test</a>
+  </div>
 {% endblock %}
 
 {% block content %}

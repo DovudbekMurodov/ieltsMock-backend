@@ -1,0 +1,72 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Import a test{% endblock %}
+{% block heading %}Import a test{% endblock %}
+{% block subheading %}
+  <p class="text-gray-500">
+    Hand the template to a model, import what it gives back. The test arrives as a draft —
+    nothing is published and nothing existing is overwritten.
+  </p>
+{% endblock %}
+
+{% block content %}
+<div class="grid gap-6 lg:grid-cols-5 items-start">
+
+  <form method="post" enctype="multipart/form-data" class="card p-6 space-y-4 lg:col-span-3">
+    {% csrf_token %}
+
+    {% if problems %}
+      {# Every problem at once, each naming its question. One per upload would
+         mean a dozen rounds on a file this size. #}
+      <div class="rounded-xl border border-red-200 bg-red-50 p-4">
+        <p class="text-sm font-semibold text-red-800 mb-2">
+          Not imported — {{ problems|length }} problem{{ problems|pluralize }} to fix:
+        </p>
+        <ul class="list-disc pl-5 space-y-1">
+          {% for problem in problems %}
+            <li class="text-xs text-red-700">{{ problem }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+
+    <div>
+      <label class="label" for="document">Paste the JSON</label>
+      <textarea id="document" name="document" rows="16"
+                class="input text-xs font-mono"
+                placeholder="{ &quot;title&quot;: … }">{{ document }}</textarea>
+    </div>
+
+    <div>
+      <label class="label" for="file">…or choose a file</label>
+      <input id="file" name="file" type="file" accept="application/json,.json" class="input text-sm">
+      <p class="text-xs text-gray-400 mt-1">A file wins over the box above.</p>
+    </div>
+
+    <div class="flex gap-2 pt-2">
+      <button type="submit" class="btn-primary btn-md">Import as draft</button>
+      <a href="{% url 'dashboard:test-list' %}" class="btn-secondary btn-md">Cancel</a>
+    </div>
+  </form>
+
+  <aside class="card p-6 lg:col-span-2 space-y-4">
+    <div>
+      <p class="label mb-1">The template</p>
+      <p class="text-xs text-gray-500 mb-3">
+        Download it, give it to the model along with the notes below, and ask for the same
+        JSON with your content in it.
+      </p>
+      <a href="{% url 'dashboard:test-import-template' %}" class="btn-secondary btn-sm">
+        Download template.json
+      </a>
+    </div>
+
+    <div class="border-t border-gray-100 pt-4">
+      <p class="label mb-2">What to tell it</p>
+      {# Rendered from the same module the importer validates against, so the
+         instructions cannot drift away from the rules. #}
+      <pre class="text-[11px] leading-relaxed text-gray-600 whitespace-pre-wrap font-mono max-h-[32rem] overflow-y-auto">{{ brief }}</pre>
+    </div>
+  </aside>
+
+</div>
+{% endblock %}
