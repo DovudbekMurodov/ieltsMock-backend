@@ -285,3 +285,15 @@ def test_the_page_shows_the_brief_and_the_template_link(staff):
     assert response.status_code == 200
     assert reverse("dashboard:test-import-template") in body
     assert "acceptedAnswers" in body
+
+
+def test_the_page_renders_no_template_comments(staff):
+    """Django's {# #} is single-line only.
+
+    A multi-line one is not a comment at all — it renders as literal text,
+    which is how an explanatory note ended up printed at the top of the brief.
+    """
+    body = staff.get(reverse("dashboard:test-import")).content.decode()
+
+    assert "{#" not in body
+    assert "#}" not in body

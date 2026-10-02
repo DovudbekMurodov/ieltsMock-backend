@@ -2,21 +2,26 @@
 {% block title %}Import a test{% endblock %}
 {% block heading %}Import a test{% endblock %}
 {% block subheading %}
-  <p class="text-gray-500">
+  <p class="text-gray-500 max-w-2xl">
     Hand the template to a model, import what it gives back. The test arrives as a draft —
     nothing is published and nothing existing is overwritten.
   </p>
 {% endblock %}
 
 {% block content %}
+{% comment %}
+  min-w-0 on both columns is load-bearing. A grid item defaults to
+  min-width:auto, so the long lines in the brief below would otherwise push
+  their track wider than the page instead of wrapping inside it.
+{% endcomment %}
 <div class="grid gap-6 lg:grid-cols-5 items-start">
 
-  <form method="post" enctype="multipart/form-data" class="card p-6 space-y-4 lg:col-span-3">
+  <form method="post" enctype="multipart/form-data" class="card p-6 space-y-4 lg:col-span-2 min-w-0">
     {% csrf_token %}
 
     {% if problems %}
-      {# Every problem at once, each naming its question. One per upload would
-         mean a dozen rounds on a file this size. #}
+      {% comment %} Every problem at once, each naming its question: one per upload
+      would mean a dozen rounds on a file this size. {% endcomment %}
       <div class="rounded-xl border border-red-200 bg-red-50 p-4">
         <p class="text-sm font-semibold text-red-800 mb-2">
           Not imported — {{ problems|length }} problem{{ problems|pluralize }} to fix:
@@ -31,7 +36,7 @@
 
     <div>
       <label class="label" for="document">Paste the JSON</label>
-      <textarea id="document" name="document" rows="16"
+      <textarea id="document" name="document" rows="14"
                 class="input text-xs font-mono"
                 placeholder="{ &quot;title&quot;: … }">{{ document }}</textarea>
     </div>
@@ -42,13 +47,13 @@
       <p class="text-xs text-gray-400 mt-1">A file wins over the box above.</p>
     </div>
 
-    <div class="flex gap-2 pt-2">
-      <button type="submit" class="btn-primary btn-md">Import as draft</button>
-      <a href="{% url 'dashboard:test-list' %}" class="btn-secondary btn-md">Cancel</a>
+    <div class="flex flex-wrap gap-2 pt-2">
+      <button type="submit" class="btn-primary btn-md whitespace-nowrap">Import as draft</button>
+      <a href="{% url 'dashboard:test-list' %}" class="btn-secondary btn-md whitespace-nowrap">Cancel</a>
     </div>
   </form>
 
-  <aside class="card p-6 lg:col-span-2 space-y-4">
+  <aside class="card p-6 lg:col-span-3 min-w-0 space-y-5">
     <div>
       <p class="label mb-1">The template</p>
       <p class="text-xs text-gray-500 mb-3">
@@ -60,11 +65,21 @@
       </a>
     </div>
 
-    <div class="border-t border-gray-100 pt-4">
-      <p class="label mb-2">What to tell it</p>
-      {# Rendered from the same module the importer validates against, so the
-         instructions cannot drift away from the rules. #}
-      <pre class="text-[11px] leading-relaxed text-gray-600 whitespace-pre-wrap font-mono max-h-[32rem] overflow-y-auto">{{ brief }}</pre>
+    <div class="border-t border-gray-100 pt-4" x-data="{ copied: false }">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <p class="label mb-0">What to tell it</p>
+        <button type="button" class="btn-secondary btn-sm shrink-0"
+                @click="navigator.clipboard.writeText($refs.brief.innerText)
+                        .then(() => { copied = true; setTimeout(() => copied = false, 1800) })">
+          <span x-text="copied ? 'Copied' : 'Copy'">Copy</span>
+        </button>
+      </div>
+      {% comment %}
+        Rendered from the same module the importer validates against, so the
+        instructions cannot drift away from the rules they describe.
+      {% endcomment %}
+      <pre x-ref="brief"
+           class="text-[11px] leading-relaxed text-gray-600 whitespace-pre-wrap break-words font-mono max-h-[30rem] overflow-y-auto">{{ brief }}</pre>
     </div>
   </aside>
 
