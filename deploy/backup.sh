@@ -17,8 +17,14 @@ mkdir -p "$BACKUP_DIR"
 pg_dump --no-owner --format=custom "$DATABASE_URL" \
     > "$BACKUP_DIR/db-$STAMP.dump"
 
+# Media is a dated snapshot, hard-linked against the previous one: audio and
+# images never change once uploaded (audio is content-addressed), so a nightly
+# tarball of gigabytes of identical files would fill the disk within days.
+# Each snapshot is still a complete copy you can restore from on its own.
 if [ -d "$MEDIA_DIR" ]; then
-    tar -czf "$BACKUP_DIR/media-$STAMP.tar.gz" -C "$(dirname "$MEDIA_DIR")" "$(basename "$MEDIA_DIR")"
+    PREVIOUS="$(ls -1d "$BACKUP_DIR"/media-*/ 2>/dev/null | tail -n 1 || true)"
+    rsync -a ${PREVIOUS:+--link-dest="$PREVIOUS"} "$MEDIA_DIR/" "$BACKUP_DIR/media-$STAMP/"
+    touch "$BACKUP_DIR/media-$STAMP"  # rsync copies the source's mtime; retention needs the snapshot's own
 fi
 
 # Droplet disks fail as a unit, so a backup that never leaves the box is not a
@@ -31,6 +37,7 @@ fi
 
 find "$BACKUP_DIR" -name 'db-*.dump' -mtime "+$KEEP_DAYS" -delete
 find "$BACKUP_DIR" -name 'media-*.tar.gz' -mtime "+$KEEP_DAYS" -delete
+find "$BACKUP_DIR" -mindepth 1 -maxdepth 1 -type d -name 'media-*' -mtime "+$KEEP_DAYS" -exec rm -rf {} +
 
 echo "backed up to $BACKUP_DIR/db-$STAMP.dump"
 echo "restore with: pg_restore --clean --no-owner -d \$DATABASE_URL $BACKUP_DIR/db-$STAMP.dump"
