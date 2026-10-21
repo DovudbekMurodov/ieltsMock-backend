@@ -12,6 +12,10 @@
   </p>
 {% endblock %}
 
+{% block actions %}
+  <a href="{% url 'dashboard:paper-preview' "writing" task.slug %}" class="btn-secondary btn-md">Preview &amp; export</a>
+{% endblock %}
+
 {% block content %}
 <div class="grid lg:grid-cols-[360px_1fr] gap-6 items-start">
   <div class="card p-5">

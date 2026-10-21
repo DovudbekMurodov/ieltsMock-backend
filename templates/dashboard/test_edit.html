@@ -15,6 +15,7 @@
 {% endblock %}
 
 {% block actions %}
+  <a href="{% url 'dashboard:paper-preview' "test" test.pk %}" class="btn-secondary btn-md">Preview &amp; export</a>
   {% if test.is_published %}
     <a href="{% url 'dashboard:test-preview' test.pk %}" class="btn-secondary btn-md">Preview</a>
     <form method="post" action="{% url 'dashboard:test-unpublish' test.pk %}">

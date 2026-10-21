@@ -3,7 +3,7 @@ from django.urls import path
 from . import analytics_views as an
 from . import audio_views as av
 from . import content_editors as ce
-from . import editor, views
+from . import editor, export_views, views
 from . import grading_views as gv
 
 app_name = "dashboard"
@@ -22,6 +22,9 @@ urlpatterns = [
     path("tests/<int:pk>/preview/", editor.test_preview, name="test-preview"),
     path("tests/<int:pk>/publish/", editor.test_publish, name="test-publish"),
     path("tests/<int:pk>/unpublish/", editor.test_unpublish, name="test-unpublish"),
+
+    path("papers/<str:kind>/<str:key>/", export_views.paper_preview, name="paper-preview"),
+    path("papers/<str:kind>/<str:key>/export/", export_views.paper_export, name="paper-export"),
 
     path("audio/", av.audio_library, name="audio-library"),
     path("audio/upload/", av.audio_upload, name="audio-upload"),

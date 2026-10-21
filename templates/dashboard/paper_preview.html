@@ -1,0 +1,107 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Paper · {{ item.title }}{% endblock %}
+{% block eyebrow %}
+  <a href="{{ item.back }}" class="text-sm text-gray-400 hover:text-coral-600">← Back to editor</a>
+{% endblock %}
+{% block heading %}{{ item.title }}{% endblock %}
+{% block subheading %}
+  <p class="text-gray-500">{{ item.skill }} · the paper as it prints. Pick a format and what to include, then download.</p>
+{% endblock %}
+
+{% block content %}
+<style>
+  .pp-layout { display: grid; gap: 1.5rem; align-items: start; }
+  @media (min-width: 1100px) { .pp-layout { grid-template-columns: 17rem minmax(0, 1fr); } }
+  .pp-panel { position: sticky; top: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .pp-formats { display: grid; grid-template-columns: repeat(3, 1fr); gap: .375rem; }
+  .pp-formats label { display: block; text-align: center; padding: .5rem 0; border: 1px solid #e5e7eb; border-radius: .6rem; font-size: .8rem; font-weight: 600; cursor: pointer; }
+  .pp-formats input { position: absolute; opacity: 0; pointer-events: none; }
+  .pp-formats label:has(input:checked) { background: #111827; border-color: #111827; color: #fff; }
+  .pp-check { display: flex; align-items: center; gap: .6rem; font-size: .875rem; color: #374151; padding: .2rem 0; }
+  .pp-buttons { display: flex; flex-direction: column-reverse; gap: .5rem; }
+  .pp-buttons > * { justify-content: center; text-align: center; }
+
+  .paper { background: #fff; color: #111; box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 8px 30px rgba(0,0,0,.06);
+           border: 1px solid #ececec; border-radius: .5rem; max-width: 21cm; margin: 0 auto; padding: 1.6cm 1.4cm 2cm 1.8cm;
+           font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.45; }
+  .paper .p-title { text-align: center; font-weight: 700; font-size: 17pt; margin: 0; }
+  .paper .p-subtitle { text-align: center; font-size: 13pt; margin: .1rem 0 1rem; }
+  .paper .p-heading { font-weight: 700; font-size: 15pt; border-bottom: 1px solid #111; padding-bottom: 3pt; margin: 18pt 0 8pt; }
+  .paper .p-sub { font-weight: 700; margin: 10pt 0 4pt; }
+  .paper .p-sub.center { text-align: center; }
+  .paper p { margin: 0 0 5pt; }
+  .paper .p-label { font-weight: 700; margin-right: .5em; }
+  .paper .justify { text-align: justify; }
+  .paper .italic { font-style: italic; }
+  .paper .center { text-align: center; }
+  .paper .p-q { margin: 7pt 0 2pt; }
+  .paper .p-q b.n { margin-right: .6em; }
+  .paper .p-opt { margin: 0 0 1pt 1.6em; }
+  .paper .p-box { border: 1px solid #111; padding: 6pt 10pt; margin: 6pt 0 10pt; }
+  .paper .p-box p { margin: 0 0 3pt; }
+  .paper img { display: block; max-width: 16cm; width: 100%; margin: 6pt auto 10pt; }
+  .paper table { border-collapse: collapse; width: 100%; }
+  .paper td { border: 1px solid #111; padding: 3pt 6pt; vertical-align: top; }
+  .paper td.n { font-weight: 700; width: 10%; }
+  .paper .p-break { border: 0; border-top: 1px dashed #c8c8c8; margin: 22pt -1.4cm 22pt -1.8cm; }
+</style>
+
+<div class="pp-layout">
+  <form method="get" action="{{ export_url }}" class="card p-5 pp-panel">
+    <div>
+      <p class="label">Format</p>
+      <div class="pp-formats">
+        <label><input type="radio" name="format" value="pdf" {% if fmt == "pdf" %}checked{% endif %}><span>PDF</span></label>
+        <label><input type="radio" name="format" value="docx" {% if fmt == "docx" %}checked{% endif %}><span>Word</span></label>
+        <label><input type="radio" name="format" value="json" {% if fmt == "json" %}checked{% endif %}><span>JSON</span></label>
+      </div>
+    </div>
+
+    {% if item.options %}
+      <div>
+        <p class="label">Include</p>
+        {% for name, title in item.options %}
+          <label class="pp-check">
+            <input type="checkbox" name="{{ name }}" value="1"
+              {% if name == "answers" and opts.answers or name == "explanations" and opts.explanations or name == "transcript" and opts.transcript or name == "model_answers" and opts.model_answers %}checked{% endif %}>
+            {{ title }}
+          </label>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="pp-buttons">
+      <button type="submit" formaction="{{ preview_url }}" class="btn-secondary btn-md">Update preview</button>
+      <button type="submit" class="btn-primary btn-md">Download</button>
+    </div>
+    <p class="text-xs text-gray-400">The preview follows the ticked options. JSON carries the content itself, with answers only when ticked.</p>
+  </form>
+
+  <article class="paper">
+    {% for el in elements %}
+      {% if el.kind == "title" %}<p class="p-title">{{ el.text }}</p>
+      {% elif el.kind == "subtitle" %}<p class="p-subtitle">{{ el.text }}</p>
+      {% elif el.kind == "heading" %}<p class="p-heading">{{ el.text }}</p>
+      {% elif el.kind == "subheading" %}<p class="p-sub{% if el.center %} center{% endif %}">{{ el.text }}</p>
+      {% elif el.kind == "para" %}
+        <p class="{% if el.label %}justify{% elif el.style %}{{ el.style }}{% endif %}">{% if el.label %}<span class="p-label">{{ el.label }}</span>{% endif %}{% for part in el.parts %}{% if part.bold %}<b>{{ part.text }}</b>{% else %}{{ part.text }}{% endif %}{% endfor %}</p>
+      {% elif el.kind == "question" %}
+        <p class="p-q"><b class="n">{{ el.number }}</b>{% for part in el.parts %}{% if part.bold %}<b>{{ part.text }}</b>{% else %}{{ part.text }}{% endif %}{% endfor %}</p>
+        {% if el.options %}
+          {% if el.options.0.0 %}
+            {% for label, text in el.options %}<p class="p-opt"><b>{{ label }})</b> {{ text }}</p>{% endfor %}
+          {% else %}
+            <p class="p-opt italic">{% for label, text in el.options %}{{ text }}{% if not forloop.last %} / {% endif %}{% endfor %}</p>
+          {% endif %}
+        {% endif %}
+      {% elif el.kind == "box" %}
+        <div class="p-box">{% for line in el.lines %}<p>{% for part in line %}{% if part.bold %}<b>{{ part.text }}</b>{% else %}{{ part.text }}{% endif %}{% endfor %}</p>{% endfor %}</div>
+      {% elif el.kind == "image" %}<img src="{{ el.url }}" alt="">
+      {% elif el.kind == "table" %}
+        <table>{% for left, right in el.rows %}<tr><td class="n">{{ left.0 }}</td><td>{{ left.1 }}</td><td class="n">{{ right.0 }}</td><td>{{ right.1 }}</td></tr>{% endfor %}</table>
+      {% elif el.kind == "pagebreak" %}<hr class="p-break">
+      {% endif %}
+    {% endfor %}
+  </article>
+</div>
+{% endblock %}
