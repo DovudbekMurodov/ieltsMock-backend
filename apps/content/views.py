@@ -56,8 +56,10 @@ def test_list(request):
         queryset = queryset.filter(skill=skill)
 
     rows = queryset.values(
-        "slug", "skill", "title", "description", "difficulty", "time_limit_minutes", "published_at"
-    ).order_by("skill", "title")
+        "slug", "skill", "title", "description", "difficulty", "time_limit_minutes", "published_at",
+        "pack_position", "pack_label",
+        "pack__slug", "pack__title", "pack__description", "pack__order",
+    ).order_by("skill", "pack__order", "pack_position", "title")
 
     counts = {
         test.slug: test.published_payload.get("questionCount", 0)
@@ -73,6 +75,18 @@ def test_list(request):
             "difficulty": row["difficulty"],
             "timeLimitMinutes": row["time_limit_minutes"],
             "questionCount": counts.get(row["slug"], 0),
+            "pack": (
+                {
+                    "id": row["pack__slug"],
+                    "title": row["pack__title"],
+                    "description": row["pack__description"],
+                    "order": row["pack__order"],
+                }
+                if row["pack__slug"]
+                else None
+            ),
+            "packPosition": row["pack_position"],
+            "packLabel": row["pack_label"],
         }
         for row in rows
     ]

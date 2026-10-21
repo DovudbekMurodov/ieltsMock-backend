@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 
 from apps.common.models import PublishStatus, TimeStampedModel
+from apps.content.models import PackMember
 
 
 class WritingTaskType(models.TextChoices):
@@ -24,7 +25,7 @@ class RevealPolicy(models.TextChoices):
     AFTER_SUBMISSION = "after_submission", "Only after the student submits"
 
 
-class WritingTask(TimeStampedModel):
+class WritingTask(PackMember, TimeStampedModel):
     slug = models.SlugField(max_length=120, unique=True)
     task_number = models.PositiveSmallIntegerField(default=2)
     type = models.CharField(max_length=32, choices=WritingTaskType.choices)

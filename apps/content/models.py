@@ -51,7 +51,49 @@ class AudioAsset(TimeStampedModel):
         return round(self.duration_ms / 1000, 1)
 
 
-class Test(TimeStampedModel):
+class Pack(TimeStampedModel):
+    """A named collection of tests within one skill -- "Pack 4", "Volume 9".
+
+    Lives here rather than per app because writing tasks and speaking topics
+    are grouped the same way; they point at it with their own foreign key.
+    Ordering inside a pack is on the member (``pack_position``), since a test
+    belongs to at most one pack.
+    """
+
+    class PackSkill(models.TextChoices):
+        READING = "reading", "Reading"
+        LISTENING = "listening", "Listening"
+        WRITING = "writing", "Writing"
+        SPEAKING = "speaking", "Speaking"
+
+    slug = models.SlugField(max_length=120, unique=True)
+    skill = models.CharField(max_length=16, choices=PackSkill.choices, db_index=True)
+    title = models.CharField(max_length=200)
+    description = models.CharField(max_length=255, blank=True)
+    order = models.PositiveIntegerField(default=0, help_text="Lower comes first in the pack list.")
+
+    class Meta:
+        ordering = ("skill", "order", "title")
+
+    def __str__(self):
+        return f"{self.get_skill_display()} / {self.title}"
+
+
+class PackMember(models.Model):
+    """The three fields a test, writing task or speaking topic needs to sit in a pack."""
+
+    pack = models.ForeignKey(
+        "content.Pack", null=True, blank=True, on_delete=models.SET_NULL, related_name="+"
+    )
+    pack_position = models.PositiveSmallIntegerField(null=True, blank=True)
+    # What the item is called inside its pack ("Test 4"); its title stays as is.
+    pack_label = models.CharField(max_length=60, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class Test(PackMember, TimeStampedModel):
     """A reading or listening test.
 
     Reading passages and listening transcripts are the same structure with a

@@ -23,7 +23,11 @@ def _published():
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def task_list(request):
-    tasks = _published().order_by("task_number", "slug")
+    tasks = (
+        _published()
+        .select_related("pack")
+        .order_by("pack__order", "pack_position", "task_number", "slug")
+    )
     results = [build_task_payload(t, include_model_answers=False) for t in tasks]
     response = Response({"count": len(results), "results": results})
     return cache_public(response, max_age=MAX_AGE)

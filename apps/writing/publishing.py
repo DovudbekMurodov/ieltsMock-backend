@@ -1,3 +1,5 @@
+from apps.content.packs import pack_fields
+
 from .models import RevealPolicy
 
 
@@ -12,6 +14,7 @@ def build_task_payload(task, *, include_model_answers: bool) -> dict:
         "suggestedTimeMinutes": task.suggested_time_minutes,
         "targetWords": task.target_words,
         "revealPolicy": task.reveal_policy,
+        **pack_fields(task),
     }
     if include_model_answers:
         data["modelAnswers"] = [

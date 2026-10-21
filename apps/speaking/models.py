@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 
 from apps.common.models import PublishStatus, TimeStampedModel
+from apps.content.models import PackMember
 
 
 class SpeakingPart(models.IntegerChoices):
@@ -18,7 +19,7 @@ class SpeakingItemKind(models.TextChoices):
     PHRASE = "phrase", "Useful phrase"
 
 
-class SpeakingTopic(TimeStampedModel):
+class SpeakingTopic(PackMember, TimeStampedModel):
     slug = models.SlugField(max_length=120, unique=True)
     title = models.CharField(max_length=200)
     status = models.CharField(

@@ -23,7 +23,12 @@ def _published():
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def topic_list(request):
-    topics = _published().order_by("order", "title").prefetch_related("items", "cue_card")
+    topics = (
+        _published()
+        .select_related("pack")
+        .order_by("pack__order", "pack_position", "order", "title")
+        .prefetch_related("items", "cue_card")
+    )
     results = [build_topic_payload(t) for t in topics]
     response = Response({"count": len(results), "results": results})
     return cache_public(response, max_age=MAX_AGE)

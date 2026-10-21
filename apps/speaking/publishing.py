@@ -1,3 +1,5 @@
+from apps.content.packs import pack_fields
+
 from .models import SpeakingItemKind
 
 
@@ -24,4 +26,5 @@ def build_topic_payload(topic) -> dict:
         ),
         "part3": texts(3, SpeakingItemKind.QUESTION),
         "phrases": texts(3, SpeakingItemKind.PHRASE),
+        **pack_fields(topic),
     }

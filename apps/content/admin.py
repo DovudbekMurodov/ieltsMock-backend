@@ -2,7 +2,17 @@ from django.contrib import admin
 
 from apps.common.caching import bump_content_version
 
-from .models import AnswerKey, AudioAsset, Block, Option, Question, QuestionGroup, Section, Test
+from .models import (
+    AnswerKey,
+    AudioAsset,
+    Block,
+    Option,
+    Pack,
+    Question,
+    QuestionGroup,
+    Section,
+    Test,
+)
 from .publishing import publish_test
 
 
@@ -95,3 +105,11 @@ class AudioAssetAdmin(admin.ModelAdmin):
     list_display = ("original_filename", "duration_seconds", "size_bytes", "created_at")
     search_fields = ("original_filename", "checksum_sha256")
     readonly_fields = ("checksum_sha256", "duration_ms", "size_bytes", "content_type")
+
+
+@admin.register(Pack)
+class PackAdmin(admin.ModelAdmin):
+    list_display = ("title", "skill", "order", "slug")
+    list_filter = ("skill",)
+    list_editable = ("order",)
+    search_fields = ("title", "slug")
